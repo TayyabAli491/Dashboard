@@ -97,3 +97,6 @@
 - PayloadSchema → fields jsonb (array of {key, type, unit, alias})
 - Flight → belongs_to :workspace, has_many :telemetry_records
 - TelemetryRecord → belongs_to :workspace, raw_payload jsonb, processed_payload jsonb
+
+# Do Not
+- write test case, create their files
