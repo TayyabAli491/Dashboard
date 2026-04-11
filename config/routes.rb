@@ -4,17 +4,28 @@ Rails.application.routes.draw do
     registrations: "users/registrations"
   }
 
-  resources :workspaces
-  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
+  authenticated :user do
+    root to: "workspaces#index", as: :authenticated_root
+  end
 
-  # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
-  # Can be used by load balancers and uptime monitors to verify that the app is live.
-  get "up" => "rails/health#show", as: :rails_health_check
+  unauthenticated do
+    root to: redirect("/users/sign_in"), as: :unauthenticated_root
+  end
 
-  # Render dynamic PWA files from app/views/pwa/* (remember to link manifest in application.html.erb)
-  # get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
-  # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
+  resources :workspaces do
+    resource :payload_schema, only: %i[edit update]
+    resources :telemetry_records, only: :index
+    resources :sessions, shallow: true do
+      resources :telemetry_records, only: %i[index show], shallow: true
+    end
+  end
 
-  # Defines the root path route ("/")
-  # root "posts#index"
+  namespace :api, defaults: { format: :json } do
+    resources :workspaces, only: [] do
+      member do
+        post :telemetry
+        post :images
+      end
+    end
+  end
 end
