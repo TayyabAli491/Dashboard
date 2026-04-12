@@ -8,7 +8,20 @@ class Workspace < ApplicationRecord
   has_many :telemetry_records, dependent: :destroy
 
   scope :belonging_to_user, ->(user) { where(user: user) }
-  before_create :generate_unique_api_key
+  before_validation :generate_unique_api_key, on: :create
+
+  def regenerate_api_key!
+    loop do
+      self.api_key = SecureRandom.hex(20)
+      break unless self.class.where.not(id: id).exists?(api_key: api_key)
+    end
+
+    save!
+  end
+
+  def telemetry_record_count
+    telemetry_records.count
+  end
 
   def payload_schema_defined?
     payload_schema.present? && payload_schema.fields.count.positive?
@@ -17,6 +30,8 @@ class Workspace < ApplicationRecord
   private
 
   def generate_unique_api_key
+    return if api_key.present?
+
     loop do
       self.api_key = SecureRandom.hex(20)
       break unless self.class.exists?(api_key: api_key)
