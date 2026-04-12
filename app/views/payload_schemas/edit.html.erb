@@ -1,0 +1,28 @@
+<div class="min-h-screen bg-gray-50 p-6">
+  <div class="mx-auto max-w-3xl">
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+      <h1 class="text-2xl font-bold text-gray-900">Edit Payload Schema</h1>
+      <p class="mt-2 text-sm text-gray-500">
+        Define fields as a JSON array of objects with keys: key, type, unit, and optional alias.
+      </p>
+
+      <%= form_with url: workspace_payload_schema_path(@workspace), method: :patch, class: "mt-6 space-y-4" do |form| %>
+        <div>
+          <%= form.label :fields_json, "Schema Fields (JSON)", class: "block text-sm font-medium text-gray-700" %>
+          <%= form.text_area :fields_json,
+                             value: JSON.pretty_generate(@payload_schema.fields || []),
+                             rows: 14,
+                             class: "mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 font-mono text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none" %>
+          <% @payload_schema.errors.full_messages_for(:fields).each do |error_message| %>
+            <p class="mt-1 text-sm text-red-600"><%= error_message %></p>
+          <% end %>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <%= form.submit "Save Schema", class: "bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg px-4 py-2" %>
+          <%= link_to "Back", workspace_path(@workspace), class: "text-sm text-gray-600 hover:text-gray-800" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
