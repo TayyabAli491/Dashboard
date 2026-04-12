@@ -1,0 +1,22 @@
+<%= form_with model: [workspace, session], class: "space-y-5" do |form| %>
+  <div>
+    <%= form.label :name, class: "block text-sm font-medium text-gray-700" %>
+    <%= form.text_field :name, required: true, class: "mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none" %>
+    <% session.errors.full_messages_for(:name).each do |error_message| %>
+      <p class="mt-1 text-sm text-red-600"><%= error_message %></p>
+    <% end %>
+  </div>
+
+  <div>
+    <%= form.label :description, class: "block text-sm font-medium text-gray-700" %>
+    <%= form.text_area :description, rows: 4, class: "mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none" %>
+    <% session.errors.full_messages_for(:description).each do |error_message| %>
+      <p class="mt-1 text-sm text-red-600"><%= error_message %></p>
+    <% end %>
+  </div>
+
+  <div class="flex items-center gap-3">
+    <%= form.submit class: "bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg px-4 py-2" %>
+    <%= link_to "Cancel", workspace_sessions_path(workspace), class: "text-sm text-gray-600 hover:text-gray-800" %>
+  </div>
+<% end %>
