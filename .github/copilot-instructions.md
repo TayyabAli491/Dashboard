@@ -85,11 +85,6 @@
 
 ## Styling Rules
 - Tailwind only — no custom CSS files, no inline styles
-- Sidebar: bg-gray-900 text-white
-- Cards: bg-white rounded-xl shadow-sm border border-gray-100
-- Primary button: bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg px-4 py-2
-- Danger button: bg-red-50 text-red-600 hover:bg-red-100
-- Inputs: border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500
 
 ## Models Overview
 - User (Devise) → has_many :workspaces
