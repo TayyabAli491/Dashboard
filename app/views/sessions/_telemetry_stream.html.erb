@@ -1,0 +1,121 @@
+<div class="card p-0 overflow-hidden shadow-sm">
+  <div class="card-accent blue"></div>
+  <div class="p-6">
+    <div class="flex items-center justify-between mb-8">
+      <div class="flex items-center gap-4">
+         <div class="w-10 h-10 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600 shadow-sm">
+           <i class="fa-solid fa-wave-square text-[15px]"></i>
+         </div>
+         <div>
+           <h3 class="text-[15px] font-bold text-[#1A1A1A] mb-0.5 tracking-tight">Telemetry Stream</h3>
+           <p class="text-[11px] text-[#9E9891] font-medium uppercase tracking-wider">Live data ingestion pipeline</p>
+         </div>
+      </div>
+      <div class="flex bg-[#F7F5F1] p-1 rounded-lg border border-[#E8E4DD] shadow-inner">
+         <button class="px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-[#1A1A1A] bg-white rounded-md shadow-sm border border-[#E8E4DD]">Table View</button>
+         <button class="px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-[#6B6560] hover:text-[#1A1A1A] transition-colors">JSON Raw</button>
+      </div>
+    </div>
+
+    <div class="overflow-hidden rounded-xl border border-[#E8E4DD] bg-white shadow-sm">
+      <table class="min-w-full text-left border-collapse">
+        <thead>
+          <tr class="bg-[#F7F5F1]/80 backdrop-blur-sm">
+            <th class="px-6 py-4 text-[10px] font-bold text-[#6B6560] uppercase tracking-widest border-b border-[#E8E4DD] w-[180px]">Timestamp</th>
+            <th class="px-6 py-4 text-[10px] font-bold text-[#6B6560] uppercase tracking-widest border-b border-[#E8E4DD]">Payload Breakdown</th>
+            <th class="px-6 py-4 text-[10px] font-bold text-[#6B6560] uppercase tracking-widest border-b border-[#E8E4DD] text-right">Raw</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-[#E8E4DD]">
+          <% telemetry_records.each do |record| %>
+            <tr class="hover:bg-[#F7F5F1]/30 transition-all duration-200 group">
+              <td class="px-6 py-5 align-top">
+                <div class="flex flex-col">
+                  <span class="text-[13px] font-mono font-semibold text-[#1A1A1A]"><%= record.recorded_at.strftime("%H:%M:%S") %><span class="text-blue-500">.<%= record.recorded_at.strftime("%L") %></span></span>
+                  <span class="text-[9px] text-[#9E9891] font-bold uppercase tracking-tighter mt-1"><%= record.recorded_at.strftime("%b %d, %Y") %></span>
+                </div>
+              </td>
+              <td class="px-6 py-5">
+                <% if field_keys.any? %>
+                  <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-y-3 gap-x-6">
+                    <% field_keys.each do |key| %>
+                      <div class="flex flex-col gap-1">
+                        <span class="text-[9px] font-bold text-[#B5B0A8] uppercase tracking-widest"><%= key %></span>
+                        <div class="flex items-baseline gap-1.5">
+                           <span class="text-[13px] font-bold text-[#1A1A1A]"><%= record.value_for_field(key) %></span>
+                           <% unit = nil # If you have units in schema, you could show them here %>
+                           <% if unit %><span class="text-[10px] text-[#9E9891] font-medium"><%= unit %></span><% end %>
+                        </div>
+                      </div>
+                    <% end %>
+                  </div>
+                <% else %>
+                  <div class="flex items-center gap-2 text-[#9E9891] italic text-[12px]">
+                    <i class="fa-solid fa-circle-info text-[10px]"></i>
+                    No payload mapping defined
+                  </div>
+                <% end %>
+              </td>
+              <td class="px-6 py-5 text-right align-top">
+                <button class="w-8 h-8 rounded-lg bg-[#F7F5F1] border border-[#E8E4DD] flex items-center justify-center text-[#6B6560] hover:text-[#1A1A1A] hover:bg-white hover:border-[#C8C3BB] hover:shadow-sm transition-all shadow-inner" 
+                        onclick="this.closest('tr').nextElementSibling.classList.toggle('hidden')">
+                   <i class="fa-solid fa-code text-[11px]"></i>
+                </button>
+              </td>
+            </tr>
+            <tr class="hidden bg-[#1A1A1A] shadow-inner">
+               <td colspan="3" class="px-8 py-6">
+                 <div class="flex items-center gap-2 mb-3">
+                    <div class="w-2 h-2 rounded-full bg-blue-500"></div>
+                    <span class="text-[10px] font-bold text-blue-400 uppercase tracking-widest">RAW JSON PAYLOAD</span>
+                 </div>
+                 <pre class="text-[12px] font-mono leading-relaxed text-blue-100/90 overflow-x-auto selection:bg-blue-500/30"><%= JSON.pretty_generate(record.raw_payload || {}) %></pre>
+               </td>
+            </tr>
+          <% end %>
+          <% if telemetry_records.empty? %>
+            <tr>
+              <td colspan="3" class="px-6 py-12 text-center">
+                <div class="flex flex-col items-center gap-3">
+                  <div class="w-12 h-12 rounded-full bg-[#F7F5F1] flex items-center justify-center text-[#B5B0A8]">
+                    <i class="fa-solid fa-inbox text-[20px]"></i>
+                  </div>
+                  <p class="text-[13px] font-medium text-[#9E9891]">No telemetry packets received yet.</p>
+                </div>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+
+    <% if total_pages > 1 %>
+      <div class="mt-8 flex items-center justify-between pt-6 border-t border-[#E8E4DD]">
+        <div class="text-[12px] text-[#6B6560] font-medium">
+          Showing page <span class="text-[#1A1A1A] font-bold"><%= page %></span> of <span class="text-[#1A1A1A] font-bold"><%= total_pages %></span>
+        </div>
+        <div class="flex gap-2">
+          <% if page > 1 %>
+            <%= link_to session_path(session, page: page - 1), class: "btn-secondary !py-2 !px-4 shadow-sm" do %>
+              <i class="fa-solid fa-chevron-left mr-2"></i> Previous
+            <% end %>
+          <% else %>
+             <button class="btn-secondary !py-2 !px-4 opacity-50 cursor-not-allowed" disabled>
+              <i class="fa-solid fa-chevron-left mr-2"></i> Previous
+             </button>
+          <% end %>
+
+          <% if page < total_pages %>
+            <%= link_to session_path(session, page: page + 1), class: "btn-secondary !py-2 !px-4 shadow-sm" do %>
+              Next <i class="fa-solid fa-chevron-right ml-2"></i>
+            <% end %>
+          <% else %>
+             <button class="btn-secondary !py-2 !px-4 opacity-50 cursor-not-allowed" disabled>
+              Next <i class="fa-solid fa-chevron-right ml-2"></i>
+             </button>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>
