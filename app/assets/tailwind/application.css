@@ -527,4 +527,27 @@
   font-size: 13px;
   color: #9E9891;
   margin-bottom: 20px;
+}/* Flash Messages */
+@keyframes slide-in-out {
+  0% {
+    transform: translateX(120%);
+    opacity: 0;
+  }
+  10% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  85% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(120%);
+    opacity: 0;
+  }
 }
+
+.flash-toast {
+  animation: slide-in-out 4.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
