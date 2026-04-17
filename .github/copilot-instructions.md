@@ -84,7 +84,7 @@
   end
 
 ## Styling Rules
-- Tailwind only — no custom CSS files, no inline styles
+- Tailwind only — no inline styles
 
 ## Models Overview
 - User (Devise) → has_many :workspaces
