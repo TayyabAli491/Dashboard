@@ -191,56 +191,101 @@
   </section>
 
   <section class="auth-form-panel">
-    <div class="auth-form-container">
-      <div class="flex items-center justify-center gap-3 mb-6">
-        <div class="w-10 h-10 rounded-[10px] bg-[#1A1A1A] text-white flex items-center justify-center">
-          <i class="fa-solid fa-satellite-dish"></i>
+    <!-- Subtle background decoration -->
+    <div class="auth-form-bg-pattern"></div>
+
+    <div class="auth-form-container relative z-10">
+      <!-- Logo -->
+      <div class="flex flex-col items-center mb-8">
+        <div class="auth-form-logo">
+          <i class="fa-solid fa-satellite-dish text-[18px]"></i>
         </div>
-        <div>
-          <div class="text-[14px] font-semibold text-[#1A1A1A] tracking-tight leading-none">ArckOne</div>
-          <div class="text-[10px] text-[#9E9891] tracking-[0.14em] mt-1">IOT PLATFORM</div>
-        </div>
+        <div class="text-[16px] font-semibold text-[#1A1A1A] tracking-tight mt-3">ArckOne</div>
+        <div class="text-[10px] text-[#B5B0A8] tracking-[0.16em] mt-0.5">IOT PLATFORM</div>
       </div>
 
       <div class="auth-form-card">
-        <div class="mb-7">
-          <div class="page-eyebrow text-center">Welcome back</div>
-          <h2 class="text-center text-[30px] font-semibold tracking-tight text-[#1A1A1A]">Log in</h2>
+        <!-- Header -->
+        <div class="mb-8 text-center">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#EAF3DE] border border-[#C0DD97] mb-4">
+            <span class="w-1.5 h-1.5 rounded-full bg-[#3B6D11] animate-pulse"></span>
+            <span class="text-[10px] font-medium text-[#3B6D11] tracking-wide uppercase">System Online</span>
+          </div>
+          <h2 class="text-[28px] font-semibold tracking-tight text-[#1A1A1A] leading-tight">Welcome back</h2>
+          <p class="text-[13px] text-[#9E9891] mt-1.5">Sign in to access your dashboards</p>
         </div>
 
         <%= render "devise/shared/error_messages", resource: resource %>
 
-        <%= form_for(resource, as: resource_name, url: user_session_path, html: { class: "space-y-5" }) do |f| %>
+        <%= form_for(resource, as: resource_name, url: user_session_path, html: { class: "auth-form-fields" }) do |f| %>
+          <!-- Email field with icon -->
           <div>
-            <%= f.label :email, class: "card-meta-label block mb-1.5" %>
-            <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "auth-input" %>
-          </div>
-
-          <div>
-            <%= f.label :password, class: "card-meta-label block mb-1.5" %>
-            <%= f.password_field :password, autocomplete: "current-password", class: "auth-input" %>
-          </div>
-
-          <% if devise_mapping.rememberable? %>
-            <div class="flex items-center gap-2.5 py-1">
-              <%= f.check_box :remember_me, class: "h-4 w-4 rounded border-[#E8E4DD] text-[#1A1A1A] focus:ring-[#1A1A1A] cursor-pointer" %>
-              <%= f.label :remember_me, class: "text-[13px] font-medium text-[#6B6560] cursor-pointer" %>
+            <%= f.label :email, class: "auth-field-label" %>
+            <div class="auth-input-wrap">
+              <i class="fa-regular fa-envelope auth-input-icon"></i>
+              <%= f.email_field :email, autofocus: true, autocomplete: "email", placeholder: "you@example.com", class: "auth-input auth-input-with-icon" %>
             </div>
-          <% end %>
+          </div>
 
-          <div class="pt-1">
-            <%= f.submit "Log in", class: "btn-new w-full justify-center cursor-pointer border-0 !mt-0 !py-2.5 !text-[13px]" %>
+          <!-- Password field with icon -->
+          <div>
+            <%= f.label :password, class: "auth-field-label" %>
+            <div class="auth-input-wrap">
+              <i class="fa-solid fa-lock auth-input-icon"></i>
+              <%= f.password_field :password, autocomplete: "current-password", placeholder: "••••••••", class: "auth-input auth-input-with-icon" %>
+            </div>
+          </div>
+
+          <!-- Remember me + Forgot password row -->
+          <div class="flex items-center justify-between py-1">
+            <% if devise_mapping.rememberable? %>
+              <label class="flex items-center gap-2 cursor-pointer group">
+                <%= f.check_box :remember_me, class: "auth-checkbox" %>
+                <span class="text-[12px] font-medium text-[#9E9891] group-hover:text-[#6B6560] transition-colors">Remember me</span>
+              </label>
+            <% end %>
+            <% if devise_mapping.recoverable? %>
+              <%= link_to "Forgot password?", new_password_path(resource_name), class: "text-[12px] font-medium text-[#9E9891] hover:text-[#1A1A1A] transition-colors" %>
+            <% end %>
+          </div>
+
+          <!-- Submit button -->
+          <div class="pt-2">
+            <%= f.submit "Sign in", class: "auth-submit-btn" %>
           </div>
         <% end %>
 
-        <div class="mt-6 pt-5 border-t border-[#E8E4DD]">
-          <%= render "devise/shared/links" %>
+        <!-- Divider -->
+        <div class="flex items-center gap-3 mt-7 mb-5">
+          <div class="flex-1 h-px bg-[#E8E4DD]"></div>
+          <span class="text-[10px] font-medium text-[#B5B0A8] tracking-widest uppercase">or</span>
+          <div class="flex-1 h-px bg-[#E8E4DD]"></div>
+        </div>
+
+        <!-- Sign up link -->
+        <% if devise_mapping.registerable? %>
+          <p class="text-center text-[13px] text-[#6B6560]">
+            Don't have an account?
+            <%= link_to "Create one", new_registration_path(resource_name), class: "font-semibold text-[#1A1A1A] hover:underline ml-1" %>
+          </p>
+        <% end %>
+      </div>
+
+      <!-- Trust badges -->
+      <div class="flex items-center justify-center gap-5 mt-6">
+        <div class="auth-trust-badge">
+          <i class="fa-solid fa-shield-halved"></i>
+          <span>SSL Secured</span>
+        </div>
+        <div class="auth-trust-badge">
+          <i class="fa-solid fa-lock"></i>
+          <span>Encrypted</span>
         </div>
       </div>
 
-      <div>
-        <p class="text-center text-[11px] text-[#9E9891] mt-5">Secure access to your telemetry and workspace infrastructure.</p>
-      </div>
+      <p class="text-center text-[10px] text-[#B5B0A8] mt-4">
+        By signing in, you agree to our Terms of Service and Privacy Policy.
+      </p>
     </div>
   </section>
 </div>
