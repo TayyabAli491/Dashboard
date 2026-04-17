@@ -27,10 +27,13 @@ class SessionsController < ApplicationController
   def create
     @session = @workspace.sessions.new(session_form_params)
 
-    if @session.save
-      redirect_to session_path(@session), notice: "Session created successfully."
-    else
-      render :new, status: :unprocessable_entity
+    respond_to do |format|
+      if @session.save
+        format.turbo_stream { render turbo_stream: turbo_stream.append("remote_modal", "<script>window.location.href='#{session_path(@session)}'</script>".html_safe) }
+        format.html { redirect_to session_path(@session), notice: "Session created successfully." }
+      else
+        format.html { render :new, status: :unprocessable_entity }
+      end
     end
   end
 
@@ -38,16 +41,19 @@ class SessionsController < ApplicationController
   end
 
   def update
-    if params[:session_state] == "start"
-      start_session
-      redirect_to session_path(@session), notice: "Session started."
-    elsif params[:session_state] == "end"
-      end_session
-      redirect_to session_path(@session), notice: "Session ended."
-    elsif @session.update(session_form_params)
-      redirect_to session_path(@session), notice: "Session updated successfully."
-    else
-      render :edit, status: :unprocessable_entity
+    respond_to do |format|
+      if params[:session_state] == "start"
+        start_session
+        format.html { redirect_to session_path(@session), notice: "Session started." }
+      elsif params[:session_state] == "end"
+        end_session
+        format.html { redirect_to session_path(@session), notice: "Session ended." }
+      elsif @session.update(session_form_params)
+        format.turbo_stream { render turbo_stream: turbo_stream.append("remote_modal", "<script>window.location.href='#{session_path(@session)}'</script>".html_safe) }
+        format.html { redirect_to session_path(@session), notice: "Session updated successfully." }
+      else
+        format.html { render :edit, status: :unprocessable_entity }
+      end
     end
   end
 
@@ -73,11 +79,7 @@ class SessionsController < ApplicationController
   end
 
   def find_session_belonging_to_workspace
-    @session = if @workspace.present?
-                 @workspace.sessions.find(params[:id])
-               else
-                 Session.joins(:workspace).find_by!(id: params[:id], workspace: { user_id: current_user.id })
-               end
+    @session = @workspace.present? ? @workspace.sessions.find(params[:id]) : Session.joins(:workspace).find_by!(id: params[:id], workspace: { user_id: current_user.id })
     @workspace ||= @session.workspace
   end
 
