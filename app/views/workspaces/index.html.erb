@@ -1,43 +1,57 @@
-<div class="min-h-screen bg-gray-50 p-6">
-  <div class="mx-auto max-w-7xl">
-    <div class="mb-6 flex items-center justify-between">
-      <h1 class="text-3xl font-bold text-gray-900">My Workspaces</h1>
-      <%= link_to "New Workspace", new_workspace_path, class: "bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg px-4 py-2" %>
+<div class="page-wrap">
+  <%= render "shared/nav" %>
+
+  <main class="main-content">
+    <div class="topbar">
+      <div>
+        <div class="page-eyebrow">Dashboard</div>
+        <h1 class="page-title">My Workspaces <em>&amp; Projects</em></h1>
+      </div>
+      <%= link_to new_workspace_path, class: "btn-new" do %>
+        <i class="fa-solid fa-plus"></i>
+        New Workspace
+      <% end %>
     </div>
 
-    <% if @workspaces.any? %>
-      <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-        <% @workspaces.each do |workspace| %>
-          <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
-            <h2 class="font-semibold text-gray-900"><%= workspace.name %></h2>
-            <p class="mt-2 text-sm text-gray-500 line-clamp-2"><%= workspace.description.presence || "No description provided." %></p>
-            <p class="mt-3 text-xs text-gray-400">Created <%= workspace.created_at.strftime("%b %-d, %Y") %></p>
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-label">Total Workspaces</div>
+        <div class="stat-val"><%= @workspaces.count %></div>
+        <div class="stat-sub"><%= @workspaces.count { |w| w.payload_schema_defined? } %> with active schema</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Total Records</div>
+        <div class="stat-val"><%= number_with_delimiter(@workspaces.sum { |w| w.telemetry_record_count.to_i }) %></div>
+        <div class="stat-sub">across all workspaces</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Devices Online</div>
+        <div class="stat-val">4</div>
+        <div class="stat-sub">last seen &lt; 5 min ago</div>
+      </div>
+    </div>
 
-            <div class="mt-4 flex items-center justify-between">
-              <span class="inline-flex items-center rounded-full bg-indigo-50 px-2.5 py-1 text-xs font-medium text-indigo-700">
-                <%= workspace.telemetry_record_count %> records
-              </span>
+    <div class="section-header">
+      <div class="section-title">All Projects</div>
+      <div class="filter-pills">
+        <div class="pill active">All</div>
+        <div class="pill">Active</div>
+        <div class="pill">Schema Missing</div>
+      </div>
+    </div>
 
-              <% if workspace.payload_schema_defined? %>
-                <span class="text-xs font-medium text-green-600">✓ Schema defined</span>
-              <% else %>
-                <span class="text-xs font-medium text-amber-600">⚠ Schema missing</span>
-              <% end %>
-            </div>
-
-            <div class="mt-5 flex items-center gap-3">
-              <%= link_to "Open Dashboard", workspace_path(workspace), class: "bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg px-4 py-2 text-sm" %>
-              <%= link_to "Edit", edit_workspace_path(workspace), class: "text-sm text-indigo-600 hover:text-indigo-700" %>
-              <%= button_to "Delete", workspace_path(workspace), method: :delete, data: { turbo_confirm: "Delete this workspace?" }, class: "text-sm text-red-600 hover:text-red-700 bg-transparent border-0 p-0" %>
-            </div>
+    <div class="cards-grid">
+      <% if @workspaces.any? %>
+        <%= render partial: "workspaces/workspace", collection: @workspaces %>
+      <% else %>
+        <div class="empty-state">
+          <div class="empty-ring">
+            <i class="fa-solid fa-satellite-dish fa-2x"></i>
           </div>
-        <% end %>
-      </div>
-    <% else %>
-      <div class="mt-20 text-center">
-        <p class="text-lg font-medium text-gray-700">No workspaces yet</p>
-        <%= link_to "Create your first workspace", new_workspace_path, class: "mt-4 inline-block bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg px-4 py-2" %>
-      </div>
-    <% end %>
-  </div>
+          <div class="empty-title">No Workspaces Found</div>
+          <div class="empty-sub">Configure your first workspace to start interpreting telemetry.</div>
+        </div>
+      <% end %>
+    </div>
+  </main>
 </div>
