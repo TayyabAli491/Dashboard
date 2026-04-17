@@ -1,0 +1,63 @@
+<nav class="sidebar">
+  <div class="logo">
+    <div class="logo-mark">
+      <div class="logo-icon">
+        <i class="fa-solid fa-satellite-dish fa-lg" style="color: #fff;"></i>
+      </div>
+      <div>
+        <div class="logo-name">OrbStack</div>
+        <div class="logo-sub">IOT PLATFORM</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="nav-label">Navigation</div>
+  <%= link_to workspaces_path, class: "nav-item active" do %>
+    <i class="fa-solid fa-layer-group fa-lg fa-fw"></i>
+    Workspaces
+  <% end %>
+  
+  <!-- Add actual links if these routes exist, placeholder for now -->
+  <a href="#" class="nav-item">
+    <i class="fa-solid fa-wave-square fa-fw"></i>
+    Telemetry
+  </a>
+  <a href="#" class="nav-item">
+    <i class="fa-solid fa-microchip fa-lg fa-fw"></i>
+    Devices
+  </a>
+  <a href="#" class="nav-item">
+    <i class="fa-solid fa-rocket fa-lg fa-fw"></i>
+    Flights
+  </a>
+  <a href="#" class="nav-item">
+    <i class="fa-solid fa-key fa-lg fa-fw"></i>
+    API Keys
+  </a>
+
+  <div class="nav-spacer"></div>
+
+  <div class="nav-label">Account</div>
+  <a href="#" class="nav-item">
+    <i class="fa-solid fa-circle-user fa-lg fa-fw"></i>
+    Profile
+  </a>
+  <a href="#" class="nav-item">
+    <i class="fa-solid fa-sliders fa-lg fa-fw"></i>
+    Settings
+  </a>
+
+  <div class="user-profile">
+    <div class="avatar">
+      <% if defined?(current_user) && current_user %>
+        <%= current_user.email.to_s[0,2].upcase %>
+      <% else %>
+        AK
+      <% end %>
+    </div>
+    <div>
+      <div class="user-name"><%= (defined?(current_user) && current_user) ? current_user.email.split('@').first.capitalize : "Ali Khan" %></div>
+      <div class="user-role">Admin</div>
+    </div>
+  </div>
+</nav>
