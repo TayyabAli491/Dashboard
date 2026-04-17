@@ -15,23 +15,30 @@ class WorkspacesController < ApplicationController
   def create
     @workspace = current_user.workspaces.new(workspace_form_params)
 
-    if @workspace.save
-      redirect_to edit_workspace_payload_schema_path(@workspace), notice: "Workspace created successfully."
-    else
-      render :new, status: :unprocessable_entity
+    respond_to do |format|
+      if @workspace.save
+        format.turbo_stream { render turbo_stream: turbo_stream.append("remote_modal", "<script>window.location.href='#{edit_workspace_payload_schema_path(@workspace)}'</script>".html_safe) }
+        format.html { redirect_to edit_workspace_payload_schema_path(@workspace), notice: "Workspace created successfully." }
+      else
+        format.html { render :new, status: :unprocessable_entity }
+      end
     end
   end
 
   def edit; end
 
   def update
-    if params[:regenerate_api_key].present?
-      @workspace.regenerate_api_key!
-      redirect_to workspace_path(@workspace), notice: "API key regenerated successfully."
-    elsif @workspace.update(workspace_form_params)
-      redirect_to workspace_path(@workspace), notice: "Workspace updated successfully."
-    else
-      render :edit, status: :unprocessable_entity
+    respond_to do |format|
+      if params[:regenerate_api_key].present?
+        @workspace.regenerate_api_key!
+        format.turbo_stream { render turbo_stream: turbo_stream.append("remote_modal", "<script>window.location.href='#{workspace_path(@workspace)}'</script>".html_safe) }
+        format.html { redirect_to workspace_path(@workspace), notice: "API key regenerated successfully." }
+      elsif @workspace.update(workspace_form_params)
+        format.turbo_stream { render turbo_stream: turbo_stream.append("remote_modal", "<script>window.location.href='#{workspace_path(@workspace)}'</script>".html_safe) }
+        format.html { redirect_to workspace_path(@workspace), notice: "Workspace updated successfully." }
+      else
+        format.html { render :edit, status: :unprocessable_entity }
+      end
     end
   end
 
