@@ -7,7 +7,7 @@
         <div class="page-eyebrow">Dashboard</div>
         <h1 class="page-title">My Workspaces <em>&amp; Projects</em></h1>
       </div>
-      <%= link_to new_workspace_path, class: "btn-new" do %>
+      <%= link_to new_workspace_path, data: { turbo_frame: "remote_modal" }, class: "btn-new" do %>
         <i class="fa-solid fa-plus"></i>
         New Workspace
       <% end %>

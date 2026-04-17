@@ -37,7 +37,7 @@
       <i class="fa-solid fa-arrow-right"></i>
     <% end %>
     
-    <%= link_to edit_workspace_path(workspace), class: "btn-icon", title: "Edit Workspace" do %>
+    <%= link_to edit_workspace_path(workspace), data: { turbo_frame: "remote_modal" }, class: "btn-icon", title: "Edit Workspace" do %>
       <i class="fa-solid fa-pen"></i>
     <% end %>
     

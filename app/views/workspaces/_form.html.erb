@@ -1,32 +1,30 @@
-<%= form_with model: workspace, class: "space-y-5" do |form| %>
+<%= form_with model: workspace, class: "flex flex-col gap-6 mt-4" do |form| %>
   <div>
-    <%= form.label :name, class: "block text-sm font-medium text-gray-700" %>
-    <%= form.text_field :name, required: true, class: "mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none" %>
+    <%= form.label :name, class: "card-meta-label block mb-1.5" %>
+    <%= form.text_field :name, required: true, class: "w-full bg-[#F7F5F1] border border-[#E8E4DD] rounded-lg px-3 py-2.5 text-[14px] text-[#1A1A1A] placeholder-[#9E9891] focus:outline-none focus:border-[#C8C3BB] focus:bg-white transition-all shadow-sm", placeholder: "e.g., Cansat Project Alpha" %>
     <% workspace.errors.full_messages_for(:name).each do |error_message| %>
-      <p class="mt-1 text-sm text-red-600"><%= error_message %></p>
+      <p class="mt-1.5 text-[12px] text-[#A32D2D] font-medium"><%= error_message %></p>
     <% end %>
   </div>
 
   <div>
-    <%= form.label :description, class: "block text-sm font-medium text-gray-700" %>
-    <%= form.text_area :description, rows: 4, class: "mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none" %>
+    <%= form.label :description, class: "card-meta-label block mb-1.5" %>
+    <%= form.text_area :description, rows: 4, class: "w-full bg-[#F7F5F1] border border-[#E8E4DD] rounded-lg px-3 py-2.5 text-[14px] text-[#1A1A1A] placeholder-[#9E9891] focus:outline-none focus:border-[#C8C3BB] focus:bg-white transition-all shadow-sm resize-none", placeholder: "Brief description of this workspace's purpose..." %>
     <% workspace.errors.full_messages_for(:description).each do |error_message| %>
-      <p class="mt-1 text-sm text-red-600"><%= error_message %></p>
+      <p class="mt-1.5 text-[12px] text-[#A32D2D] font-medium"><%= error_message %></p>
     <% end %>
   </div>
 
-  <div>
-    <label class="inline-flex items-center gap-2">
-      <%= form.check_box :is_public, class: "h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" %>
-      <span class="text-sm text-gray-700">Is Public</span>
-    </label>
+  <div class="flex items-center gap-3 py-1">
+    <%= form.check_box :is_public, class: "h-4 w-4 rounded border-[#E8E4DD] text-[#1A1A1A] focus:ring-[#1A1A1A] transition-colors cursor-pointer" %>
+    <%= form.label :is_public, "Make this workspace public", class: "text-[13px] font-medium text-[#1A1A1A] cursor-pointer" %>
     <% workspace.errors.full_messages_for(:is_public).each do |error_message| %>
-      <p class="mt-1 text-sm text-red-600"><%= error_message %></p>
+      <p class="mt-1.5 text-[12px] text-[#A32D2D] font-medium"><%= error_message %></p>
     <% end %>
   </div>
 
-  <div class="flex items-center gap-3">
-    <%= form.submit class: "bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg px-4 py-2" %>
-    <%= link_to "Cancel", workspaces_path, class: "text-sm text-gray-600 hover:text-gray-800" %>
+  <div class="flex items-center gap-4 pt-5 border-t border-[#E8E4DD] mt-2">
+    <%= form.submit class: "btn-new cursor-pointer border-0" %>
+    <%= button_tag "Cancel", type: "button", onclick: "this.closest('turbo-frame').innerHTML=''", class: "text-[13px] bg-transparent border-0 font-medium text-[#6B6560] hover:text-[#1A1A1A] transition-colors cursor-pointer" %>
   </div>
 <% end %>
