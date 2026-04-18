@@ -6,7 +6,8 @@
   .grid-stack-item-content {
     position: absolute;
     inset: 4px;
-    overflow: hidden;
+    overflow: auto;
+    touch-action: none;
   }
   
   .widget-drag-handle {

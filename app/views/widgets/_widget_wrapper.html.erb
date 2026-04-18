@@ -38,43 +38,4 @@
     </div>
   </div>
 </div>
-<div class="grid-stack-item"
-     gs-x="<%= widget['grid']['x'] %>"
-     gs-y="<%= widget['grid']['y'] %>"
-     gs-w="<%= widget['grid']['w'] %>"
-     gs-h="<%= widget['grid']['h'] %>"
-     gs-id="<%= widget['id'] %>"
-     data-widget-id="<%= widget['id'] %>">
-  <div class="grid-stack-item-content">
-    <div class="card h-full flex flex-col gap-3
-                relative overflow-hidden">
 
-      <%# Drag handle — only visible in edit mode %>
-      <div class="widget-drag-handle absolute top-2
-                  right-2 text-text-muted cursor-grab
-                  hidden edit-mode-only">
-        ⠿
-      </div>
-
-      <%# Delete button — only visible in edit mode %>
-      <button class="absolute top-2 left-2
-                     text-danger text-xs
-                     hidden edit-mode-only"
-              data-action="click->dashboard#removeWidget"
-              data-widget-id="<%= widget['id'] %>">
-        ✕
-      </button>
-
-      <%# Widget label %>
-      <p class="section-label pt-1">
-        <%= widget['label'] %>
-      </p>
-
-      <%# Widget content — yielded %>
-      <div class="flex-1 min-h-0">
-        <%= yield %>
-      </div>
-
-    </div>
-  </div>
-</div>

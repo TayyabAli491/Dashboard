@@ -13,7 +13,10 @@ export default class extends Controller {
     setTimeout(() => this.initGrid(), 50)
     this.element.addEventListener(
       "widget-form:add",
-      (e) => this.addWidget(e)
+      (e) => {
+        console.log("Dashboard received widget-form:add event:", e.detail)
+        this.addWidget(e)
+      }
     )
     this.element.addEventListener(
       "dashboard:remove-widget",
@@ -29,16 +32,22 @@ export default class extends Controller {
       cellHeight:  80,
       margin:      8,
       animate:     true,
-      draggable:   { handle: ".widget-drag-handle", scroll: false },
+      handle:      ".widget-drag-handle",
       resizable:   { handles: "se" },
-      staticGrid:  true,
-      float:       false
+      float:       false,
+      disableDrag:   true,
+      disableResize: true
     }, gridEl)
 
     console.log("GridStack initialized:", gridEl.gridstack)
+    console.log("GridStack engine nodes:", this.grid.engine.nodes.length)
 
     this.grid.on("change", () => {
       if (this.editModeValue) this.saveLayout()
+    })
+
+    this.grid.on("dragstart", (event, el) => {
+      console.log("GridStack dragstart:", el)
     })
   }
 
@@ -58,15 +67,23 @@ export default class extends Controller {
       return
     }
 
+    console.log("toggleEditMode:", this.editModeValue, "nodes:", grid.engine.nodes.length)
+
     if (this.editModeValue) {
-      grid.setStatic(false)
+      grid.enableMove(true)
+      grid.enableResize(true)
+      grid.getGridItems().forEach(item => {
+        grid.movable(item, true)
+        grid.resizable(item, true)
+      })
       this.editBarTarget.classList.remove("hidden")
       this.editBarTarget.classList.add("flex")
       this.gridTarget
         .querySelectorAll(".edit-mode-only")
         .forEach(el => el.classList.remove("hidden"))
     } else {
-      grid.setStatic(true)
+      grid.enableMove(false)
+      grid.enableResize(false)
       this.editBarTarget.classList.add("hidden")
       this.editBarTarget.classList.remove("flex")
       this.gridTarget
@@ -79,6 +96,11 @@ export default class extends Controller {
   openWidgetPanel() {
     this.addWidgetPanelTarget.classList.remove("hidden")
     this.addWidgetPanelTarget.classList.add("flex")
+    
+    // Auto-enable edit mode when opening the widget panel
+    if (!this.editModeValue) {
+      this.toggleEditMode()
+    }
   }
 
   closeWidgetPanel() {
@@ -159,6 +181,13 @@ export default class extends Controller {
       </div>`
 
     grid.makeWidget(el)
+    console.log("Widget added:", widget.id, "editMode:", this.editModeValue)
+
+    // Re-enable dragging for the newly added widget if in edit mode
+    if (this.editModeValue) {
+      grid.enableMove(true)
+      grid.enableResize(true)
+    }
     this.saveLayout()
   }
 
