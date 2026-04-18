@@ -1,0 +1,52 @@
+<div class="flex flex-col gap-6">
+
+  <%# Dashboard topbar %>
+  <div class="flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <h1 class="page-title"><%= @workspace.name %></h1>
+      <% if @active_session %>
+        <span class="badge-success">
+          <span class="status-dot status-dot-live"></span>
+          <%= @active_session.name %>
+        </span>
+      <% else %>
+        <span class="badge-neutral">No active session</span>
+      <% end %>
+    </div>
+
+    <div class="flex items-center gap-3">
+      <%= link_to 'Sessions',
+            workspace_sessions_path(@workspace),
+            class: 'btn-ghost' %>
+      <%= link_to 'Setup',
+            setup_workspace_path(@workspace),
+            class: 'btn-ghost' %>
+      <button class="btn-primary"
+              data-action="click->dashboard#toggleEditMode">
+        Edit Layout
+      </button>
+    </div>
+  </div>
+
+  <%# Widget grid placeholder %>
+  <div class="grid grid-cols-1 gap-4" 
+       id="widget-grid"
+       data-controller="dashboard"
+       data-dashboard-workspace-id-value="<%= @workspace.id %>">
+
+    <% if @workspace.dashboard_layout.blank? %>
+      <div class="card flex flex-col items-center 
+                  justify-center gap-4 py-16">
+        <p class="text-text-secondary text-base">
+          No widgets yet
+        </p>
+        <button class="btn-primary"
+                data-action="click->dashboard#openWidgetPanel">
+          Add your first widget
+        </button>
+      </div>
+    <% end %>
+
+  </div>
+
+</div>

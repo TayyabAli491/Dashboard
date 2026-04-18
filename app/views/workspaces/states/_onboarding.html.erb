@@ -1,0 +1,81 @@
+<div class="flex flex-col items-center justify-center 
+            min-h-[60vh] gap-8">
+
+  <div class="text-center">
+    <h1 class="page-title">
+      Welcome to <%= @workspace.name %>
+    </h1>
+    <p class="page-subtitle mt-2">
+      Complete these steps to start receiving live data
+    </p>
+  </div>
+
+  <div class="card w-full max-w-lg flex flex-col gap-4">
+
+    <%# Step 1 — always incomplete here %>
+    <div class="flex items-center gap-4 p-4 
+                rounded-lg bg-glass-subtle 
+                border border-primary">
+      <div class="w-8 h-8 rounded-full bg-primary 
+                  flex items-center justify-center 
+                  text-text-primary text-sm font-semibold 
+                  shadow-glow flex-shrink-0">
+        1
+      </div>
+      <div class="flex-1">
+        <p class="text-text-primary font-medium text-base">
+          Define your payload schema
+        </p>
+        <p class="text-text-muted text-sm">
+          Tell Drift what fields your device will send
+        </p>
+      </div>
+      <%= link_to 'Start', 
+            edit_workspace_payload_schema_path(@workspace),
+            class: 'btn-primary' %>
+    </div>
+
+    <%# Step 2 — locked %>
+    <div class="flex items-center gap-4 p-4 
+                rounded-lg bg-glass-subtle 
+                border border-border opacity-40">
+      <div class="w-8 h-8 rounded-full bg-glass 
+                  border border-border
+                  flex items-center justify-center 
+                  text-text-muted text-sm font-semibold 
+                  flex-shrink-0">
+        2
+      </div>
+      <div class="flex-1">
+        <p class="text-text-secondary font-medium text-base">
+          Connect your device
+        </p>
+        <p class="text-text-muted text-sm">
+          Get your API key and endpoint URL
+        </p>
+      </div>
+    </div>
+
+    <%# Step 3 — locked %>
+    <div class="flex items-center gap-4 p-4 
+                rounded-lg bg-glass-subtle 
+                border border-border opacity-40">
+      <div class="w-8 h-8 rounded-full bg-glass 
+                  border border-border
+                  flex items-center justify-center 
+                  text-text-muted text-sm font-semibold 
+                  flex-shrink-0">
+        3
+      </div>
+      <div class="flex-1">
+        <p class="text-text-secondary font-medium text-base">
+          Start your first session
+        </p>
+        <p class="text-text-muted text-sm">
+          Group your data into named collection windows
+        </p>
+      </div>
+    </div>
+
+  </div>
+</div>
