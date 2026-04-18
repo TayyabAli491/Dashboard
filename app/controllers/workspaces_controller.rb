@@ -6,7 +6,10 @@ class WorkspacesController < ApplicationController
     @workspaces = current_user.workspaces.order(created_at: :desc)
   end
 
-  def show; end
+  def show
+    @recent_telemetry_record = @workspace.telemetry_records.most_recent_first.first
+    @active_session = @workspace.sessions.in_progress.first
+  end
 
   def new
     @workspace = current_user.workspaces.new
