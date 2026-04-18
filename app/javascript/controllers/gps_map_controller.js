@@ -1,6 +1,6 @@
 import { Controller } from "@hotwired/stimulus"
-import consumer from "../channels/consumer"
-import L from "leaflet"
+// import consumer from "../channels/consumer"
+// import L from "leaflet"
 
 export default class extends Controller {
   static values = {
@@ -9,42 +9,42 @@ export default class extends Controller {
   }
 
   connect() {
-    this.pathCoordinates = []
+    // this.pathCoordinates = []
 
-    this.map = L.map(this.element, {
-      center: [30.3753, 69.3451],
-      zoom: 13,
-      zoomControl: true,
-      attributionControl: false
-    })
+    // this.map = L.map(this.element, {
+    //   center: [30.3753, 69.3451],
+    //   zoom: 13,
+    //   zoomControl: true,
+    //   attributionControl: false
+    // })
 
-    L.tileLayer(
-      "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
-      { maxZoom: 19 }
-    ).addTo(this.map)
+    // L.tileLayer(
+    //   "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
+    //   { maxZoom: 19 }
+    // ).addTo(this.map)
 
-    this.marker = L.circleMarker([30.3753, 69.3451], {
-      radius: 8,
-      fillColor: "#6366F1",
-      color: "#fff",
-      weight: 2,
-      opacity: 1,
-      fillOpacity: 1
-    }).addTo(this.map)
+    // this.marker = L.circleMarker([30.3753, 69.3451], {
+    //   radius: 8,
+    //   fillColor: "#6366F1",
+    //   color: "#fff",
+    //   weight: 2,
+    //   opacity: 1,
+    //   fillOpacity: 1
+    // }).addTo(this.map)
 
-    this.path = L.polyline([], {
-      color: "#6366F1",
-      weight: 2,
-      opacity: 0.6
-    }).addTo(this.map)
+    // this.path = L.polyline([], {
+    //   color: "#6366F1",
+    //   weight: 2,
+    //   opacity: 0.6
+    // }).addTo(this.map)
 
-    this.subscription = consumer.subscriptions.create(
-      {
-        channel: "WorkspaceTelemetryChannel",
-        workspace_id: this.workspaceIdValue
-      },
-      { received: (data) => this.handlePacket(data) }
-    )
+    // this.subscription = consumer.subscriptions.create(
+    //   {
+    //     channel: "WorkspaceTelemetryChannel",
+    //     workspace_id: this.workspaceIdValue
+    //   },
+    //   { received: (data) => this.handlePacket(data) }
+    // )
   }
 
   disconnect() {

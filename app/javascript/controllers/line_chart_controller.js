@@ -1,6 +1,6 @@
 import { Controller } from "@hotwired/stimulus"
-import consumer from "../channels/consumer"
-import Chart from "chart.js"
+// import consumer from "../channels/consumer"
+// import Chart from "chart.js"
 
 const COLOR_MAP = {
   primary: { line: "#6366F1", fill: "rgba(99,102,241,0.08)" },
@@ -20,54 +20,54 @@ export default class extends Controller {
   }
 
   connect() {
-    this.chart = new Chart(this.element, {
-      type: "line",
-      data: {
-        labels: [],
-        datasets: this.fieldsValue.map((field, i) => {
-          const colors = Object.values(COLOR_MAP)
-          const c = colors[i % colors.length]
-          return {
-            label: field,
-            data: [],
-            borderColor: c.line,
-            backgroundColor: c.fill,
-            fill: true,
-            tension: 0.4,
-            pointRadius: 0,
-            borderWidth: 2
-          }
-        })
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        animation: { duration: 300 },
-        scales: {
-          x: {
-            ticks: { color: "#475569", maxTicksLimit: 6 },
-            grid: { color: "rgba(255,255,255,0.04)" }
-          },
-          y: {
-            ticks: { color: "#475569" },
-            grid: { color: "rgba(255,255,255,0.04)" }
-          }
-        },
-        plugins: {
-          legend: {
-            labels: { color: "#94A3B8", boxWidth: 12 }
-          }
-        }
-      }
-    })
+    // this.chart = new Chart(this.element, {
+    //   type: "line",
+    //   data: {
+    //     labels: [],
+    //     datasets: this.fieldsValue.map((field, i) => {
+    //       const colors = Object.values(COLOR_MAP)
+    //       const c = colors[i % colors.length]
+    //       return {
+    //         label: field,
+    //         data: [],
+    //         borderColor: c.line,
+    //         backgroundColor: c.fill,
+    //         fill: true,
+    //         tension: 0.4,
+    //         pointRadius: 0,
+    //         borderWidth: 2
+    //       }
+    //     })
+    //   },
+    //   options: {
+    //     responsive: true,
+    //     maintainAspectRatio: false,
+    //     animation: { duration: 300 },
+    //     scales: {
+    //       x: {
+    //         ticks: { color: "#475569", maxTicksLimit: 6 },
+    //         grid: { color: "rgba(255,255,255,0.04)" }
+    //       },
+    //       y: {
+    //         ticks: { color: "#475569" },
+    //         grid: { color: "rgba(255,255,255,0.04)" }
+    //       }
+    //     },
+    //     plugins: {
+    //       legend: {
+    //         labels: { color: "#94A3B8", boxWidth: 12 }
+    //       }
+    //     }
+    //   }
+    // })
 
-    this.subscription = consumer.subscriptions.create(
-      {
-        channel: "WorkspaceTelemetryChannel",
-        workspace_id: this.workspaceIdValue
-      },
-      { received: (data) => this.handlePacket(data) }
-    )
+    // this.subscription = consumer.subscriptions.create(
+    //   {
+    //     channel: "WorkspaceTelemetryChannel",
+    //     workspace_id: this.workspaceIdValue
+    //   },
+    //   { received: (data) => this.handlePacket(data) }
+    // )
   }
 
   disconnect() {

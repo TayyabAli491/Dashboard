@@ -1,5 +1,5 @@
 import { Controller } from "@hotwired/stimulus"
-import { GridStack } from "gridstack"
+// import { GridStack } from "gridstack"
 
 export default class extends Controller {
   static targets = [
@@ -15,24 +15,24 @@ export default class extends Controller {
   }
 
   connect() {
-    this.grid = GridStack.init({
-      column: 12,
-      cellHeight: 80,
-      margin: 12,
-      animate: true,
-      draggable: { handle: ".widget-drag-handle" },
-      resizable: { handles: "se" },
-      staticGrid: true
-    }, this.gridTarget)
+    // this.grid = GridStack.init({
+    //   column: 12,
+    //   cellHeight: 80,
+    //   margin: 12,
+    //   animate: true,
+    //   draggable: { handle: ".widget-drag-handle" },
+    //   resizable: { handles: "se" },
+    //   staticGrid: true
+    // }, this.gridTarget)
 
-    this.grid.on("change", () => {
-      if (this.editModeValue) this.saveLayout()
-    })
+    // this.grid.on("change", () => {
+    //   if (this.editModeValue) this.saveLayout()
+    // })
 
-    this.element.addEventListener(
-      "widget-form:add",
-      (e) => this.addWidget(e)
-    )
+    // this.element.addEventListener(
+    //   "widget-form:add",
+    //   (e) => this.addWidget(e)
+    // )
   }
 
   disconnect() {

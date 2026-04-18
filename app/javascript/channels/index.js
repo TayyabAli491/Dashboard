@@ -1,1 +1,1 @@
-import "./consumer"
+// import "./consumer"

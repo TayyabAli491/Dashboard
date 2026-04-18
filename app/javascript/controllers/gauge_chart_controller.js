@@ -1,6 +1,6 @@
 import { Controller } from "@hotwired/stimulus"
-import consumer from "../channels/consumer"
-import Chart from "chart.js"
+// import consumer from "../channels/consumer"
+// import Chart from "chart.js"
 
 const COLOR_MAP = {
   primary: "#6366F1",
@@ -21,38 +21,38 @@ export default class extends Controller {
   }
 
   connect() {
-    const accent = COLOR_MAP[this.colorValue] || 
-                   COLOR_MAP.primary
+    // const accent = COLOR_MAP[this.colorValue] || 
+    //                COLOR_MAP.primary
 
-    this.chart = new Chart(this.element, {
-      type: "doughnut",
-      data: {
-        datasets: [{
-          data: [0, this.maxValue],
-          backgroundColor: [
-            accent,
-            "rgba(255,255,255,0.05)"
-          ],
-          borderWidth: 0,
-          circumference: 180,
-          rotation: 270
-        }]
-      },
-      options: {
-        responsive: false,
-        cutout: "75%",
-        plugins: { legend: { display: false } },
-        animation: { duration: 400 }
-      }
-    })
+    // this.chart = new Chart(this.element, {
+    //   type: "doughnut",
+    //   data: {
+    //     datasets: [{
+    //       data: [0, this.maxValue],
+    //       backgroundColor: [
+    //         accent,
+    //         "rgba(255,255,255,0.05)"
+    //       ],
+    //       borderWidth: 0,
+    //       circumference: 180,
+    //       rotation: 270
+    //     }]
+    //   },
+    //   options: {
+    //     responsive: false,
+    //     cutout: "75%",
+    //     plugins: { legend: { display: false } },
+    //     animation: { duration: 400 }
+    //   }
+    // })
 
-    this.subscription = consumer.subscriptions.create(
-      {
-        channel: "WorkspaceTelemetryChannel",
-        workspace_id: this.workspaceIdValue
-      },
-      { received: (data) => this.handlePacket(data) }
-    )
+    // this.subscription = consumer.subscriptions.create(
+    //   {
+    //     channel: "WorkspaceTelemetryChannel",
+    //     workspace_id: this.workspaceIdValue
+    //   },
+    //   { received: (data) => this.handlePacket(data) }
+    // )
   }
 
   disconnect() {
