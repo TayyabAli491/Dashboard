@@ -14,6 +14,28 @@
 
 <div class="flex-1 overflow-y-auto p-5 space-y-7" data-controller="widget-form">
   
+  <%# Theme Selector %>
+  <div>
+    <div class="nav-label ml-0 pl-1 mb-3">Canvas Theme</div>
+    <div class="grid grid-cols-2 gap-3">
+      <%# Hidden input for video local upload %>
+      <input type="file" accept="video/*" class="hidden" data-canvas-theme-target="fileInput" data-action="change->canvas-theme#handleVideoSelect">
+      
+      <button class="widget-btn border-[#1A1A1A] bg-[#F7F5F1]" data-canvas-theme-target="blueprintBtn" data-action="click->canvas-theme#selectBlueprint">
+        <div class="widget-btn-icon"><i class="fa-solid fa-border-none"></i></div>
+        <span class="widget-btn-name">Blueprint</span>
+        <span class="widget-btn-desc">Dots</span>
+      </button>
+      
+      <button class="widget-btn" data-canvas-theme-target="videoBtn" data-action="click->canvas-theme#triggerVideoUpload">
+        <div class="widget-btn-icon"><i class="fa-solid fa-video"></i></div>
+        <span class="widget-btn-name">Live Feed</span>
+        <span class="widget-btn-desc">Upload file</span>
+      </button>
+    </div>
+  </div>
+
+  <%# Data Display Widgets %>
   <div>
     <div class="nav-label ml-0 pl-1 mb-3">Data Display</div>
     <div class="grid grid-cols-2 gap-3">
