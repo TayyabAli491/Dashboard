@@ -1,0 +1,18 @@
+<%= render "widgets/widget_wrapper", widget: widget do %>
+  <div class="flex flex-col justify-center h-full gap-1"
+       data-controller="value-card"
+       data-value-card-field-value="<%= widget['fields']&.first || widget['field'] %>"
+       data-value-card-workspace-id-value="<%= workspace.id %>"
+       data-value-card-color-value="<%= widget['color'] || 'primary' %>">
+    <p class="text-4xl font-semibold text-text-primary"
+       data-value-card-target="value">
+      --
+    </p>
+    <p class="text-text-muted text-sm"
+       data-value-card-target="unit">
+    </p>
+    <p class="text-sm"
+       data-value-card-target="trend">
+    </p>
+  </div>
+<% end %>

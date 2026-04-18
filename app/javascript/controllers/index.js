@@ -3,10 +3,16 @@ import { eagerLoadControllersFrom } from "@hotwired/stimulus-loading"
 import AutoRefreshController from "controllers/auto_refresh_controller"
 import DashboardController from "controllers/dashboard_controller"
 import WidgetFormController from "controllers/widget_form_controller"
+import ValueCardController from "controllers/value_card_controller"
+import LineChartController from "controllers/line_chart_controller"
+import GaugeChartController from "controllers/gauge_chart_controller"
 
 unlessAutoRefreshRegistered()
 unlessDashboardRegistered()
 unlessWidgetFormRegistered()
+unlessValueCardRegistered()
+unlessLineChartRegistered()
+unlessGaugeChartRegistered()
 
 eagerLoadControllersFrom("controllers", application)
 
@@ -26,4 +32,22 @@ function unlessWidgetFormRegistered() {
   if (application.router.modulesByIdentifier.has("widget-form")) return
 
   application.register("widget-form", WidgetFormController)
+}
+
+function unlessValueCardRegistered() {
+  if (application.router.modulesByIdentifier.has("value-card")) return
+
+  application.register("value-card", ValueCardController)
+}
+
+function unlessLineChartRegistered() {
+  if (application.router.modulesByIdentifier.has("line-chart")) return
+
+  application.register("line-chart", LineChartController)
+}
+
+function unlessGaugeChartRegistered() {
+  if (application.router.modulesByIdentifier.has("gauge-chart")) return
+
+  application.register("gauge-chart", GaugeChartController)
 }

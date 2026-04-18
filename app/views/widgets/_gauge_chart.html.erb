@@ -1,0 +1,18 @@
+<%= render "widgets/widget_wrapper", widget: widget do %>
+  <div class="relative h-full flex flex-col 
+              items-center justify-center">
+    <canvas data-controller="gauge-chart"
+            data-gauge-chart-field-value="<%= widget['fields']&.first || widget['field'] %>"
+            data-gauge-chart-workspace-id-value="<%= workspace.id %>"
+            data-gauge-chart-min-value="<%= widget['min'] || 0 %>"
+            data-gauge-chart-max-value="<%= widget['max'] || 100 %>"
+            data-gauge-chart-color-value="<%= widget['color'] || 'primary' %>"
+            width="200" height="120">
+    </canvas>
+    <p class="text-2xl font-semibold text-text-primary 
+              absolute bottom-8"
+       data-gauge-target="readout">
+      --
+    </p>
+  </div>
+<% end %>

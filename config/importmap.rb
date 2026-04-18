@@ -6,3 +6,5 @@ pin_all_from "app/javascript/controllers", under: "controllers"
 pin_all_from "app/javascript/channels", under: "channels"
 pin "gridstack",
   to: "https://cdn.jsdelivr.net/npm/gridstack@10.3.1/dist/gridstack-all.js"
+pin "chart.js",
+  to: "https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"
