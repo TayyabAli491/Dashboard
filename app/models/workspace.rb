@@ -27,6 +27,18 @@ class Workspace < ApplicationRecord
     payload_schema.present? && payload_schema.fields.count.positive?
   end
 
+  def setup_complete?
+    payload_schema_defined? && telemetry_records.exists?
+  end
+
+  def awaiting_first_data?
+    payload_schema_defined? && !telemetry_records.exists?
+  end
+
+  def schema_missing?
+    !payload_schema_defined?
+  end
+
   private
 
   def generate_unique_api_key
