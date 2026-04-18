@@ -3,12 +3,12 @@
     <div>
       <div class="flex items-center justify-between mb-3">
         <div class="card-meta-label">STATUS</div>
-        <div class="w-2 h-2 rounded-full <%= session.session_active? ? 'bg-green-500 animate-pulse' : 'bg-[#B5B0A8]' %>"></div>
+        <div class="w-2 h-2 rounded-full <%= session.in_progress? ? 'bg-green-500 animate-pulse' : 'bg-[#B5B0A8]' %>"></div>
       </div>
       <div class="text-[18px] font-bold text-[#1A1A1A]">
-        <% if session.session_active? %>
+        <% if session.in_progress? %>
           <span class="text-green-600">Active Monitor</span>
-        <% elsif session.session_completed? %>
+        <% elsif session.completed? %>
           <span class="text-[#6B6560]">Completed</span>
         <% else %>
           <span class="text-[#854F0B]">Pending Start</span>
