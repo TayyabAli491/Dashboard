@@ -45,7 +45,7 @@
       </div>
       
       <% if @workspace.parsed_dashboard_widgets.empty? %>
-        <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none z-10 animate-fade-in">
+        <div class="empty-state-overlay absolute inset-0 flex flex-col items-center justify-center pointer-events-none z-10 animate-fade-in">
           <div class="w-16 h-16 rounded-2xl bg-white flex items-center justify-center mb-5 border border-[#E8E4DD] shadow-[0_8px_20px_rgba(26,26,26,0.05)]">
             <i class="fa-solid fa-border-all text-2xl text-[#1A1A1A]"></i>
           </div>

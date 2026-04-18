@@ -63,7 +63,7 @@ export default class extends Controller {
     `
     
     // Fade out the empty state overlay
-    const emptyState = this.element.querySelector('.absolute.inset-0')
+    const emptyState = this.element.querySelector('.empty-state-overlay')
     if (emptyState) {
       emptyState.style.opacity = '0'
       // Option: hide after fade
@@ -84,7 +84,7 @@ export default class extends Controller {
     
     // Check if empty and restore empty state
     if (this.grid.engine.nodes.length === 0) {
-      const emptyState = this.element.querySelector('.absolute.inset-0')
+      const emptyState = this.element.querySelector('.empty-state-overlay')
       if (emptyState) {
         emptyState.style.display = 'flex'
         setTimeout(() => emptyState.style.opacity = '1', 50)
