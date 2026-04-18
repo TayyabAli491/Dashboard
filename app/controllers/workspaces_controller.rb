@@ -1,6 +1,6 @@
 class WorkspacesController < ApplicationController
   before_action :authenticate_user!
-  before_action :find_workspace_belonging_to_current_user, only: %i[show edit update destroy]
+  before_action :find_workspace_belonging_to_current_user, only: %i[show edit update setup destroy]
 
   def index
     @workspaces = current_user.workspaces.order(created_at: :desc)
