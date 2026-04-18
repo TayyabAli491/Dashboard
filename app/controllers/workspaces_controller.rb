@@ -1,6 +1,6 @@
 class WorkspacesController < ApplicationController
   before_action :authenticate_user!
-  before_action :find_workspace_belonging_to_current_user, only: %i[show edit update setup destroy]
+  before_action :find_workspace_belonging_to_current_user, only: %i[show edit update setup save_layout destroy]
 
   def index
     @workspaces = current_user.workspaces.order(created_at: :desc)
@@ -52,6 +52,14 @@ class WorkspacesController < ApplicationController
     redirect_to workspaces_path, notice: "Workspace deleted successfully."
   end
 
+  def save_layout
+    if @workspace.update(dashboard_layout_params)
+      head :ok
+    else
+      head :unprocessable_entity
+    end
+  end
+
   private
 
   def find_workspace_belonging_to_current_user
@@ -60,5 +68,11 @@ class WorkspacesController < ApplicationController
 
   def workspace_form_params
     params.require(:workspace).permit(:name, :description, :is_public)
+  end
+
+  def dashboard_layout_params
+    params.require(:workspace).permit(
+      dashboard_layout: {}
+    )
   end
 end

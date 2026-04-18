@@ -15,6 +15,7 @@ Rails.application.routes.draw do
   resources :workspaces do
     member do
       get :setup
+      patch :save_layout, on: :member
     end
     resource :payload_schema, only: %i[edit update]
     resources :telemetry_records, only: :index

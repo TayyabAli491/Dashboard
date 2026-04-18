@@ -39,6 +39,11 @@ class Workspace < ApplicationRecord
     !payload_schema_defined?
   end
 
+  def parsed_dashboard_widgets
+    return [] if dashboard_layout.blank?
+    dashboard_layout.is_a?(Array) ? dashboard_layout : []
+  end
+
   private
 
   def generate_unique_api_key
