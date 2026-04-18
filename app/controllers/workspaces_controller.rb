@@ -11,6 +11,8 @@ class WorkspacesController < ApplicationController
     @active_session = @workspace.sessions.in_progress.first
   end
 
+  def setup; end
+
   def new
     @workspace = current_user.workspaces.new
   end
