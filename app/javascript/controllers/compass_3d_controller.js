@@ -1,5 +1,5 @@
 import { Controller } from "@hotwired/stimulus"
-// import consumer from "../channels/consumer"
+import consumer from "channels/consumer"
 import * as THREE from "three"
 
 export default class extends Controller {
@@ -7,12 +7,12 @@ export default class extends Controller {
   static values  = { workspaceId: Number }
 
   connect() {
-    // this.targetHeading = 0
-    // this.currentHeading = 0
-    // this.setupScene()
-    // this.setupCompass()
-    // this.startAnimationLoop()
-    // this.subscribeToChannel()
+    this.targetHeading = 0
+    this.currentHeading = 0
+    this.setupScene()
+    this.setupCompass()
+    this.startAnimationLoop()
+    this.subscribeToChannel()
   }
 
   disconnect() {

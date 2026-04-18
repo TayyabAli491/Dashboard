@@ -57,7 +57,7 @@
 
   <%# Widget grid %>
   <div class="grid-stack"
-       data-dashboard-target="grid">
+       data-dashboard-target="grid" id="widget-grid">
     <% @workspace.parsed_dashboard_widgets.each do |widget| %>
       <%= render "widgets/#{widget['type'].underscore}",
             widget: widget,

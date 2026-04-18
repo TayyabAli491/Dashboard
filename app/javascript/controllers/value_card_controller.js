@@ -1,5 +1,5 @@
 import { Controller } from "@hotwired/stimulus"
-// import consumer from "../channels/consumer"
+import consumer from "channels/consumer"
 
 export default class extends Controller {
   static targets = ["value", "unit", "trend"]
@@ -10,18 +10,18 @@ export default class extends Controller {
   }
 
   connect() {
-    // this.previousValue = null
-    // this.subscription = consumer.subscriptions.create(
-    //   {
-    //     channel: "WorkspaceTelemetryChannel",
-    //     workspace_id: this.workspaceIdValue
-    //   },
-    //   { received: (data) => this.handlePacket(data) }
-    // )
+    this.previousValue = null
+    this.subscription = consumer.subscriptions.create(
+      {
+        channel: "WorkspaceTelemetryChannel",
+        workspace_id: this.workspaceIdValue
+      },
+      { received: (data) => this.handlePacket(data) }
+    )
   }
 
   disconnect() {
-    // this.subscription?.unsubscribe()
+    this.subscription?.unsubscribe()
   }
 
   handlePacket(data) {

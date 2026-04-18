@@ -1,0 +1,19 @@
+.grid-stack {
+    min-height: 400px;
+    width: 100%;
+  }
+  
+  .grid-stack-item-content {
+    position: absolute;
+    inset: 4px;
+    overflow: hidden;
+  }
+  
+  .widget-drag-handle {
+    cursor: grab;
+  }
+  
+  .widget-drag-handle:active {
+    cursor: grabbing;
+  }
+  
