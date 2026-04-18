@@ -1,7 +1,13 @@
-<% if @workspace.schema_missing? %>
-  <%= render "workspaces/states/onboarding" %>
-<% elsif @workspace.awaiting_first_data? %>
-  <%= render "workspaces/states/awaiting_data" %>
-<% else %>
-  <%= render "workspaces/states/live_dashboard" %>
-<% end %>
+<div class="page-wrap">
+  <%= render "shared/nav" %>
+
+  <main class="main-content">
+    <% if @workspace.schema_missing? %>
+      <%= render "workspaces/states/onboarding" %>
+    <% elsif @workspace.awaiting_first_data? %>
+      <%= render "workspaces/states/awaiting_data" %>
+    <% else %>
+      <%= render "workspaces/states/dashboard_designer" %>
+    <% end %>
+  </main>
+</div>

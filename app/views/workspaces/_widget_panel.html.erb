@@ -1,4 +1,53 @@
-<!-- Widget panel cleared for step-by-step rebuild -->
-<div class="p-4 text-text-muted">
-  Widget panel skeleton
+<div class="designer-sidebar-header">
+  <div class="flex items-center gap-2">
+    <i class="fa-solid fa-shapes text-[#6B6560] text-sm"></i>
+    <span class="designer-sidebar-title">Widget Library</span>
+  </div>
+</div>
+
+<div class="p-4 border-b border-[#E8E4DD] bg-[#F7F5F1]">
+  <div class="auth-input-wrap">
+    <i class="fa-solid fa-search auth-input-icon"></i>
+    <input type="text" placeholder="Search widgets..." class="auth-input auth-input-with-icon border-transparent bg-white shadow-sm focus:border-[#1A1A1A]">
+  </div>
+</div>
+
+<div class="flex-1 overflow-y-auto p-5 space-y-7">
+  
+  <div>
+    <div class="nav-label ml-0 pl-1 mb-3">Data Display</div>
+    <div class="grid grid-cols-2 gap-3">
+      <% [
+          { icon: "fa-font", label: "Value Card", desc: "Single metric" },
+          { icon: "fa-chart-line", label: "Line Chart", desc: "Time series" },
+          { icon: "fa-gauge-high", label: "Gauge", desc: "Current value" },
+          { icon: "fa-chart-column", label: "Bar Chart", desc: "Comparisons" }
+      ].each do |wt| %>
+        <button class="widget-btn">
+          <div class="widget-btn-icon"><i class="fa-solid <%= wt[:icon] %>"></i></div>
+          <span class="widget-btn-name"><%= wt[:label] %></span>
+          <span class="widget-btn-desc"><%= wt[:desc] %></span>
+        </button>
+      <% end %>
+    </div>
+  </div>
+
+  <div>
+    <div class="nav-label ml-0 pl-1 mb-3">Telemetry</div>
+    <div class="grid grid-cols-2 gap-3">
+      <% [
+          { icon: "fa-map-location-dot", label: "GPS Map", desc: "Live tracking" },
+          { icon: "fa-cube", label: "3D Attitude", desc: "Orientation" },
+          { icon: "fa-compass", label: "Compass", desc: "Heading" },
+          { icon: "fa-bars-staggered", label: "Altitude", desc: "Vertical bar" }
+      ].each do |wt| %>
+        <button class="widget-btn">
+          <div class="widget-btn-icon"><i class="fa-solid <%= wt[:icon] %>"></i></div>
+          <span class="widget-btn-name"><%= wt[:label] %></span>
+          <span class="widget-btn-desc"><%= wt[:desc] %></span>
+        </button>
+      <% end %>
+    </div>
+  </div>
+
 </div>
