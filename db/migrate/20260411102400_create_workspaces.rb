@@ -6,6 +6,7 @@ class CreateWorkspaces < ActiveRecord::Migration[8.1]
       t.text :description
       t.string :api_key, null: false
       t.boolean :is_public, null: false, default: false
+      t.jsonb :dashboard_layout, null: false, default: []
 
       t.timestamps
     end
