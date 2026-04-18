@@ -13,6 +13,9 @@ Rails.application.routes.draw do
   end
 
   resources :workspaces do
+    member do
+      get :setup
+    end
     resource :payload_schema, only: %i[edit update]
     resources :telemetry_records, only: :index
     resources :sessions, shallow: true do
