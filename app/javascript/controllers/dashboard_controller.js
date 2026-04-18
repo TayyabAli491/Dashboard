@@ -28,6 +28,11 @@ export default class extends Controller {
     this.grid.on("change", () => {
       if (this.editModeValue) this.saveLayout()
     })
+
+    this.element.addEventListener(
+      "widget-form:add",
+      (e) => this.addWidget(e)
+    )
   }
 
   disconnect() {
@@ -66,5 +71,24 @@ export default class extends Controller {
         workspace: { dashboard_layout: layout }
       })
     })
+  }
+
+  addWidget({ detail: { widget } }) {
+    const el = document.createElement("div")
+    el.setAttribute("gs-x", widget.grid.x)
+    el.setAttribute("gs-y", widget.grid.y)
+    el.setAttribute("gs-w", widget.grid.w)
+    el.setAttribute("gs-h", widget.grid.h)
+    el.setAttribute("gs-id", widget.id)
+    el.dataset.widgetId = widget.id
+    el.innerHTML = `
+    <div class="grid-stack-item-content">
+      <div class="card h-full flex items-center 
+                  justify-center text-text-secondary">
+        ${widget.label}
+      </div>
+    </div>`
+    this.grid.makeWidget(el)
+    this.saveLayout()
   }
 }
