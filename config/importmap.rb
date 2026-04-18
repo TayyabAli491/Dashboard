@@ -8,3 +8,5 @@ pin "gridstack",
   to: "https://cdn.jsdelivr.net/npm/gridstack@10.3.1/dist/gridstack-all.js"
 pin "chart.js",
   to: "https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"
+pin "leaflet",
+  to: "https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet-src.esm.js"

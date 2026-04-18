@@ -1,0 +1,7 @@
+<%= render "widgets/widget_wrapper", widget: widget do %>
+  <div class="h-full w-full rounded-lg overflow-hidden"
+       data-controller="gps-map"
+       data-gps-map-workspace-id-value="<%= workspace.id %>"
+       data-gps-map-follow-value="true">
+  </div>
+<% end %>

@@ -6,6 +6,7 @@ import WidgetFormController from "controllers/widget_form_controller"
 import ValueCardController from "controllers/value_card_controller"
 import LineChartController from "controllers/line_chart_controller"
 import GaugeChartController from "controllers/gauge_chart_controller"
+import GpsMapController from "controllers/gps_map_controller"
 
 unlessAutoRefreshRegistered()
 unlessDashboardRegistered()
@@ -13,6 +14,7 @@ unlessWidgetFormRegistered()
 unlessValueCardRegistered()
 unlessLineChartRegistered()
 unlessGaugeChartRegistered()
+unlessGpsMapRegistered()
 
 eagerLoadControllersFrom("controllers", application)
 
@@ -50,4 +52,10 @@ function unlessGaugeChartRegistered() {
   if (application.router.modulesByIdentifier.has("gauge-chart")) return
 
   application.register("gauge-chart", GaugeChartController)
+}
+
+function unlessGpsMapRegistered() {
+  if (application.router.modulesByIdentifier.has("gps-map")) return
+
+  application.register("gps-map", GpsMapController)
 }
