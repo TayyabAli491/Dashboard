@@ -13,77 +13,15 @@
           </span>
           <%= @active_session.name %>
         </span>
-      <% else %>q
+      <% else %>
         <span class="badge-neutral">No active session</span>
       <% end %>
     </div>
-
-    <div class="flex items-center gap-3">
-      <%= link_to "Sessions",
-            workspace_sessions_path(@workspace),
-            class: "btn-ghost" %>
-      <%= link_to "Setup",
-            setup_workspace_path(@workspace),
-            class: "btn-ghost" %>
-      <button class="btn-primary"
-              data-action="click->dashboard#toggleEditMode">
-        Edit Layout
-      </button>
-    </div>
   </div>
 
-  <%# Edit mode toolbar — hidden by default %>
-  <div class="hidden items-center justify-between
-              p-3 card border-primary"
-       data-dashboard-target="editBar">
-    <div class="flex items-center gap-2">
-      <span class="status-dot status-dot-warning"></span>
-      <span class="text-text-secondary text-sm">
-        Edit mode — drag to reposition, 
-        resize from corner
-      </span>
-    </div>
-    <div class="flex items-center gap-3">
-      <button class="btn-ghost"
-              data-action="click->dashboard#openWidgetPanel">
-        + Add Widget
-      </button>
-      <button class="btn-primary"
-              data-action="click->dashboard#toggleEditMode">
-        Done
-      </button>
-    </div>
-  </div>
-
-  <%# Widget grid %>
-  <div class="grid-stack"
-       data-dashboard-target="grid" id="widget-grid">
-    <% @workspace.parsed_dashboard_widgets.each do |widget| %>
-      <%= render "widgets/#{widget['type'].underscore}",
-            widget: widget,
-            workspace: @workspace %>
-    <% end %>
-
-    <% if @workspace.parsed_dashboard_widgets.empty? %>
-      <div class="card flex flex-col items-center
-                  justify-center gap-4 py-20 col-span-12">
-        <p class="text-text-secondary text-base">
-          No widgets yet
-        </p>
-        <button class="btn-primary"
-                data-action="click->dashboard#openWidgetPanel">
-          Add your first widget
-        </button>
-      </div>
-    <% end %>
-  </div>
-
-  <%# Add widget panel — hidden by default %>
-  <div class="hidden fixed inset-y-0 right-0 z-50
-              w-80 bg-depth-1 border-l border-border
-              flex-col"
-       data-dashboard-target="addWidgetPanel">
-    <%= render "workspaces/widget_panel" %>
+  <%# Empty grid shell %>
+  <div class="grid-stack mt-8" data-dashboard-target="grid">
+    <!-- Grid elements will go here -->
   </div>
 
 </div>
