@@ -1,0 +1,13 @@
+<%= render "widgets/widget_wrapper", widget: widget do %>
+  <div class="h-full w-full relative">
+    <div class="h-full w-full relative"
+         data-controller="compass-3d"
+         data-compass-3d-workspace-id-value="<%= workspace.id %>">
+      <div class="absolute bottom-2 left-2 mono text-xs
+                  text-text-muted z-10"
+           data-compass-3d-target="heading">
+        HDG: --°
+      </div>
+    </div>
+  </div>
+<% end %>

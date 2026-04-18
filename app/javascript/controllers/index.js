@@ -8,6 +8,7 @@ import LineChartController from "controllers/line_chart_controller"
 import GaugeChartController from "controllers/gauge_chart_controller"
 import GpsMapController from "controllers/gps_map_controller"
 import Attitude3dController from "controllers/attitude_3d_controller"
+import Compass3dController from "controllers/compass_3d_controller"
 
 unlessAutoRefreshRegistered()
 unlessDashboardRegistered()
@@ -17,6 +18,7 @@ unlessLineChartRegistered()
 unlessGaugeChartRegistered()
 unlessGpsMapRegistered()
 unlessAttitude3dRegistered()
+unlessCompass3dRegistered()
 
 eagerLoadControllersFrom("controllers", application)
 
@@ -66,4 +68,10 @@ function unlessAttitude3dRegistered() {
   if (application.router.modulesByIdentifier.has("attitude-3d")) return
 
   application.register("attitude-3d", Attitude3dController)
+}
+
+function unlessCompass3dRegistered() {
+  if (application.router.modulesByIdentifier.has("compass-3d")) return
+
+  application.register("compass-3d", Compass3dController)
 }
