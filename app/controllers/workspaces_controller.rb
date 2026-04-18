@@ -13,7 +13,6 @@ class WorkspacesController < ApplicationController
 
   def live_dashboard
     @active_session = @workspace.sessions.in_progress.first
-    render layout: false
   end
 
   def setup; end
@@ -76,7 +75,11 @@ class WorkspacesController < ApplicationController
   end
 
   def dashboard_layout_params
+    if params.dig(:workspace, :dashboard_layout).is_a?(String)
+      params[:workspace][:dashboard_layout] = JSON.parse(params[:workspace][:dashboard_layout])
+    end
     params.require(:workspace).permit(
+      :dashboard_theme, :background_video,
       dashboard_layout: [ :id, :type, :label, grid: [ :x, :y, :w, :h ] ]
     )
   end

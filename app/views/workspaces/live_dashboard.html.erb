@@ -1,27 +1,33 @@
-<div class="h-screen w-screen bg-[#F7F5F1] relative overflow-hidden" 
+<div class="fixed inset-0 z-[100] bg-[#0B0C10] overflow-hidden flex flex-col font-mono" 
+     style="background-image: radial-gradient(rgba(193, 68, 14, 0.05) 1.5px, transparent 1.5px); background-size: 32px 32px;"
      data-controller="dashboard" 
      data-dashboard-workspace-id-value="<%= @workspace.id %>"
      data-dashboard-edit-mode-value="false">
 
-  <%# Subdued Full Screen Designer Header %>
-  <div class="absolute top-0 left-0 w-full flex justify-between items-center px-8 py-6 z-20 pointer-events-auto">
+  <%# Dynamic Background Layer %>
+  <% if @workspace.dashboard_theme == 'video' && @workspace.background_video.attached? %>
+    <video src="<%= url_for(@workspace.background_video) %>" class="fixed inset-0 w-full h-full object-cover z-0 opacity-40 mix-blend-screen pointer-events-none" autoplay loop muted playsinline></video>
+  <% end %>
+
+  <%# Subdued Full Screen Designer Header - Mars Edition %>
+  <div class="absolute top-0 left-0 w-full flex justify-between items-center px-8 py-6 z-20 pointer-events-auto bg-gradient-to-b from-[#0B0C10] to-transparent">
     <div class="flex items-center gap-4">
-      <h1 class="text-2xl font-bold text-[#1A1A1A]"><%= @workspace.name %></h1>
+      <h1 class="text-2xl font-bold tracking-widest text-[#E5E5E5] uppercase"><%= @workspace.name %> <span class="text-[#C1440E] opacity-70">/// ORBITAL</span></h1>
       <% if @active_session %>
-        <div class="badge badge-ok shadow-sm"><span class="badge-dot"></span> <%= @active_session.name %> (Live)</div>
+        <div class="px-3 py-1 text-xs font-bold text-[#E77D11] border border-[#E77D11] rounded-sm bg-[#E77D11]/10 flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-[#E77D11] animate-pulse"></span> <%= @active_session.name %> (LIVE)</div>
       <% else %>
-        <div class="badge badge-warn shadow-sm"><span class="badge-dot"></span> Offline</div>
+        <div class="px-3 py-1 text-xs font-bold text-[#666] border border-[#444] rounded-sm flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-[#666]"></span> NO UPLINK</div>
       <% end %>
     </div>
     
-    <button onclick="window.close()" class="btn-secondary flex items-center gap-2 shadow-sm">
-      <i class="fa-solid fa-times"></i> Exit Live Mode
+    <button onclick="window.close()" class="px-4 py-2 text-xs font-bold tracking-widest text-[#B5B0A8] border border-[#2A2B30] hover:border-[#C1440E] hover:text-[#C1440E] transition-all bg-[#121318]/80 backdrop-blur-sm rounded-sm cursor-pointer">
+      [ ABORT ]
     </button>
   </div>
 
   <%# Live Grid Configuration %>
-  <div class="pt-24 px-8 pb-8 h-full w-full">
-    <div class="designer-grid-area grid-stack flex-1 w-full h-full relative z-10 transition-all duration-300 !border-0 !bg-transparent !shadow-none !bg-none" data-dashboard-target="grid">
+  <div class="pt-24 px-8 pb-8 h-full w-full relative z-10">
+    <div class="grid-stack flex-1 w-full h-full" data-dashboard-target="grid">
       <% @workspace.parsed_dashboard_widgets.each do |widget| %>
         <div class="grid-stack-item pointer-events-none" 
              gs-x="<%= widget['grid']['x'] %>" 
@@ -29,12 +35,15 @@
              gs-w="<%= widget['grid']['w'] %>" 
              gs-h="<%= widget['grid']['h'] %>">
              
-          <div class="grid-stack-item-content p-4 flex flex-col justify-center items-center bg-white border border-[#E8E4DD] rounded-2xl shadow-[0_8px_20px_rgba(26,26,26,0.06)]">
-            <div class="w-12 h-12 rounded-full bg-[#F7F5F1] flex items-center justify-center mb-3 text-[#1A1A1A]">
-              <i class="fa-solid fa-shapes text-lg"></i>
+          <div class="grid-stack-item-content p-4 flex flex-col justify-center items-center bg-[#121318]/90 backdrop-blur-md border border-[#2A2B30] shadow-[0_0_15px_rgba(193,68,14,0.03)] rounded-lg relative overflow-hidden">
+            <%# Mars Glow Edge Effect %>
+            <div class="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-[#C1440E]/40 to-transparent"></div>
+            
+            <div class="w-12 h-12 rounded bg-[#1A1C23] border border-[#2A2B30] flex items-center justify-center mb-3 text-[#E77D11]">
+              <i class="fa-solid fa-shapes text-lg drop-shadow-[0_0_8px_rgba(231,125,17,0.5)]"></i>
             </div>
-            <div class="font-bold text-lg text-[#1A1A1A]"><%= widget['label'] %></div>
-            <div class="text-[10px] font-semibold text-[#1DA1F2] uppercase tracking-widest mt-2">Awaiting Data</div>
+            <div class="font-bold text-lg text-[#E5E5E5] tracking-wide"><%= widget['label'] %></div>
+            <div class="text-[10px] font-semibold text-[#C1440E] uppercase tracking-[0.2em] mt-2 animate-pulse">Awaiting Signal...</div>
           </div>
         </div>
       <% end %>

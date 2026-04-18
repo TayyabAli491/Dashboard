@@ -6,6 +6,7 @@ class Workspace < ApplicationRecord
   has_one :payload_schema, dependent: :destroy
   has_many :sessions, dependent: :destroy
   has_many :telemetry_records, dependent: :destroy
+  has_one_attached :background_video
 
   scope :belonging_to_user, ->(user) { where(user: user) }
   before_validation :generate_unique_api_key, on: :create

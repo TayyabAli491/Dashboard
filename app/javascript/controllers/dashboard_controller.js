@@ -57,15 +57,22 @@ export default class extends Controller {
     const liveDashboardTab = window.open("", "_blank")
     liveDashboardTab.document.write("<div style='font-family: sans-serif; padding: 2rem;'>Saving your layout...</div>")
 
+    const activeTheme = this.element.dataset.themeSelection || "blueprint"
+    const videoFile = this.element.canvasThemeVideoFile
+
+    const formData = new FormData()
+    formData.append("workspace[dashboard_layout]", JSON.stringify(layout))
+    formData.append("workspace[dashboard_theme]", activeTheme)
+    if (videoFile) {
+      formData.append("workspace[background_video]", videoFile)
+    }
+
     fetch(this.saveUrlValue, {
       method: "PATCH",
       headers: {
-        "Content-Type": "application/json",
         "X-CSRF-Token": document.querySelector('meta[name="csrf-token"]').getAttribute("content")
       },
-      body: JSON.stringify({
-        workspace: { dashboard_layout: layout }
-      })
+      body: formData
     }).then(res => {
       if (res.ok) {
         liveDashboardTab.location.href = window.location.pathname + "/live_dashboard"

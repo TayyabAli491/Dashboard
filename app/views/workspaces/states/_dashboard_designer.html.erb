@@ -33,16 +33,24 @@
 </div>
 
 <%# The Designer Wrap %>
-<div class="designer-wrap flex-1">
+<div class="designer-wrap flex-1"
+     data-theme-selection="<%= @workspace.dashboard_theme || 'blueprint' %>">
   
   <%# Main Grid Area %>
   <div class="designer-main p-6 flex flex-col relative z-0">
     <div class="relative flex-1 w-full flex flex-col rounded-2xl overflow-hidden">
       
       <%# Dynamic Background Layer (Video) behind the grid %>
-      <video data-canvas-theme-target="videoLayer" 
-             class="absolute inset-0 w-full h-full object-cover hidden opacity-0 transition-opacity duration-500 z-0 rounded-2xl pointer-events-none" 
-             autoplay loop muted playsinline></video>
+      <% if @workspace.dashboard_theme == 'video' && @workspace.background_video.attached? %>
+        <video data-canvas-theme-target="videoLayer" 
+               src="<%= url_for(@workspace.background_video) %>"
+               class="absolute inset-0 w-full h-full object-cover opacity-100 transition-opacity duration-500 z-0 rounded-2xl pointer-events-none" 
+               autoplay loop muted playsinline></video>
+      <% else %>
+        <video data-canvas-theme-target="videoLayer" 
+               class="absolute inset-0 w-full h-full object-cover hidden opacity-0 transition-opacity duration-500 z-0 rounded-2xl pointer-events-none" 
+               autoplay loop muted playsinline></video>
+      <% end %>
 
       <%# Transparent grid wrapper (z-index ensures it sits above video) %>
       <div class="designer-grid-area grid-stack flex-1 relative z-10 transition-all duration-300" data-dashboard-target="grid" data-canvas-theme-target="gridArea">

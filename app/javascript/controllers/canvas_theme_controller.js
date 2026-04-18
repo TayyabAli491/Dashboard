@@ -14,6 +14,9 @@ export default class extends Controller {
   }
 
   selectBlueprint() {
+    this.element.dataset.themeSelection = "blueprint"
+    this.element.canvasThemeVideoFile = null
+
     // UI toggle
     this.blueprintBtnTarget.classList.add("border-[#1A1A1A]", "bg-[#F7F5F1]")
     this.videoBtnTarget.classList.remove("border-[#1A1A1A]", "bg-[#F7F5F1]")
@@ -37,6 +40,9 @@ export default class extends Controller {
   handleVideoSelect(event) {
     const file = event.target.files[0]
     if (!file) return
+
+    this.element.dataset.themeSelection = "video"
+    this.element.canvasThemeVideoFile = file
 
     // UI toggle
     this.videoBtnTarget.classList.add("border-[#1A1A1A]", "bg-[#F7F5F1]")
