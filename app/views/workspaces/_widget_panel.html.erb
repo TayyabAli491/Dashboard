@@ -12,7 +12,7 @@
   </div>
 </div>
 
-<div class="flex-1 overflow-y-auto p-5 space-y-7">
+<div class="flex-1 overflow-y-auto p-5 space-y-7" data-controller="widget-form">
   
   <div>
     <div class="nav-label ml-0 pl-1 mb-3">Data Display</div>
@@ -23,7 +23,7 @@
           { icon: "fa-gauge-high", label: "Gauge", desc: "Current value" },
           { icon: "fa-chart-column", label: "Bar Chart", desc: "Comparisons" }
       ].each do |wt| %>
-        <button class="widget-btn">
+        <button class="widget-btn" data-action="click->widget-form#addTestWidget" data-widget-type="<%= wt[:label] %>">
           <div class="widget-btn-icon"><i class="fa-solid <%= wt[:icon] %>"></i></div>
           <span class="widget-btn-name"><%= wt[:label] %></span>
           <span class="widget-btn-desc"><%= wt[:desc] %></span>
@@ -41,7 +41,7 @@
           { icon: "fa-compass", label: "Compass", desc: "Heading" },
           { icon: "fa-bars-staggered", label: "Altitude", desc: "Vertical bar" }
       ].each do |wt| %>
-        <button class="widget-btn">
+        <button class="widget-btn" data-action="click->widget-form#addTestWidget" data-widget-type="<%= wt[:label] %>">
           <div class="widget-btn-icon"><i class="fa-solid <%= wt[:icon] %>"></i></div>
           <span class="widget-btn-name"><%= wt[:label] %></span>
           <span class="widget-btn-desc"><%= wt[:desc] %></span>
