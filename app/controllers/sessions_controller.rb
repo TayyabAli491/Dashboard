@@ -65,11 +65,11 @@ class SessionsController < ApplicationController
   private
 
   def start_session
-    @session.update!(started_at: Time.current)
+    @session.update!(started_at: Time.current, status: :in_progress)
   end
 
   def end_session
-    @session.update!(ended_at: Time.current)
+    @session.update!(ended_at: Time.current, status: :completed)
   end
 
   def find_workspace_belonging_to_current_user
