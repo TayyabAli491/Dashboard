@@ -1,5 +1,4 @@
 import { Controller } from "@hotwired/stimulus"
-import { visit } from "@hotwired/turbo"
 
 export default class extends Controller {
   static values = {
@@ -9,7 +8,7 @@ export default class extends Controller {
 
   connect() {
     this.timer = setInterval(() => {
-      visit(this.urlValue, { action: "replace" })
+      Turbo.visit(this.urlValue, { action: "replace" })
     }, this.intervalValue)
   }
 
