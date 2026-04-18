@@ -1,0 +1,15 @@
+<%= render "widgets/widget_wrapper", widget: widget do %>
+  <div class="h-full w-full relative">
+    <div class="h-full w-full relative"
+         data-controller="attitude-3d"
+         data-attitude-3d-workspace-id-value="<%= workspace.id %>">
+      <div class="absolute bottom-2 left-2 mono text-xs
+                  text-text-muted flex flex-col gap-1 z-10"
+           data-attitude-3d-target="stats">
+        <span>P: --</span>
+        <span>R: --</span>
+        <span>Y: --</span>
+      </div>
+    </div>
+  </div>
+<% end %>

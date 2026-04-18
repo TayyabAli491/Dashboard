@@ -7,6 +7,7 @@ import ValueCardController from "controllers/value_card_controller"
 import LineChartController from "controllers/line_chart_controller"
 import GaugeChartController from "controllers/gauge_chart_controller"
 import GpsMapController from "controllers/gps_map_controller"
+import Attitude3dController from "controllers/attitude_3d_controller"
 
 unlessAutoRefreshRegistered()
 unlessDashboardRegistered()
@@ -15,6 +16,7 @@ unlessValueCardRegistered()
 unlessLineChartRegistered()
 unlessGaugeChartRegistered()
 unlessGpsMapRegistered()
+unlessAttitude3dRegistered()
 
 eagerLoadControllersFrom("controllers", application)
 
@@ -58,4 +60,10 @@ function unlessGpsMapRegistered() {
   if (application.router.modulesByIdentifier.has("gps-map")) return
 
   application.register("gps-map", GpsMapController)
+}
+
+function unlessAttitude3dRegistered() {
+  if (application.router.modulesByIdentifier.has("attitude-3d")) return
+
+  application.register("attitude-3d", Attitude3dController)
 }

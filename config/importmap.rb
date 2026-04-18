@@ -10,3 +10,5 @@ pin "chart.js",
   to: "https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"
 pin "leaflet",
   to: "https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet-src.esm.js"
+pin "three",
+  to: "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"
