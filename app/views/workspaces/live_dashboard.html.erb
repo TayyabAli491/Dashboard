@@ -1,0 +1,43 @@
+<div class="h-screen w-screen bg-[#F7F5F1] relative overflow-hidden" 
+     data-controller="dashboard" 
+     data-dashboard-workspace-id-value="<%= @workspace.id %>"
+     data-dashboard-edit-mode-value="false">
+
+  <%# Subdued Full Screen Designer Header %>
+  <div class="absolute top-0 left-0 w-full flex justify-between items-center px-8 py-6 z-20 pointer-events-auto">
+    <div class="flex items-center gap-4">
+      <h1 class="text-2xl font-bold text-[#1A1A1A]"><%= @workspace.name %></h1>
+      <% if @active_session %>
+        <div class="badge badge-ok shadow-sm"><span class="badge-dot"></span> <%= @active_session.name %> (Live)</div>
+      <% else %>
+        <div class="badge badge-warn shadow-sm"><span class="badge-dot"></span> Offline</div>
+      <% end %>
+    </div>
+    
+    <button onclick="window.close()" class="btn-secondary flex items-center gap-2 shadow-sm">
+      <i class="fa-solid fa-times"></i> Exit Live Mode
+    </button>
+  </div>
+
+  <%# Live Grid Configuration %>
+  <div class="pt-24 px-8 pb-8 h-full w-full">
+    <div class="designer-grid-area grid-stack flex-1 w-full h-full relative z-10 transition-all duration-300 !border-0 !bg-transparent !shadow-none !bg-none" data-dashboard-target="grid">
+      <% @workspace.parsed_dashboard_widgets.each do |widget| %>
+        <div class="grid-stack-item pointer-events-none" 
+             gs-x="<%= widget['grid']['x'] %>" 
+             gs-y="<%= widget['grid']['y'] %>" 
+             gs-w="<%= widget['grid']['w'] %>" 
+             gs-h="<%= widget['grid']['h'] %>">
+             
+          <div class="grid-stack-item-content p-4 flex flex-col justify-center items-center bg-white border border-[#E8E4DD] rounded-2xl shadow-[0_8px_20px_rgba(26,26,26,0.06)]">
+            <div class="w-12 h-12 rounded-full bg-[#F7F5F1] flex items-center justify-center mb-3 text-[#1A1A1A]">
+              <i class="fa-solid fa-shapes text-lg"></i>
+            </div>
+            <div class="font-bold text-lg text-[#1A1A1A]"><%= widget['label'] %></div>
+            <div class="text-[10px] font-semibold text-[#1DA1F2] uppercase tracking-widest mt-2">Awaiting Data</div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

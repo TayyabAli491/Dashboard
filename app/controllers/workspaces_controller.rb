@@ -1,6 +1,6 @@
 class WorkspacesController < ApplicationController
   before_action :authenticate_user!
-  before_action :find_workspace_belonging_to_current_user, only: %i[show edit update setup save_layout destroy]
+  before_action :find_workspace_belonging_to_current_user, only: %i[show edit update setup save_layout destroy live_dashboard]
 
   def index
     @workspaces = current_user.workspaces.order(created_at: :desc)
@@ -9,6 +9,11 @@ class WorkspacesController < ApplicationController
   def show
     @recent_telemetry_record = @workspace.telemetry_records.most_recent_first.first
     @active_session = @workspace.sessions.in_progress.first
+  end
+
+  def live_dashboard
+    @active_session = @workspace.sessions.in_progress.first
+    render layout: false
   end
 
   def setup; end
@@ -72,7 +77,7 @@ class WorkspacesController < ApplicationController
 
   def dashboard_layout_params
     params.require(:workspace).permit(
-      dashboard_layout: {}
+      dashboard_layout: [ :id, :type, :label, grid: [ :x, :y, :w, :h ] ]
     )
   end
 end

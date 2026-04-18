@@ -5,6 +5,7 @@ export default class extends Controller {
 
   static values = {
     workspaceId: Number,
+    saveUrl: String,
     editMode: { type: Boolean, default: true }
   }
 
@@ -33,6 +34,51 @@ export default class extends Controller {
     console.log("GridStack ready!")
   }
 
+  saveLayout() {
+    if (!this.grid) return
+
+    // Extract exact widget metadata + grid positions
+    const layout = this.grid.engine.nodes.map(node => {
+      const el = node.el
+      return {
+        id: node.id,
+        type: el.dataset.widgetType || "Unknown",
+        label: el.dataset.widgetLabel || "Widget",
+        grid: {
+          x: node.x,
+          y: node.y,
+          w: node.w,
+          h: node.h
+        }
+      }
+    })
+
+    // Synchronously open tab to bypass browser popup and ad-blockers!
+    const liveDashboardTab = window.open("", "_blank")
+    liveDashboardTab.document.write("<div style='font-family: sans-serif; padding: 2rem;'>Saving your layout...</div>")
+
+    fetch(this.saveUrlValue, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRF-Token": document.querySelector('meta[name="csrf-token"]').getAttribute("content")
+      },
+      body: JSON.stringify({
+        workspace: { dashboard_layout: layout }
+      })
+    }).then(res => {
+      if (res.ok) {
+        liveDashboardTab.location.href = window.location.pathname + "/live_dashboard"
+      } else {
+        liveDashboardTab.close()
+        console.error("Save layout failed")
+      }
+    }).catch(err => {
+      liveDashboardTab.close()
+      console.error("Save layout failed:", err)
+    })
+  }
+
   addWidget(event) {
     const widget = event.detail.widget
     if (!this.grid) return
@@ -43,6 +89,9 @@ export default class extends Controller {
     el.setAttribute("gs-y", widget.grid.y)
     el.setAttribute("gs-w", widget.grid.w)
     el.setAttribute("gs-h", widget.grid.h)
+    el.setAttribute("gs-id", widget.id)
+    el.dataset.widgetType = widget.type
+    el.dataset.widgetLabel = widget.label
     
     // Premium raw widget design matching the new UI with remove button
     el.innerHTML = `

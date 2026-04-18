@@ -1,3 +1,8 @@
+<div class="h-full flex flex-col relative w-full overflow-hidden"
+     data-controller="dashboard canvas-theme"
+     data-dashboard-workspace-id-value="<%= @workspace.id %>"
+     data-dashboard-save-url-value="<%= save_layout_workspace_path(@workspace) %>">
+
 <%# Topbar utilizing application.css theme %>
 <div class="topbar mb-0">
   <div>
@@ -21,14 +26,14 @@
     <button class="btn-secondary">
       <i class="fa-solid fa-gear text-sm"></i> Settings
     </button>
-    <button class="btn-primary" data-action="click->dashboard#toggleEditMode">
+    <button class="btn-primary text-sm flex items-center gap-2" data-action="click->dashboard#saveLayout">
       <i class="fa-solid fa-check text-sm text-[10px]"></i> Save Layout
     </button>
   </div>
 </div>
 
 <%# The Designer Wrap %>
-<div class="designer-wrap" data-controller="dashboard canvas-theme">
+<div class="designer-wrap flex-1">
   
   <%# Main Grid Area %>
   <div class="designer-main p-6 flex flex-col relative z-0">
@@ -41,7 +46,32 @@
 
       <%# Transparent grid wrapper (z-index ensures it sits above video) %>
       <div class="designer-grid-area grid-stack flex-1 relative z-10 transition-all duration-300" data-dashboard-target="grid" data-canvas-theme-target="gridArea">
-        <!-- Grid elements will go here -->
+        <% @workspace.parsed_dashboard_widgets.each do |widget| %>
+          <div class="grid-stack-item group" 
+               gs-x="<%= widget['grid']['x'] %>" 
+               gs-y="<%= widget['grid']['y'] %>" 
+               gs-w="<%= widget['grid']['w'] %>" 
+               gs-h="<%= widget['grid']['h'] %>" 
+               data-widget-id="<%= widget['id'] %>"
+               data-widget-type="<%= widget['type'] %>"
+               data-widget-label="<%= widget['label'] %>">
+               
+            <div class="grid-stack-item-content p-4 flex flex-col justify-center items-center bg-white border border-[#E8E4DD] rounded-xl overflow-hidden cursor-move transition-all hover:shadow-[0_8px_20px_rgba(26,26,26,0.06)] hover:border-[#C8C3BB]">
+              <button class="absolute top-2 left-2 w-6 h-6 rounded flex items-center justify-center text-[#B5B0A8] hover:bg-[#FCEBEB] hover:text-[#A32D2D] opacity-0 group-hover:opacity-100 transition-all cursor-pointer z-10"
+                      onclick="this.closest('.grid-stack-item').dispatchEvent(new CustomEvent('dashboard:remove-widget', { bubbles: true }))">
+                <i class="fa-solid fa-times text-xs"></i>
+              </button>
+              <div class="absolute top-3 right-3 text-[#B5B0A8] text-[10px]">
+                <i class="fa-solid fa-grip"></i>
+              </div>
+              <div class="w-10 h-10 rounded-full bg-[#F7F5F1] flex items-center justify-center mb-3 text-[#1A1A1A]">
+                <i class="fa-solid fa-shapes text-sm"></i>
+              </div>
+              <div class="font-semibold text-sm text-[#1A1A1A]"><%= widget['label'] %></div>
+              <div class="text-[9px] font-semibold text-[#9E9891] uppercase tracking-widest mt-1">Draggable</div>
+            </div>
+          </div>
+        <% end %>
       </div>
       
       <% if @workspace.parsed_dashboard_widgets.empty? %>
@@ -63,4 +93,5 @@
     <%= render "workspaces/widget_panel" %>
   </div>
 
+</div>
 </div>
