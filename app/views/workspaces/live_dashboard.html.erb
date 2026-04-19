@@ -3,63 +3,118 @@
 
   .cansat-dashboard { background-color: #050810; color: #E5E5E5; font-family: 'Space Mono','JetBrains Mono',monospace; }
 
-  /* Widget Card */
+  /* ── Widget Card ── */
   .widget-card {
     background: rgba(11, 13, 20, 0.97);
     backdrop-filter: blur(14px);
     border: 1px solid rgba(40, 42, 60, 0.9);
-    border-radius: 10px;
+    border-radius: 12px;
     box-shadow: 0 2px 20px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.03);
     position: relative; overflow: hidden;
     display: flex; flex-direction: column;
-    transition: box-shadow 0.3s ease, border-color 0.3s ease;
+    transition: box-shadow 0.3s ease;
   }
-  .widget-card:hover { box-shadow: 0 4px 30px rgba(0,0,0,0.55); }
-  .widget-card::before { content:''; position:absolute; top:0; left:0; width:100%; height:2px; background: linear-gradient(90deg, transparent, rgba(99,102,241,0.55), transparent); z-index:2; }
+  .widget-card:hover { box-shadow: 0 6px 32px rgba(0,0,0,0.55); }
+  .widget-card::before { content:''; position:absolute; top:0; left:0; width:100%; height:2px; z-index:2;
+    background: linear-gradient(90deg, transparent, rgba(99,102,241,0.55), transparent); }
   .widget-card.accent-cyan::before    { background: linear-gradient(90deg, transparent, rgba(6,182,212,0.65), transparent); }
   .widget-card.accent-amber::before   { background: linear-gradient(90deg, transparent, rgba(245,158,11,0.65), transparent); }
   .widget-card.accent-emerald::before { background: linear-gradient(90deg, transparent, rgba(16,185,129,0.65), transparent); }
   .widget-card.accent-violet::before  { background: linear-gradient(90deg, transparent, rgba(139,92,246,0.65), transparent); }
-  .widget-card::after { content:''; position:absolute; bottom:0; right:0; width:28px; height:28px;
-    border-bottom: 1px solid rgba(255,255,255,0.05); border-right: 1px solid rgba(255,255,255,0.05); border-radius: 0 0 10px 0; }
 
-  .widget-header { font-size: 0.6rem; text-transform:uppercase; letter-spacing:0.2em; color:rgba(229,229,229,0.38);
-    padding: 0.75rem 1rem 0; font-weight:700; display:flex; justify-content:space-between; align-items:center; position:relative; z-index:1; flex-shrink: 0; }
   .widget-content { flex:1; display:flex; align-items:center; justify-content:center; padding: 0.6rem 0.9rem 0.8rem; min-height: 0; }
 
-  .data-label { font-size: 0.52rem; letter-spacing:0.15em; text-transform:uppercase; color:rgba(229,229,229,0.28); }
-  .live-dot { width:5px; height:5px; border-radius:50%; animation: livePulse 1.4s ease-in-out infinite; flex-shrink:0; }
-  @keyframes livePulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.35;transform:scale(0.75)} }
+  /* ── Reference-style bottom card ── */
+  .sensor-card {
+    background: #111318;
+    border: 1px solid rgba(50,52,70,0.85);
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    overflow: hidden;
+    min-width: 0;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+    transition: border-color 0.3s, box-shadow 0.3s;
+  }
+  .sensor-card:hover { border-color: rgba(80,82,120,0.9); box-shadow: 0 8px 36px rgba(0,0,0,0.55); }
+  .sensor-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; z-index:2;
+    background: linear-gradient(90deg, transparent, var(--accent,rgba(99,102,241,0.6)), transparent); }
+  .sensor-card { position: relative; }
 
-  /* Compass */
-  .compass-wrap { position:relative; width:100px; height:100px; flex-shrink:0; }
-  .compass-needle { transform-origin: 50px 50px; transition: transform 0.5s cubic-bezier(0.34,1.56,0.64,1); }
+  /* Card header */
+  .sc-header { display:flex; align-items:center; justify-content:space-between; padding: 12px 14px 8px; border-bottom: 1px solid rgba(255,255,255,0.04); }
+  .sc-header-left { display:flex; align-items:center; gap:10px; }
+  .sc-icon { width:34px; height:34px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:1rem; flex-shrink:0; }
+  .sc-title { font-size:0.75rem; font-weight:700; color:#E5E5E5; letter-spacing:0.02em; }
+  .sc-subtitle { font-size:0.55rem; color:rgba(229,229,229,0.35); letter-spacing:0.06em; margin-top:1px; }
+  .sc-badge { font-size:0.55rem; font-weight:700; letter-spacing:0.12em; text-transform:uppercase;
+    border-radius:20px; padding: 3px 9px; border: 1px solid currentColor; white-space:nowrap; }
 
-  /* Gauge arc */
-  .gauge-arc-bg   { fill:none; stroke:rgba(255,255,255,0.05); stroke-width:9; stroke-linecap:round; }
-  .gauge-arc-fill { fill:none; stroke-width:9; stroke-linecap:round; transition: stroke-dasharray 0.6s ease; }
-  .gauge-wrap { position:relative; width:110px; height:68px; flex-shrink:0; }
+  /* Big value row */
+  .sc-value-row { display:flex; align-items:baseline; gap:6px; padding: 10px 14px 4px; }
+  .sc-big { font-size:2.5rem; font-weight:700; line-height:1; letter-spacing:-1px; }
+  .sc-unit { font-size:0.85rem; color:rgba(229,229,229,0.4); font-weight:400; }
+  .sc-val-badge { font-size:0.55rem; font-weight:700; border-radius:20px; padding:3px 8px; border:1px solid currentColor; text-transform:uppercase; letter-spacing:0.1em; align-self:center; }
 
-  /* Spark bar */
-  .spark-bar { display:flex; align-items:flex-end; gap:2px; height:36px; }
-  .spark-bar .bar { flex:1; border-radius:2px 2px 0 0; transition:height 0.4s ease; min-width:4px; }
+  /* Gradient scale bar */
+  .sc-scale-wrap { padding: 2px 14px 6px; }
+  .sc-scale-bar {
+    position: relative;
+    width: 100%;
+    height: 8px;
+    border-radius: 6px;
+    background: linear-gradient(90deg, #10B981 0%, #84cc16 25%, #F59E0B 50%, #f97316 75%, #f43f5e 100%);
+  }
+  .sc-scale-marker {
+    position: absolute;
+    top: -4px;
+    width: 3px;
+    height: 16px;
+    background: #fff;
+    border-radius: 2px;
+    transform: translateX(-50%);
+    transition: left 0.5s ease;
+    box-shadow: 0 0 6px rgba(255,255,255,0.7);
+  }
+  .sc-scale-labels { display:flex; justify-content:space-between; margin-top:3px; }
+  .sc-scale-labels span { font-size:0.48rem; color:rgba(229,229,229,0.25); letter-spacing:0.05em; }
 
-  /* Battery pill */
-  .battery-pill { display:flex; align-items:center; gap:7px; background:rgba(16,185,129,0.08); border:1px solid rgba(16,185,129,0.25); border-radius:4px; padding:4px 10px; transition: background 0.5s, border-color 0.5s; }
+  /* Sparkline / Line chart */
+  .sc-chart-wrap { padding: 4px 14px 10px; flex:1; display:flex; flex-direction:column; gap:2px; min-height:0; }
+  .sc-chart-labels { display:flex; flex-direction:column; gap:0; flex-shrink:0; }
+  .sc-chart-labels span { font-size:0.45rem; color:rgba(229,229,229,0.18); letter-spacing:0.06em; }
+  .sc-line-chart { flex:1; min-height:60px; position:relative; }
+  .sc-line-chart svg { width:100%; height:100%; overflow:visible; }
+  .sc-chart-time { font-size:0.45rem; color:rgba(229,229,229,0.18); text-align:center; margin-top:2px; letter-spacing:0.06em; }
+
+  /* Small value grid */
+  .sc-stats { display:grid; grid-template-columns:1fr 1fr; gap:6px; padding: 6px 14px 10px; }
+  .sc-stat { background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.05); border-radius:7px; padding:6px 8px; }
+  .sc-stat-l { font-size:0.48rem; color:rgba(229,229,229,0.3); letter-spacing:0.12em; text-transform:uppercase; }
+  .sc-stat-v { font-size:0.9rem; font-weight:700; color:#E5E5E5; margin-top:2px; }
+
+  /* Battery pill (header) */
+  .battery-pill { display:flex; align-items:center; gap:7px; background:rgba(16,185,129,0.08); border:1px solid rgba(16,185,129,0.25); border-radius:4px; padding:4px 10px; transition:background 0.5s,border-color 0.5s; }
   .battery-pill.critical { background:rgba(244,63,94,0.08); border-color:rgba(244,63,94,0.35); }
   .battery-pill.warning  { background:rgba(245,158,11,0.08); border-color:rgba(245,158,11,0.35); }
 
-  /* Ticker */
-  .ticker-row { font-size:0.5rem; letter-spacing:0.13em; color:rgba(229,229,229,0.2); padding:0.3rem 1rem;
-    border-top:1px solid rgba(255,255,255,0.03); white-space:nowrap; overflow:hidden; flex-shrink:0; display:flex; gap:1.5rem; }
+  .live-dot { width:5px; height:5px; border-radius:50%; animation:livePulse 1.4s ease-in-out infinite; flex-shrink:0; }
+  @keyframes livePulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.35;transform:scale(0.75)} }
 
-  /* Stat chips below big value */
-  .stat-chip { display:flex; flex-direction:column; gap:2px; }
-  .stat-chip .v { font-size:0.78rem; font-weight:700; color:#E5E5E5; }
-  .stat-chip .l { font-size:0.5rem; letter-spacing:0.12em; color:rgba(229,229,229,0.3); text-transform:uppercase; }
+  /* Compass needle */
+  .compass-needle { transform-origin:50px 50px; transition:transform 0.5s cubic-bezier(0.34,1.56,0.64,1); }
 
-  /* Big value */
-  .big-value { font-size:2.6rem; font-weight:700; line-height:1; letter-spacing:-1.5px; }
+  /* Horizontal-fill bottom row */
+  .bottom-scroller {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+  }
+  .bottom-scroller::-webkit-scrollbar { height: 4px; }
+  .bottom-scroller::-webkit-scrollbar-track { background: rgba(255,255,255,0.03); border-radius:2px; }
+  .bottom-scroller::-webkit-scrollbar-thumb { background: rgba(99,102,241,0.35); border-radius:2px; }
+  .bottom-scroller > * { scroll-snap-align: start; }
 </style>
 
 <div class="fixed inset-0 z-[100] bg-[#050810] cansat-dashboard overflow-hidden flex flex-col"
@@ -155,91 +210,111 @@
 
     </div><!-- /top row -->
 
-    <%# BOTTOM ROW: 4 compact sensor widgets %>
-    <div class="grid grid-cols-4 gap-4" style="height: 200px; flex-shrink: 0;">
+    <%# BOTTOM ROW: scrollable sensor widgets %>
+    <div class="bottom-scroller" style="flex-shrink:0; height:230px;">
 
       <%# ——— QMC5883L Magnetometer ——— %>
-      <div class="widget-card accent-violet" style="height:200px; overflow:hidden;">
-        <div class="widget-header">
-          <span>QMC5883L / Magnetometer</span>
-          <span class="live-dot bg-[#8b5cf6]"></span>
+      <div class="sensor-card" style="--accent: rgba(139,92,246,0.6);">
+        <div class="sc-header">
+          <div class="sc-header-left">
+            <div class="sc-icon" style="background:rgba(139,92,246,0.12);color:#8b5cf6;">🧭</div>
+            <div>
+              <div class="sc-title">QMC5883L</div>
+              <div class="sc-subtitle">Magnetometer &middot; Heading</div>
+            </div>
+          </div>
+          <span class="sc-badge" style="color:#8b5cf6;" id="mag-badge">ACTIVE</span>
         </div>
-        <div class="widget-content gap-3 items-center"
+
+        <div class="sc-value-row"
              data-controller="value-card"
              data-action="telemetry:received@window->value-card#update"
              data-value-card-data-key-value="heading">
+          <div class="sc-big" style="color:#E5E5E5;"><span data-value-card-target="value" id="compass-deg">137</span></div>
+          <span class="sc-unit">°</span>
+          <span class="sc-val-badge" style="color:#8b5cf6;" id="compass-dir">SE</span>
+          <div data-value-card-target="status" class="hidden"></div>
+        </div>
 
-          <div class="compass-wrap" id="compass-wrap">
-            <svg width="100" height="100" viewBox="0 0 100 100" fill="none">
-              <circle cx="50" cy="50" r="46" stroke="rgba(139,92,246,0.15)" stroke-width="1"/>
-              <circle cx="50" cy="50" r="38" stroke="rgba(139,92,246,0.08)" stroke-width="7" fill="none"/>
-              <line x1="50" y1="4" x2="50" y2="12" stroke="rgba(139,92,246,0.7)" stroke-width="2"/>
-              <line x1="96" y1="50" x2="88" y2="50" stroke="rgba(255,255,255,0.12)" stroke-width="1.5"/>
-              <line x1="50" y1="96" x2="50" y2="88" stroke="rgba(255,255,255,0.12)" stroke-width="1.5"/>
-              <line x1="4" y1="50" x2="12" y2="50" stroke="rgba(255,255,255,0.12)" stroke-width="1.5"/>
-              <text x="50" y="19" text-anchor="middle" fill="rgba(139,92,246,0.85)" font-size="7" font-family="monospace" font-weight="bold">N</text>
-              <text x="92" y="53" text-anchor="middle" fill="rgba(255,255,255,0.2)" font-size="6" font-family="monospace">E</text>
-              <text x="50" y="93" text-anchor="middle" fill="rgba(255,255,255,0.2)" font-size="6" font-family="monospace">S</text>
-              <text x="8" y="53" text-anchor="middle" fill="rgba(255,255,255,0.2)" font-size="6" font-family="monospace">W</text>
-              <g id="compass-needle" class="compass-needle" style="transform-origin:50px 50px; transform: rotate(137deg);">
-                <polygon points="50,14 47,52 53,52" fill="rgba(139,92,246,0.95)"/>
-                <polygon points="50,86 47,52 53,52" fill="rgba(255,255,255,0.12)"/>
-              </g>
-              <circle cx="50" cy="50" r="4" fill="#8b5cf6"/>
-              <circle cx="50" cy="50" r="2" fill="#050810"/>
-            </svg>
-          </div>
-
-          <div class="flex flex-col gap-1.5">
-            <div class="flex items-end gap-1">
-              <span class="text-2xl font-bold text-[#E5E5E5]" data-value-card-target="value" id="compass-deg">137</span>
-              <span class="text-sm text-[#555] mb-0.5">°</span>
-              <span class="text-sm font-bold text-[#8b5cf6] ml-1" id="compass-dir">SE</span>
-            </div>
-            <div class="data-label">Magnetic Heading</div>
-            <div data-value-card-target="status" class="text-[0.5rem] text-[#8b5cf6] tracking-widest">[ ACTIVE ]</div>
-            <div class="flex gap-3 mt-1">
-              <div class="stat-chip"><div class="v" id="mag-x">-42</div><div class="l">X µT</div></div>
-              <div class="stat-chip"><div class="v" id="mag-y">+89</div><div class="l">Y µT</div></div>
-              <div class="stat-chip"><div class="v" id="mag-z">-12</div><div class="l">Z µT</div></div>
-            </div>
+        <!-- Compass + axis values -->
+        <div style="display:flex; align-items:center; gap:12px; padding:4px 14px 8px; flex:1;">
+          <svg width="88" height="88" viewBox="0 0 100 100" fill="none" flex-shrink="0">
+            <circle cx="50" cy="50" r="46" stroke="rgba(139,92,246,0.15)" stroke-width="1"/>
+            <circle cx="50" cy="50" r="38" stroke="rgba(139,92,246,0.08)" stroke-width="7" fill="none"/>
+            <line x1="50" y1="4" x2="50" y2="12" stroke="rgba(139,92,246,0.7)" stroke-width="2"/>
+            <line x1="96" y1="50" x2="88" y2="50" stroke="rgba(255,255,255,0.1)" stroke-width="1.5"/>
+            <line x1="50" y1="96" x2="50" y2="88" stroke="rgba(255,255,255,0.1)" stroke-width="1.5"/>
+            <line x1="4" y1="50" x2="12" y2="50" stroke="rgba(255,255,255,0.1)" stroke-width="1.5"/>
+            <text x="50" y="19" text-anchor="middle" fill="rgba(139,92,246,0.85)" font-size="7" font-family="monospace" font-weight="bold">N</text>
+            <text x="92" y="53" text-anchor="middle" fill="rgba(255,255,255,0.2)" font-size="6" font-family="monospace">E</text>
+            <text x="50" y="93" text-anchor="middle" fill="rgba(255,255,255,0.2)" font-size="6" font-family="monospace">S</text>
+            <text x="8" y="53" text-anchor="middle" fill="rgba(255,255,255,0.2)" font-size="6" font-family="monospace">W</text>
+            <g id="compass-needle" class="compass-needle" style="transform-origin:50px 50px; transform:rotate(137deg);">
+              <polygon points="50,14 47,52 53,52" fill="rgba(139,92,246,0.95)"/>
+              <polygon points="50,86 47,52 53,52" fill="rgba(255,255,255,0.12)"/>
+            </g>
+            <circle cx="50" cy="50" r="4" fill="#8b5cf6"/>
+            <circle cx="50" cy="50" r="2" fill="#111318"/>
+          </svg>
+          <div class="sc-stats" style="flex:1; padding:0; margin:0;">
+            <div class="sc-stat"><div class="sc-stat-l">X-axis</div><div class="sc-stat-v" id="mag-x">-42 µT</div></div>
+            <div class="sc-stat"><div class="sc-stat-l">Y-axis</div><div class="sc-stat-v" id="mag-y">+89 µT</div></div>
+            <div class="sc-stat"><div class="sc-stat-l">Z-axis</div><div class="sc-stat-v" id="mag-z">-12 µT</div></div>
+            <div class="sc-stat"><div class="sc-stat-l">Declination</div><div class="sc-stat-v">+3.2°</div></div>
           </div>
         </div>
-        <div class="ticker-row"><span>MAG: -42, +89, -12 µT</span><span>·</span><span>DECL: +3.2°</span><span>·</span><span>CALIB: OK</span></div>
       </div>
 
       <%# ——— MQ135 Air Quality ——— %>
-      <div class="widget-card accent-cyan" style="height:200px; overflow:hidden;">
-        <div class="widget-header">
-          <span>MQ135 — Air Quality</span>
-          <span class="text-[#06B6D4] text-[0.58rem] font-bold">PPM</span>
+      <div class="sensor-card" style="--accent: rgba(6,182,212,0.6);">
+        <div class="sc-header">
+          <div class="sc-header-left">
+            <div class="sc-icon" style="background:rgba(6,182,212,0.12);color:#06B6D4;">💨</div>
+            <div>
+              <div class="sc-title">MQ135</div>
+              <div class="sc-subtitle">Air Quality &middot; CO₂ equivalent</div>
+            </div>
+          </div>
+          <span class="sc-badge" style="color:#10B981;" id="gas-badge">GOOD</span>
         </div>
-        <div class="widget-content flex-col gap-2">
-          <div class="gauge-wrap" id="gas-gauge-wrap">
-            <svg width="110" height="68" viewBox="0 0 110 68" overflow="visible">
-              <path d="M 10 62 A 46 46 0 0 1 100 62" class="gauge-arc-bg"/>
-              <path id="gas-arc" d="M 10 62 A 46 46 0 0 1 100 62"
-                    class="gauge-arc-fill" stroke="#06B6D4"
-                    stroke-dasharray="84 144" stroke-dashoffset="0"/>
-              <text x="7"  y="69" fill="rgba(255,255,255,0.18)" font-size="6" font-family="monospace">0</text>
-              <text x="96" y="69" fill="rgba(255,255,255,0.18)" font-size="6" font-family="monospace">1k</text>
+
+        <div class="sc-value-row">
+          <div class="sc-big" style="color:#E5E5E5;"><span id="gas-readout">382</span></div>
+          <span class="sc-unit">ppm</span>
+          <span class="sc-val-badge" style="color:#10B981;" id="gas-val-badge">Good</span>
+        </div>
+
+        <!-- Gradient scale bar -->
+        <div class="sc-scale-wrap">
+          <div class="sc-scale-bar">
+            <div class="sc-scale-marker" id="gas-marker" style="left:38%;"></div>
+          </div>
+          <div class="sc-scale-labels">
+            <span>0</span><span>250</span><span>500</span><span>750</span><span>1000</span>
+          </div>
+        </div>
+
+        <!-- Line chart -->
+        <div class="sc-chart-wrap">
+          <div class="sc-chart-labels">
+            <span>800 ppm</span>
+            <span style="margin-top:auto;">300 ppm</span>
+          </div>
+          <div class="sc-line-chart">
+            <svg id="gas-chart" preserveAspectRatio="none">
+              <defs>
+                <linearGradient id="gasGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#10B981" stop-opacity="0.25"/>
+                  <stop offset="100%" stop-color="#10B981" stop-opacity="0"/>
+                </linearGradient>
+              </defs>
+              <path id="gas-area" fill="url(#gasGrad)"/>
+              <path id="gas-line" fill="none" stroke="#10B981" stroke-width="1.5" stroke-linejoin="round"/>
             </svg>
-            <div style="position:absolute; bottom:-2px; left:50%; transform:translateX(-50%); text-align:center;">
-              <div class="text-xl font-bold text-[#06B6D4]"><span id="gas-readout">382</span></div>
-              <div class="data-label">ppm</div>
-            </div>
           </div>
-          <div class="w-full px-1">
-            <div class="flex justify-between mb-1">
-              <span class="data-label">AQI</span>
-              <span class="text-[0.55rem] font-bold text-[#06B6D4]" id="gas-status">MODERATE</span>
-            </div>
-            <div class="w-full h-1.5 rounded-full bg-white/5 overflow-hidden">
-              <div id="gas-bar" class="h-full rounded-full transition-all" style="width:38%; background: linear-gradient(90deg, #10B981, #06B6D4, #f43f5e);"></div>
-            </div>
-          </div>
+          <div class="sc-chart-time">seconds</div>
         </div>
-        <div class="ticker-row"><span>CO₂ EQ: 382ppm</span><span>·</span><span>THRESH: 700ppm</span><span>·</span><span>WARM</span></div>
+
         <canvas class="hidden"
                 data-controller="gauge-chart"
                 data-gauge-chart-workspace-id-value="<%= @workspace.id %>"
@@ -251,89 +326,110 @@
       </div>
 
       <%# ——— BMP Temperature ——— %>
-      <div class="widget-card accent-amber" style="height:200px; overflow:hidden;">
-        <div class="widget-header">
-          <span>BMP280 — Temperature</span>
-          <span class="live-dot bg-[#F59E0B]"></span>
+      <div class="sensor-card" style="--accent: rgba(245,158,11,0.6);">
+        <div class="sc-header">
+          <div class="sc-header-left">
+            <div class="sc-icon" style="background:rgba(245,158,11,0.12);color:#F59E0B;">🌡️</div>
+            <div>
+              <div class="sc-title">BMP280</div>
+              <div class="sc-subtitle">Temperature &middot; °C</div>
+            </div>
+          </div>
+          <span class="sc-badge" style="color:#F59E0B;" id="temp-badge">NOMINAL</span>
         </div>
-        <div class="widget-content flex-col gap-2 items-start"
+
+        <div class="sc-value-row"
              data-controller="value-card"
              data-action="telemetry:received@window->value-card#update"
              data-value-card-data-key-value="temperature">
-          <div class="flex items-end gap-1">
-            <div class="big-value text-[#F59E0B]"><span data-value-card-target="value" id="temp-val">24.7</span></div>
-            <span class="text-lg text-[#555] mb-1">°C</span>
-          </div>
-          <div class="w-full">
-            <div class="flex justify-between mb-1"><span class="data-label">−20°C</span><span class="data-label">85°C</span></div>
-            <div class="w-full h-1.5 rounded-full bg-white/5 overflow-hidden">
-              <div id="temp-bar" class="h-full rounded-full transition-all duration-700"
-                   style="width:43%; background: linear-gradient(90deg, #06B6D4, #F59E0B, #f43f5e);"></div>
-            </div>
-          </div>
-          <div class="w-full">
-            <div class="data-label mb-1">Trend</div>
-            <div class="spark-bar" id="temp-spark">
-              <div class="bar bg-[#F59E0B]/25" style="height:55%"></div>
-              <div class="bar bg-[#F59E0B]/30" style="height:60%"></div>
-              <div class="bar bg-[#F59E0B]/38" style="height:48%"></div>
-              <div class="bar bg-[#F59E0B]/45" style="height:65%"></div>
-              <div class="bar bg-[#F59E0B]/52" style="height:72%"></div>
-              <div class="bar bg-[#F59E0B]/60" style="height:58%"></div>
-              <div class="bar bg-[#F59E0B]/70" style="height:68%"></div>
-              <div class="bar bg-[#F59E0B]/82" style="height:80%"></div>
-              <div class="bar bg-[#F59E0B]"    style="height:100%"></div>
-            </div>
-          </div>
-          <div data-value-card-target="status" class="text-[0.5rem] text-[#F59E0B] tracking-widest">[ ACTIVE ]</div>
+          <div class="sc-big" style="color:#F59E0B;"><span data-value-card-target="value" id="temp-val">24.7</span></div>
+          <span class="sc-unit">°C</span>
+          <div data-value-card-target="status" class="hidden"></div>
         </div>
-        <div class="ticker-row"><span>MIN: 19.2°C</span><span>·</span><span>MAX: 31.8°C</span><span>·</span><span>1Hz</span></div>
+
+        <!-- Gradient scale bar -->
+        <div class="sc-scale-wrap">
+          <div class="sc-scale-bar" style="background: linear-gradient(90deg, #06B6D4, #84cc16, #F59E0B, #f97316, #f43f5e);">
+            <div class="sc-scale-marker" id="temp-marker" style="left:43%;"></div>
+          </div>
+          <div class="sc-scale-labels"><span>−20°</span><span>0°</span><span>40°</span><span>65°</span><span>85°</span></div>
+        </div>
+
+        <!-- Line chart -->
+        <div class="sc-chart-wrap">
+          <div class="sc-chart-labels">
+            <span>40°C</span>
+            <span style="margin-top:auto;">10°C</span>
+          </div>
+          <div class="sc-line-chart">
+            <svg id="temp-chart" preserveAspectRatio="none">
+              <defs>
+                <linearGradient id="tempGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#F59E0B" stop-opacity="0.25"/>
+                  <stop offset="100%" stop-color="#F59E0B" stop-opacity="0"/>
+                </linearGradient>
+              </defs>
+              <path id="temp-area" fill="url(#tempGrad)"/>
+              <path id="temp-line" fill="none" stroke="#F59E0B" stroke-width="1.5" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="sc-chart-time">seconds</div>
+        </div>
       </div>
 
       <%# ——— BMP Pressure ——— %>
-      <div class="widget-card accent-emerald" style="height:200px; overflow:hidden;">
-        <div class="widget-header">
-          <span>BMP280 — Pressure</span>
-          <span class="live-dot bg-[#10B981]"></span>
+      <div class="sensor-card" style="--accent: rgba(16,185,129,0.6);">
+        <div class="sc-header">
+          <div class="sc-header-left">
+            <div class="sc-icon" style="background:rgba(16,185,129,0.12);color:#10B981;">📡</div>
+            <div>
+              <div class="sc-title">BMP280</div>
+              <div class="sc-subtitle">Pressure &middot; hPa</div>
+            </div>
+          </div>
+          <span class="sc-badge" style="color:#10B981;">ACTIVE</span>
         </div>
-        <div class="widget-content flex-col gap-2 items-start"
+
+        <div class="sc-value-row"
              data-controller="value-card"
              data-action="telemetry:received@window->value-card#update"
              data-value-card-data-key-value="pressure">
-          <div class="flex items-end gap-1">
-            <div class="big-value text-[#10B981]"><span data-value-card-target="value" id="pres-val">1013</span></div>
-            <span class="text-sm text-[#555] mb-1.5">hPa</span>
-          </div>
-          <div class="w-full flex gap-3">
-            <div class="flex-1 p-2 rounded-lg bg-[#10B981]/05 border border-[#10B981]/10">
-              <div class="data-label">Est. Altitude</div>
-              <div class="text-base font-bold text-[#10B981] mt-0.5" id="pres-alt">~12m</div>
-            </div>
-            <div class="flex-1 p-2 rounded-lg bg-white/02 border border-white/05">
-              <div class="data-label">Sea Ref.</div>
-              <div class="text-base font-bold text-[#E5E5E5] mt-0.5">1013<span class="text-[0.55rem] text-[#555]">hPa</span></div>
-            </div>
-          </div>
-          <div class="w-full">
-            <div class="data-label mb-1">Trend</div>
-            <div class="spark-bar" id="pres-spark">
-              <div class="bar bg-[#10B981]/25" style="height:90%"></div>
-              <div class="bar bg-[#10B981]/32" style="height:85%"></div>
-              <div class="bar bg-[#10B981]/40" style="height:88%"></div>
-              <div class="bar bg-[#10B981]/50" style="height:92%"></div>
-              <div class="bar bg-[#10B981]/58" style="height:87%"></div>
-              <div class="bar bg-[#10B981]/67" style="height:93%"></div>
-              <div class="bar bg-[#10B981]/77" style="height:97%"></div>
-              <div class="bar bg-[#10B981]/88" style="height:95%"></div>
-              <div class="bar bg-[#10B981]"    style="height:100%"></div>
-            </div>
-          </div>
-          <div data-value-card-target="status" class="text-[0.5rem] text-[#10B981] tracking-widest">[ ACTIVE ]</div>
+          <div class="sc-big" style="color:#10B981;"><span data-value-card-target="value" id="pres-val">1013</span></div>
+          <span class="sc-unit">hPa</span>
+          <div data-value-card-target="status" class="hidden"></div>
         </div>
-        <div class="ticker-row"><span>MIN: 1008hPa</span><span>·</span><span>MAX: 1019hPa</span><span>·</span><span>-0.2/h</span></div>
+
+        <!-- Scale bar -->
+        <div class="sc-scale-wrap">
+          <div class="sc-scale-bar" style="background: linear-gradient(90deg, #06B6D4, #10B981, #84cc16, #F59E0B);">
+            <div class="sc-scale-marker" id="pres-marker" style="left:75%;"></div>
+          </div>
+          <div class="sc-scale-labels"><span>900</span><span>950</span><span>1000</span><span>1025</span><span>1050</span></div>
+        </div>
+
+        <!-- Stats + line chart -->
+        <div class="sc-stats" style="padding-top:6px; padding-bottom:4px;">
+          <div class="sc-stat"><div class="sc-stat-l">Est. Altitude</div><div class="sc-stat-v" style="color:#10B981;" id="pres-alt">~12m</div></div>
+          <div class="sc-stat"><div class="sc-stat-l">Sea Level Ref.</div><div class="sc-stat-v">1013 <span style="font-size:0.6rem;color:#555;">hPa</span></div></div>
+        </div>
+        <div class="sc-chart-wrap" style="padding-top:0;">
+          <div class="sc-line-chart">
+            <svg id="pres-chart" preserveAspectRatio="none">
+              <defs>
+                <linearGradient id="presGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#10B981" stop-opacity="0.25"/>
+                  <stop offset="100%" stop-color="#10B981" stop-opacity="0"/>
+                </linearGradient>
+              </defs>
+              <path id="pres-area" fill="url(#presGrad)"/>
+              <path id="pres-line" fill="none" stroke="#10B981" stroke-width="1.5" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="sc-chart-time">seconds</div>
+        </div>
       </div>
 
-    </div><!-- /bottom row -->
+    </div><!-- /bottom scroller -->
   </div><!-- /main layout -->
 </div>
 
@@ -343,91 +439,107 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Clock
   const clockEl = document.getElementById("center-clock");
-  function tick() {
-    const n = new Date();
-    if (clockEl) clockEl.textContent = n.toUTCString().slice(17,25) + " UTC";
-  }
+  function tick() { if (clockEl) clockEl.textContent = new Date().toUTCString().slice(17,25) + " UTC"; }
   setInterval(tick, 1000); tick();
+
+  // Utility: render a scrolling SVG line + area chart
+  function renderChart(svgId, lineId, areaId, data, minY, maxY) {
+    const svg = document.getElementById(svgId);
+    if (!svg) return;
+    const W = svg.clientWidth  || svg.parentElement.clientWidth  || 280;
+    const H = svg.clientHeight || svg.parentElement.clientHeight || 60;
+    if (W < 2 || H < 2 || data.length < 2) return;
+    const n = data.length;
+    const pts = data.map((v, i) => {
+      const x = (i / (n - 1)) * W;
+      const y = H - Math.max(0, Math.min(1, (v - minY) / (maxY - minY))) * H * 0.9;
+      return [x, y];
+    });
+    const linePath = pts.map((p, i) => (i === 0 ? "M" : "L") + p[0].toFixed(1) + "," + p[1].toFixed(1)).join(" ");
+    const areaPath = linePath + " L" + W + "," + H + " L0," + H + " Z";
+    svg.setAttribute("viewBox", "0 0 " + W + " " + H);
+    const lineEl = document.getElementById(lineId);
+    const areaEl = document.getElementById(areaId);
+    if (lineEl) lineEl.setAttribute("d", linePath);
+    if (areaEl) areaEl.setAttribute("d", areaPath);
+  }
 
   // --- Compass ---
   let heading = 137;
   const compassNeedle = document.getElementById("compass-needle");
-  const compassDeg    = document.getElementById("compass-deg");
-  const compassDir    = document.getElementById("compass-dir");
-  const magX = document.getElementById("mag-x");
-  const magY = document.getElementById("mag-y");
-  const magZ = document.getElementById("mag-z");
   const dirs = ["N","NE","E","SE","S","SW","W","NW"];
   setInterval(() => {
     heading = (heading + (Math.random()*8-4) + 360) % 360;
-    if (compassNeedle) compassNeedle.style.transform = `rotate(${heading}deg)`;
+    const compassDeg = document.getElementById("compass-deg");
+    const compassDir = document.getElementById("compass-dir");
+    const magX = document.getElementById("mag-x");
+    const magY = document.getElementById("mag-y");
+    const magZ = document.getElementById("mag-z");
+    if (compassNeedle) compassNeedle.style.transform = "rotate(" + heading + "deg)";
     if (compassDeg)    compassDeg.textContent = Math.round(heading);
     if (compassDir)    compassDir.textContent = dirs[Math.round(heading/45)%8];
-    if (magX) magX.textContent = (Math.random()>0.5?"+":"-") + Math.floor(Math.random()*120);
-    if (magY) magY.textContent = (Math.random()>0.5?"+":"-") + Math.floor(Math.random()*120);
-    if (magZ) magZ.textContent = (Math.random()>0.5?"+":"-") + Math.floor(Math.random()*35);
+    if (magX) magX.textContent = (Math.random()>0.5?"+":"-") + Math.floor(Math.random()*120) + " µT";
+    if (magY) magY.textContent = (Math.random()>0.5?"+":"-") + Math.floor(Math.random()*120) + " µT";
+    if (magZ) magZ.textContent = (Math.random()>0.5?"+":"-") + Math.floor(Math.random()*35)  + " µT";
   }, 1200);
 
-  // --- Gas Gauge ---
+  // --- Gas ---
   let ppm = 382;
-  const gasArc    = document.getElementById("gas-arc");
-  const gasReadout = document.getElementById("gas-readout");
-  const gasBar    = document.getElementById("gas-bar");
-  const gasStatus = document.getElementById("gas-status");
-  const ARC_TOTAL = 144;
-  function gasLabel(v){ return v<300?"CLEAN":v<600?"MODERATE":v<800?"POOR":"HAZARDOUS"; }
+  const gasData = Array(30).fill(ppm);
+  function gasLabel(v){ return v<300?"CLEAN":v<600?"GOOD":v<800?"MODERATE":"HAZARDOUS"; }
+  function gasColor(v){ return v<300?"#10B981":v<600?"#84cc16":v<800?"#F59E0B":"#f43f5e"; }
   setInterval(() => {
-    ppm = Math.max(0, Math.min(1000, ppm + (Math.random()*30-15)));
-    const fill = (ppm/1000)*ARC_TOTAL;
-    if (gasArc)     gasArc.setAttribute("stroke-dasharray", `${fill.toFixed(1)} ${ARC_TOTAL}`);
-    if (gasReadout) gasReadout.textContent = Math.round(ppm);
-    if (gasBar)     gasBar.style.width = (ppm/10)+"%";
-    if (gasStatus)  gasStatus.textContent = gasLabel(ppm);
+    ppm = Math.max(50, Math.min(1000, ppm + (Math.random()*30-15)));
+    gasData.shift(); gasData.push(ppm);
+    const gasReadout  = document.getElementById("gas-readout");
+    const gasBadge    = document.getElementById("gas-badge");
+    const gasValBadge = document.getElementById("gas-val-badge");
+    const gasMarker   = document.getElementById("gas-marker");
+    if (gasReadout)  gasReadout.textContent = Math.round(ppm);
+    const col = gasColor(ppm);
+    const lbl = gasLabel(ppm);
+    if (gasBadge)    { gasBadge.textContent = lbl; gasBadge.style.color = col; }
+    if (gasValBadge) { gasValBadge.textContent = lbl[0] + lbl.slice(1).toLowerCase(); gasValBadge.style.color = col; }
+    if (gasMarker)   gasMarker.style.left = (ppm/10)+"%";
+    renderChart("gas-chart", "gas-line", "gas-area", gasData, 0, 1000);
   }, 1500);
 
   // --- Temperature ---
   let temp = 24.7;
-  const tempValEl = document.querySelector("[data-value-card-data-key-value='temperature'] [data-value-card-target='value']");
-  const tempBar   = document.getElementById("temp-bar");
-  const tempSpark = document.getElementById("temp-spark");
+  const tempData = Array(30).fill(temp);
   setInterval(() => {
     temp = Math.max(-20, Math.min(85, temp + (Math.random()*1.4-0.7)));
-    if (tempValEl) tempValEl.textContent = temp.toFixed(1);
-    const pct = ((temp+20)/105)*100;
-    if (tempBar) tempBar.style.width = pct+"%";
-    if (tempSpark) {
-      const bars = tempSpark.querySelectorAll(".bar");
-      bars.forEach((b,i) => { if(i<bars.length-1) b.style.height = bars[i+1].style.height; });
-      bars[bars.length-1].style.height = Math.max(8, pct)+"%";
-    }
+    tempData.shift(); tempData.push(temp);
+    const tempValEl  = document.getElementById("temp-val");
+    const tempMarker = document.getElementById("temp-marker");
+    if (tempValEl)  tempValEl.textContent = temp.toFixed(1);
+    if (tempMarker) tempMarker.style.left = (((temp+20)/105)*100)+"%";
+    renderChart("temp-chart", "temp-line", "temp-area", tempData, -20, 85);
   }, 1800);
 
   // --- Pressure ---
   let pressure = 1013;
-  const presValEl = document.querySelector("[data-value-card-data-key-value='pressure'] [data-value-card-target='value']");
-  const presAlt   = document.getElementById("pres-alt");
-  const presSpark = document.getElementById("pres-spark");
+  const presData = Array(30).fill(pressure);
   setInterval(() => {
     pressure = Math.max(900, Math.min(1050, pressure + (Math.random()*2-1)));
+    presData.shift(); presData.push(pressure);
+    const presValEl  = document.getElementById("pres-val");
+    const presAlt    = document.getElementById("pres-alt");
+    const presMarker = document.getElementById("pres-marker");
     if (presValEl) presValEl.textContent = Math.round(pressure);
-    const altM = Math.round(44330*(1-Math.pow(pressure/1013.25,0.1903)));
-    if (presAlt) presAlt.textContent = `~${altM}m`;
-    if (presSpark) {
-      const bars = presSpark.querySelectorAll(".bar");
-      bars.forEach((b,i)=>{if(i<bars.length-1) b.style.height=bars[i+1].style.height;});
-      bars[bars.length-1].style.height = Math.max(5,((pressure-900)/150)*100)+"%";
-    }
+    if (presAlt)   presAlt.textContent = "~" + Math.round(44330*(1-Math.pow(pressure/1013.25,0.1903))) + "m";
+    if (presMarker) presMarker.style.left = Math.max(1,Math.min(99,((pressure-900)/150)*100))+"%";
+    renderChart("pres-chart", "pres-line", "pres-area", presData, 900, 1050);
   }, 2000);
 
   // --- Battery drain ---
   let batt = 78;
-  const battFill = document.getElementById("batt-fill-header");
-  const battPct  = document.getElementById("batt-pct-header");
-  const battPill = document.getElementById("battery-header-pill");
   setInterval(() => {
     batt = Math.max(0, Math.min(100, batt - 0.08));
-    const fill = Math.max(1, Math.round((batt/100)*20));
-    if (battFill) battFill.setAttribute("width", fill);
+    const battFill = document.getElementById("batt-fill-header");
+    const battPct  = document.getElementById("batt-pct-header");
+    const battPill = document.getElementById("battery-header-pill");
+    if (battFill) battFill.setAttribute("width", Math.max(1, Math.round((batt/100)*20)));
     if (battPct)  battPct.textContent = Math.round(batt);
     const color = batt<20?"#f43f5e":batt<40?"#F59E0B":"#10B981";
     if (battFill) battFill.setAttribute("fill", color);
@@ -435,5 +547,13 @@ document.addEventListener("DOMContentLoaded", () => {
     if (battPill) battPill.className = batt<20?"battery-pill critical":batt<40?"battery-pill warning":"battery-pill";
   }, 2000);
 
+  // Initial render after layout settles
+  setTimeout(() => {
+    renderChart("gas-chart",  "gas-line",  "gas-area",  gasData,  0,   1000);
+    renderChart("temp-chart", "temp-line", "temp-area", tempData, -20, 85);
+    renderChart("pres-chart", "pres-line", "pres-area", presData, 900, 1050);
+  }, 300);
+
 });
 </script>
+
