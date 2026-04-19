@@ -1,58 +1,31 @@
 import { Controller } from "@hotwired/stimulus"
-import consumer from "channels/consumer"
 
 export default class extends Controller {
-  static targets = ["value", "unit", "trend"]
-  static values  = {
-    field:       String,
-    workspaceId: Number,
-    color:       String
+  static targets = ["value", "status"]
+  static values = { 
+    dataKey: String
   }
 
-  connect() {
-    this.previousValue = null
-    this.subscription = consumer.subscriptions.create(
-      {
-        channel: "WorkspaceTelemetryChannel",
-        workspace_id: this.workspaceIdValue
-      },
-      { received: (data) => this.handlePacket(data) }
-    )
-  }
-
-  disconnect() {
-    this.subscription?.unsubscribe()
-  }
-
-  handlePacket(data) {
-    const payload = data.processed_payload ||
-                    data.raw_payload
-    const raw     = data.raw_payload
-    const field   = this.fieldValue
-
-    if (payload[field] === undefined) return
-
-    const current  = parseFloat(payload[field])
-    const previous = this.previousValue
-
-    this.valueTarget.textContent =
-      Number.isInteger(current) ?
-      current : current.toFixed(2)
-
-    if (previous !== null) {
-      const diff = current - previous
-      if (diff > 0) {
-        this.trendTarget.textContent = `↑ ${diff.toFixed(2)}`
-        this.trendTarget.className = "text-sm text-success"
-      } else if (diff < 0) {
-        this.trendTarget.textContent = `↓ ${Math.abs(diff).toFixed(2)}`
-        this.trendTarget.className = "text-sm text-danger"
-      } else {
-        this.trendTarget.textContent = "→ stable"
-        this.trendTarget.className = "text-sm text-text-muted"
-      }
+  update(event) {
+    const payload = event.detail
+    
+    // Attempt to locate the value in the hardware payload based on the widget label (e.g. "altitude")
+    const searchKey = this.dataKeyValue.toLowerCase()
+    
+    if (payload[searchKey] !== undefined) {
+      // Securely update DOM elements dynamically bypassing any complex virtual DOM overhead!
+      this.valueTarget.textContent = payload[searchKey]
+      
+      // Update the UI "Awaiting Signal" sequence to indicate active physical connection!
+      this.statusTarget.textContent = "[ SIGNAL ACTIVE ]"
+      this.statusTarget.classList.remove("text-[#C1440E]", "animate-pulse")
+      this.statusTarget.classList.add("text-[#17B876]", "drop-shadow-[0_0_8px_rgba(23,184,118,0.5)]")
+      
+      // Create a micro-animation flash on the value text for highly professional feedback!
+      this.valueTarget.style.color = "#17B876"
+      setTimeout(() => {
+        this.valueTarget.style.color = "#E5E5E5"
+      }, 500)
     }
-
-    this.previousValue = current
   }
 }

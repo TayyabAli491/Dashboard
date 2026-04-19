@@ -39,11 +39,23 @@
             <%# Mars Glow Edge Effect %>
             <div class="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-[#C1440E]/40 to-transparent"></div>
             
-            <div class="w-12 h-12 rounded bg-[#1A1C23] border border-[#2A2B30] flex items-center justify-center mb-3 text-[#E77D11]">
-              <i class="fa-solid fa-shapes text-lg drop-shadow-[0_0_8px_rgba(231,125,17,0.5)]"></i>
-            </div>
-            <div class="font-bold text-lg text-[#E5E5E5] tracking-wide"><%= widget['label'] %></div>
-            <div class="text-[10px] font-semibold text-[#C1440E] uppercase tracking-[0.2em] mt-2 animate-pulse">Awaiting Signal...</div>
+            <div class="font-bold text-[#E5E5E5] absolute top-3 left-4 opacity-70 tracking-widest uppercase text-[10px]"><%= widget['label'] %></div>
+
+            <% if widget['type'] == 'Value Card' %>
+              <div class="flex flex-col items-center justify-center w-full h-full pt-4"
+                   data-controller="value-card" 
+                   data-action="telemetry:received@document->value-card#update" 
+                   data-value-card-data-key-value="<%= widget['label'].downcase %>">
+                   
+                <div data-value-card-target="value" class="text-5xl text-[#E5E5E5] font-mono font-bold transition-colors duration-300 drop-shadow-md">--</div>
+                <div data-value-card-target="status" class="text-[9px] font-semibold text-[#C1440E] uppercase tracking-[0.25em] mt-3 animate-pulse">[ AWAITING PING ]</div>
+              </div>
+            <% else %>
+              <div class="w-12 h-12 rounded bg-[#1A1C23] border border-[#2A2B30] flex items-center justify-center mb-3 text-[#E77D11]">
+                <i class="fa-solid fa-shapes text-lg drop-shadow-[0_0_8px_rgba(231,125,17,0.5)]"></i>
+              </div>
+              <div class="text-[10px] font-semibold text-[#C1440E] uppercase tracking-[0.2em] mt-2 animate-pulse">[ AWAITING PING ]</div>
+            <% end %>
           </div>
         </div>
       <% end %>

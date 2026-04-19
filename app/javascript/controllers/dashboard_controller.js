@@ -1,4 +1,5 @@
 import { Controller } from "@hotwired/stimulus"
+import consumer from "channels/consumer"
 
 export default class extends Controller {
   static targets = ["grid"]
@@ -16,6 +17,30 @@ export default class extends Controller {
     // Listen for events
     this.element.addEventListener("widget-form:add", this.addWidget.bind(this))
     this.element.addEventListener("dashboard:remove-widget", this.removeWidget.bind(this))
+
+    if (this.editModeValue === false) {
+      // LIVE MODE: Connect to the backend IoT ingestion WebSocket pipeline automatically!
+      console.log(`[IoT UPLINK] Establishing WebSocket Tunnel for Workspace ${this.workspaceIdValue}...`)
+      
+      this.telemetrySubscription = consumer.subscriptions.create(
+        { channel: "TelemetryChannel", workspace_id: this.workspaceIdValue },
+        {
+          received: (telemetryRecord) => {
+            console.log("[IoT PACKET RECEIVED]", telemetryRecord.raw_payload)
+            // Dynamically blast this incoming packet throughout the DOM so deeply nested Stimulus widgets can self-hydrate!
+            const event = new CustomEvent("telemetry:received", { detail: telemetryRecord.raw_payload })
+            document.dispatchEvent(event)
+          }
+        }
+      )
+    }
+  }
+
+  disconnect() {
+    if (this.telemetrySubscription) {
+      console.log("[IoT UPLINK] Terminating WebSocket Tunnel...")
+      this.telemetrySubscription.unsubscribe()
+    }
   }
 
   initGrid() {
@@ -122,7 +147,6 @@ export default class extends Controller {
     const emptyState = this.element.querySelector('.empty-state-overlay')
     if (emptyState) {
       emptyState.style.opacity = '0'
-      // Option: hide after fade
       setTimeout(() => emptyState.style.display = 'none', 300)
     }
 
