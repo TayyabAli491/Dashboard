@@ -35,6 +35,8 @@
         </code>
         <button class="btn-ghost text-sm"
                 data-controller="clipboard"
+                data-action="clipboard#copy"
+                data-clipboard-target="button"
                 data-clipboard-text-value="<%= request.base_url %>/api/workspaces/<%= @workspace.id %>/telemetry">
           Copy
         </button>
@@ -43,13 +45,24 @@
 
     <div>
       <p class="section-label mb-2">API Key</p>
-      <div class="flex items-center gap-3 p-3
-                  bg-glass-subtle rounded-lg
-                  border border-border">
-        <code class="mono flex-1">••••••••••••••••</code>
-        <button class="btn-ghost text-sm">Reveal</button>
-        <button class="btn-ghost text-sm">Copy</button>
-        <button class="btn-danger text-sm">Regenerate</button>
+      <div class="flex items-center gap-3 p-3 bg-glass-subtle rounded-lg border border-border"
+           data-controller="reveal"
+           data-reveal-api-key-value="<%= @workspace.api_key %>">
+        <code class="mono flex-1" data-reveal-target="value">••••••••••••••••</code>
+        <button class="btn-ghost text-sm" 
+                data-action="click->reveal#toggle" 
+                data-reveal-target="button">Reveal</button>
+        <button class="btn-ghost text-sm" 
+                data-controller="clipboard" 
+                data-action="clipboard#copy"
+                data-clipboard-target="button"
+                data-clipboard-text-value="<%= @workspace.api_key %>">Copy</button>
+        
+        <%= button_to "Regenerate",
+              workspace_path(@workspace, regenerate_api_key: true),
+              method: :patch,
+              data: { turbo: false, confirm: "Regenerating will invalidate your current hardware connection immediately. Are you sure?" },
+              class: "btn-danger text-sm" %>
       </div>
       <p class="input-error mt-2">
         Regenerating invalidates your current key immediately

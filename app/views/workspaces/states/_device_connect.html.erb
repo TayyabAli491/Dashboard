@@ -34,6 +34,8 @@
         <code><%= request.base_url %>/api/workspaces/<%= @workspace.id %>/telemetry</code>
         <button class="btn-secondary text-xs"
                 data-controller="clipboard"
+                data-action="clipboard#copy"
+                data-clipboard-target="button"
                 data-clipboard-text-value="<%= request.base_url %>/api/workspaces/<%= @workspace.id %>/telemetry">
           <i class="fa-regular fa-copy"></i> Copy
         </button>
@@ -43,18 +45,17 @@
     <%# API key %>
     <div>
       <p class="section-label mb-2">API Key</p>
-      <div class="dc-credential-row">
-        <code data-reveal-target="value"
-              data-value="<%= @workspace.api_key %>">
-          ••••••••••••••••
-        </code>
+      <div class="dc-credential-row"
+           data-controller="reveal"
+           data-reveal-api-key-value="<%= @workspace.api_key %>">
+        <code data-reveal-target="value">••••••••••••••••</code>
         <button class="btn-secondary text-xs"
-                data-controller="reveal"
-                data-reveal-target="toggle">
-          <i class="fa-regular fa-eye"></i> Reveal
-        </button>
+                data-action="click->reveal#toggle"
+                data-reveal-target="button">Reveal</button>
         <button class="btn-secondary text-xs"
                 data-controller="clipboard"
+                data-action="clipboard#copy"
+                data-clipboard-target="button"
                 data-clipboard-text-value="<%= @workspace.api_key %>">
           <i class="fa-regular fa-copy"></i> Copy
         </button>
