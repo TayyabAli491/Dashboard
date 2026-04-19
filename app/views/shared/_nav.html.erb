@@ -12,40 +12,37 @@
   </div>
 
   <div class="nav-label">Navigation</div>
-  <%= link_to workspaces_path, class: "nav-item active" do %>
+  <%= link_to workspaces_path, class: "nav-item #{current_page?(workspaces_path) ? 'active' : ''}" do %>
     <i class="fa-solid fa-layer-group fa-lg fa-fw"></i>
     Workspaces
   <% end %>
-  
-  <!-- Add actual links if these routes exist, placeholder for now -->
-  <a href="#" class="nav-item">
-    <i class="fa-solid fa-wave-square fa-fw"></i>
-    Telemetry
-  </a>
-  <a href="#" class="nav-item">
-    <i class="fa-solid fa-microchip fa-lg fa-fw"></i>
-    Devices
-  </a>
-  <a href="#" class="nav-item">
-    <i class="fa-solid fa-rocket fa-lg fa-fw"></i>
-    Flights
-  </a>
-  <a href="#" class="nav-item">
-    <i class="fa-solid fa-key fa-lg fa-fw"></i>
-    API Keys
-  </a>
+
+  <% if defined?(@workspace) && @workspace.present? %>
+    <%= link_to workspace_sessions_path(@workspace), class: "nav-item #{current_page?(workspace_sessions_path(@workspace)) ? 'active' : ''}" do %>
+      <i class="fa-solid fa-list-check fa-fw"></i>
+      Sessions
+    <% end %>
+    <%= link_to workspace_telemetry_records_path(@workspace), class: "nav-item #{current_page?(workspace_telemetry_records_path(@workspace)) ? 'active' : ''}" do %>
+      <i class="fa-solid fa-wave-square fa-fw"></i>
+      Telemetry
+    <% end %>
+    <%= link_to workspace_payload_schema_path(@workspace), class: "nav-item #{current_page?(workspace_payload_schema_path(@workspace)) ? 'active' : ''}" do %>
+      <i class="fa-solid fa-diagram-project fa-fw"></i>
+      Payload Schema
+    <% end %>
+    <%= link_to live_dashboard_workspace_path(@workspace), class: "nav-item #{current_page?(live_dashboard_workspace_path(@workspace)) ? 'active' : ''}" do %>
+      <i class="fa-solid fa-satellite fa-fw"></i>
+      Live Dashboard
+    <% end %>
+  <% end %>
 
   <div class="nav-spacer"></div>
 
   <div class="nav-label">Account</div>
-  <a href="#" class="nav-item">
+  <%= link_to edit_user_registration_path, class: "nav-item #{current_page?(edit_user_registration_path) ? 'active' : ''}" do %>
     <i class="fa-solid fa-circle-user fa-lg fa-fw"></i>
     Profile
-  </a>
-  <a href="#" class="nav-item">
-    <i class="fa-solid fa-sliders fa-lg fa-fw"></i>
-    Settings
-  </a>
+  <% end %>
   <%= link_to destroy_user_session_path, data: { turbo_method: :delete }, class: "nav-item hover:!text-red-600 hover:!bg-red-50 transition-colors group" do %>
     <i class="fa-solid fa-right-from-bracket fa-lg fa-fw group-hover:!text-red-600"></i>
     Sign Out

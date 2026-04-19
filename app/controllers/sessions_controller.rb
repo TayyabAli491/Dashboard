@@ -4,7 +4,12 @@ class SessionsController < ApplicationController
   before_action :find_session_belonging_to_workspace, only: %i[show edit update destroy]
 
   def index
-    @sessions = @workspace.sessions.most_recent_first
+    @status_filter = params[:status].presence
+
+    scope = @workspace.sessions
+    scope = scope.where(status: @status_filter) if @status_filter.in?(Session.statuses.keys)
+
+    @sessions = scope.most_recent_first
   end
 
   def show

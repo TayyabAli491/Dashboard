@@ -24,9 +24,15 @@
         <div class="flex items-center justify-between mb-5">
            <div class="text-[12px] font-semibold text-[#6B6560] uppercase tracking-widest">History Log</div>
            <div class="flex gap-2">
-             <div class="pill active px-3 py-1">All</div>
-             <div class="pill px-3 py-1">Active</div>
-             <div class="pill px-3 py-1">Completed</div>
+             <%= link_to "All",
+                         workspace_sessions_path(@workspace),
+                         class: "pill px-3 py-1 #{params[:status].blank? ? 'active' : ''}" %>
+             <%= link_to "Active",
+                         workspace_sessions_path(@workspace, status: "in_progress"),
+                         class: "pill px-3 py-1 #{params[:status] == 'in_progress' ? 'active' : ''}" %>
+             <%= link_to "Completed",
+                         workspace_sessions_path(@workspace, status: "completed"),
+                         class: "pill px-3 py-1 #{params[:status] == 'completed' ? 'active' : ''}" %>
            </div>
         </div>
 

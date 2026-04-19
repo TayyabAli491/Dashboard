@@ -1,4 +1,4 @@
-<div class="card p-0 overflow-hidden shadow-sm">
+<div class="card p-0 overflow-hidden shadow-sm" data-controller="tabs">
   <div class="card-accent blue"></div>
   <div class="p-6">
     <div class="flex items-center justify-between mb-8">
@@ -12,12 +12,24 @@
          </div>
       </div>
       <div class="flex bg-[#F7F5F1] p-1 rounded-lg border border-[#E8E4DD] shadow-inner">
-         <button class="px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-[#1A1A1A] bg-white rounded-md shadow-sm border border-[#E8E4DD]">Table View</button>
-         <button class="px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-[#6B6560] hover:text-[#1A1A1A] transition-colors">JSON Raw</button>
+         <a href="#table"
+            data-tabs-target="tab"
+            data-action="tabs#select"
+            class="px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded-md transition-colors"
+            aria-selected="false">
+           Table View
+         </a>
+         <a href="#json"
+            data-tabs-target="tab"
+            data-action="tabs#select"
+            class="px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded-md transition-colors"
+            aria-selected="false">
+           JSON Raw
+         </a>
       </div>
     </div>
 
-    <div class="overflow-hidden rounded-xl border border-[#E8E4DD] bg-white shadow-sm">
+    <div id="table" data-tabs-target="panel" class="overflow-hidden rounded-xl border border-[#E8E4DD] bg-white shadow-sm">
       <table class="min-w-full text-left border-collapse">
         <thead>
           <tr class="bg-[#F7F5F1]/80 backdrop-blur-sm">
@@ -89,6 +101,30 @@
       </table>
     </div>
 
+    <div id="json" data-tabs-target="panel" class="hidden overflow-hidden rounded-xl border border-[#E8E4DD] bg-[#1A1A1A] shadow-inner">
+      <div class="p-6 space-y-4">
+        <% telemetry_records.each do |record| %>
+          <div class="rounded-xl border border-white/10 bg-black/20 overflow-hidden">
+            <div class="px-5 py-3 flex items-center justify-between border-b border-white/10">
+              <div class="text-[10px] font-bold text-blue-300 uppercase tracking-widest">
+                <%= record.recorded_at.strftime("%b %d, %Y %H:%M:%S.%L") %>
+              </div>
+              <%= link_to "Open",
+                          telemetry_record_path(record),
+                          class: "text-[10px] font-bold uppercase tracking-widest text-[#B5B0A8] hover:text-white transition-colors" %>
+            </div>
+            <pre class="text-[12px] font-mono leading-relaxed text-blue-100/90 overflow-x-auto selection:bg-blue-500/30 p-5"><%= JSON.pretty_generate(record.raw_payload || {}) %></pre>
+          </div>
+        <% end %>
+
+        <% if telemetry_records.empty? %>
+          <div class="py-10 text-center text-[13px] font-medium text-blue-100/70">
+            No telemetry packets received yet.
+          </div>
+        <% end %>
+      </div>
+    </div>
+
     <% if total_pages > 1 %>
       <div class="mt-8 flex items-center justify-between pt-6 border-t border-[#E8E4DD]">
         <div class="text-[12px] text-[#6B6560] font-medium">
@@ -96,7 +132,8 @@
         </div>
         <div class="flex gap-2">
           <% if page > 1 %>
-            <%= link_to session_path(session, page: page - 1), class: "btn-secondary !py-2 !px-4 shadow-sm" do %>
+            <%= link_to session_path(session, page: page - 1) + (request.fullpath.include?("#json") ? "#json" : ""),
+                        class: "btn-secondary !py-2 !px-4 shadow-sm" do %>
               <i class="fa-solid fa-chevron-left mr-2"></i> Previous
             <% end %>
           <% else %>
@@ -106,7 +143,8 @@
           <% end %>
 
           <% if page < total_pages %>
-            <%= link_to session_path(session, page: page + 1), class: "btn-secondary !py-2 !px-4 shadow-sm" do %>
+            <%= link_to session_path(session, page: page + 1) + (request.fullpath.include?("#json") ? "#json" : ""),
+                        class: "btn-secondary !py-2 !px-4 shadow-sm" do %>
               Next <i class="fa-solid fa-chevron-right ml-2"></i>
             <% end %>
           <% else %>
