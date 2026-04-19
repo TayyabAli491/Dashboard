@@ -1,11 +1,13 @@
 class PayloadSchema < ApplicationRecord
+  ALLOWED_TYPES = %w[float integer numeric string boolean].freeze
+
   validates :fields, presence: true
-  validate :all_fields_have_required_keys
+  validate :validate_field_definitions
 
   belongs_to :workspace
 
   def field_keys
-    fields.filter_map { |field| field["key"] || field[:key] }.map(&:to_s)
+    fields.map { |f| f["key"].to_s }.compact_blank
   end
 
   def valid_incoming_payload?(incoming_payload_hash)
@@ -16,33 +18,32 @@ class PayloadSchema < ApplicationRecord
 
   private
 
-  def all_fields_have_required_keys
-    return if fields.blank?
-
+  def validate_field_definitions
     unless fields.is_a?(Array)
       errors.add(:fields, "must be an array of field definitions")
       return
     end
 
-    allowed_types = %w[float integer string boolean]
+    fields.each_with_index do |field, index|
+      validate_entry(field, index)
+    end
+  end
 
-    fields.each do |field|
-      unless field.is_a?(Hash)
-        errors.add(:fields, "must contain hashes with key, type, and unit")
-        next
-      end
+  def validate_entry(field, index)
+    prefix = "Field ##{index + 1}"
 
-      key = field["key"] || field[:key]
-      type = field["type"] || field[:type]
-      unit = field["unit"] || field[:unit]
+    unless field.is_a?(Hash)
+      errors.add(:fields, "#{prefix} must be a JSON object")
+      return
+    end
 
-      errors.add(:fields, "must include key") if key.blank?
-      errors.add(:fields, "must include type") if type.blank?
-      errors.add(:fields, "must include unit") if unit.blank?
+    errors.add(:fields, "#{prefix} is missing a 'key'") if field["key"].blank?
 
-      next if type.blank?
-
-      errors.add(:fields, "type must be one of: #{allowed_types.join(', ')}") unless allowed_types.include?(type.to_s)
+    type = field["type"]
+    if type.blank?
+      errors.add(:fields, "#{prefix} is missing a 'type'")
+    elsif !ALLOWED_TYPES.include?(type.to_s)
+      errors.add(:fields, "#{prefix} has invalid type '#{type}'. Use: #{ALLOWED_TYPES.join(', ')}")
     end
   end
 end
