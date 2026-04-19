@@ -2,7 +2,9 @@
   <%= render "shared/nav" %>
 
   <main class="main-content">
-    <% if @workspace.schema_missing? %>
+    <% if params[:step] == '3' %>
+      <%= render "workspaces/states/dashboard_designer" %>
+    <% elsif @workspace.schema_missing? %>
       <%= render "workspaces/states/onboarding" %>
     <% elsif @workspace.awaiting_first_data? %>
       <%= render "workspaces/states/device_connect" %>

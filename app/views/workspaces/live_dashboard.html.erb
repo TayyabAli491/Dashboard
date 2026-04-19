@@ -13,7 +13,9 @@
   <div class="absolute top-0 left-0 w-full flex justify-between items-center px-8 py-6 z-20 pointer-events-auto bg-gradient-to-b from-[#0B0C10] to-transparent">
     <div class="flex items-center gap-4">
       <h1 class="text-2xl font-bold tracking-widest text-[#E5E5E5] uppercase"><%= @workspace.name %> <span class="text-[#C1440E] opacity-70">/// ORBITAL</span></h1>
-      <% if @active_session %>
+      <% if @workspace.awaiting_first_data? %>
+        <div class="px-3 py-1 text-xs font-bold text-[#A32D2D] border border-[#A32D2D] rounded-sm bg-[#A32D2D]/10 flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-[#A32D2D] animate-pulse"></span> DISCONNECTED</div>
+      <% elsif @active_session %>
         <div class="px-3 py-1 text-xs font-bold text-[#E77D11] border border-[#E77D11] rounded-sm bg-[#E77D11]/10 flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-[#E77D11] animate-pulse"></span> <%= @active_session.name %> (LIVE)</div>
       <% else %>
         <div class="px-3 py-1 text-xs font-bold text-[#666] border border-[#444] rounded-sm flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-[#666]"></span> NO UPLINK</div>
@@ -48,13 +50,21 @@
                    data-value-card-data-key-value="<%= widget['label'].downcase %>">
                    
                 <div data-value-card-target="value" class="text-5xl text-[#E5E5E5] font-mono font-bold transition-colors duration-300 drop-shadow-md">--</div>
-                <div data-value-card-target="status" class="text-[9px] font-semibold text-[#C1440E] uppercase tracking-[0.25em] mt-3 animate-pulse">[ AWAITING PING ]</div>
+                <% if @workspace.awaiting_first_data? %>
+                  <div data-value-card-target="status" class="text-[9px] font-semibold text-[#A32D2D] uppercase tracking-[0.25em] mt-3 animate-pulse">[ NO DATA RECEIVED ]</div>
+                <% else %>
+                  <div data-value-card-target="status" class="text-[9px] font-semibold text-[#C1440E] uppercase tracking-[0.25em] mt-3 animate-pulse">[ AWAITING PING ]</div>
+                <% end %>
               </div>
             <% else %>
               <div class="w-12 h-12 rounded bg-[#1A1C23] border border-[#2A2B30] flex items-center justify-center mb-3 text-[#E77D11]">
                 <i class="fa-solid fa-shapes text-lg drop-shadow-[0_0_8px_rgba(231,125,17,0.5)]"></i>
               </div>
-              <div class="text-[10px] font-semibold text-[#C1440E] uppercase tracking-[0.2em] mt-2 animate-pulse">[ AWAITING PING ]</div>
+              <% if @workspace.awaiting_first_data? %>
+                <div class="text-[10px] font-semibold text-[#A32D2D] uppercase tracking-[0.2em] mt-2 animate-pulse">[ NO DATA RECEIVED ]</div>
+              <% else %>
+                <div class="text-[10px] font-semibold text-[#C1440E] uppercase tracking-[0.2em] mt-2 animate-pulse">[ AWAITING PING ]</div>
+              <% end %>
             <% end %>
           </div>
         </div>

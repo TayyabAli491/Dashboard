@@ -20,7 +20,7 @@ Rails.application.routes.draw do
       patch :save_layout
       get :live_dashboard
     end
-    resource :payload_schema, only: %i[edit update]
+    resource :payload_schema, only: %i[new create edit update]
     resources :telemetry_records, only: :index
     resources :sessions, shallow: true do
       resources :telemetry_records, only: %i[index show], shallow: true

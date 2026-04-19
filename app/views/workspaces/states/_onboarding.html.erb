@@ -1,9 +1,6 @@
 <div class="flex flex-col items-center justify-center
             min-h-[70vh] gap-10 py-8">
 
-  <%# ── Stepper ── %>
-  <%= render "workspaces/states/stepper", current_step: 1 %>
-
   <%# ── Content ── %>
   <div class="flex flex-col items-center gap-4 text-center max-w-md">
     <div class="w-16 h-16 rounded-full bg-[#1A1A1A] flex items-center justify-center shadow-[0_0_0_6px_rgba(26,26,26,0.06),0_4px_16px_rgba(26,26,26,0.12)]">
@@ -40,7 +37,7 @@
         </p>
       </div>
       <%= link_to 'Get Started',
-            edit_workspace_payload_schema_path(@workspace),
+            new_workspace_payload_schema_path(@workspace),
             class: 'btn-primary' %>
     </div>
 
@@ -48,7 +45,7 @@
 
   <%# ── Navigation ── %>
   <div class="stepper-nav stepper-nav-end">
-    <%= link_to workspace_path(@workspace), class: "btn-skip" do %>
+    <%= link_to workspace_path(@workspace, step: 3), class: "btn-skip text-[#1A1A1A] font-semibold" do %>
       Skip for now <i class="fa-solid fa-arrow-right fa-xs"></i>
     <% end %>
   </div>

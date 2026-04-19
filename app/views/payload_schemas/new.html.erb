@@ -1,0 +1,107 @@
+<div class="page-wrap">
+  <%= render "shared/nav" %>
+
+  <main class="main-content">
+    <div class="topbar">
+      <div class="flex-1">
+        <%= render "workspaces/states/stepper", current_step: 1 %>
+        <h1 class="page-title mt-4">Define <em>Payload Schema</em></h1>
+      </div>
+    </div>
+
+    <% payload_schema = @workspace.payload_schema || @workspace.build_payload_schema(fields: []) %>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <!-- Editor Column -->
+      <div class="lg:col-span-2">
+        <div class="card p-0 overflow-hidden shadow-sm">
+          <div class="card-accent blue"></div>
+          <div class="p-6">
+            <div class="flex items-center justify-between mb-6">
+              <div class="flex items-center gap-3">
+                <div class="card-icon">
+                  <i class="fa-solid fa-code"></i>
+                </div>
+                <div>
+                  <h2 class="card-title text-base mt-0 mb-0.5">Define JSON Schema</h2>
+                  <div class="text-[11px] text-[#9E9891]">Tell ArckOne what structure to expect from your module</div>
+                </div>
+              </div>
+            </div>
+
+            <%= form_with scope: :payload_schema, url: workspace_payload_schema_path(@workspace), method: :post, class: "flex flex-col gap-6" do |form| %>
+              <div class="relative">
+                <div class="absolute top-3 right-3 flex gap-2">
+                  <div class="text-[9px] font-bold text-[#fb5d08] uppercase tracking-widest bg-white/80 px-2 py-0.5 rounded border border-[#E8E4DD]">JSON EDITOR</div>
+                </div>
+                <%= form.text_area :fields_json,
+                                   value: JSON.pretty_generate(payload_schema.fields || []),
+                                   rows: 15,
+                                   class: "w-full bg-[#1A1A1A] text-blue-100 font-mono text-[13px] leading-relaxed p-6 rounded-xl border border-[#333] focus:outline-none focus:ring-2 focus:ring-blue-500/30 transition-all shadow-inner",
+                                   placeholder: "[\n  { \"key\": \"temp\", \"type\": \"numeric\", \"unit\": \"C\" }\n]" %>
+                <% if payload_schema.errors[:fields].any? %>
+                  <div class="bg-[#FCEBEB] border border-[#F7C1C1] text-[#A32D2D] text-[12px] font-medium p-3 rounded-lg mt-3 flex items-center gap-2">
+                    <i class="fa-solid fa-circle-exclamation"></i>
+                    <%= payload_schema.errors.full_messages_for(:fields).first %>
+                  </div>
+                <% end %>
+              </div>
+
+              <div class="flex items-center justify-end gap-3 pt-6 border-t border-[#E8E4DD] mt-auto">
+                 <button type="submit" class="btn-primary">
+                    Next: Connect Device
+                 </button>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+
+      <!-- Documentation Column -->
+      <div class="flex flex-col gap-6">
+        <div class="card p-0 shadow-sm">
+          <div class="p-6">
+            <h3 class="text-[12px] font-bold text-[#1A1A1A] uppercase tracking-widest mb-4">Required Fields</h3>
+            <div class="space-y-4">
+              <div>
+                <div class="text-[11px] font-bold text-[#6B6560] mb-1">KEY (Required)</div>
+                <div class="text-[12px] text-[#9E9891] leading-relaxed">The exact JSON key your telemetry uses. Must be flat keys.</div>
+              </div>
+              <div>
+                <div class="text-[11px] font-bold text-[#6B6560] mb-1">TYPE</div>
+                <div class="text-[12px] text-[#9E9891] leading-relaxed">Valid options: <code class="bg-[#F7F5F1] px-1 rounded text-[#1A1A1A]">numeric</code>, <code class="bg-[#F7F5F1] px-1 rounded text-[#1A1A1A]">string</code>, <code class="bg-[#F7F5F1] px-1 rounded text-[#1A1A1A]">boolean</code>. Default is numeric.</div>
+              </div>
+              <div>
+                <div class="text-[11px] font-bold text-[#6B6560] mb-1">UNIT & ALIAS</div>
+                <div class="text-[12px] text-[#9E9891] leading-relaxed">Optional visual modifiers (e.g. m/s, Altitude).</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card p-0 bg-[#FAEEDA]/30 border-[#FAC775] shadow-sm">
+          <div class="p-6">
+            <div class="flex items-center gap-2 text-[#854F0B] mb-3">
+              <i class="fa-solid fa-lightbulb"></i>
+              <span class="text-[11px] font-bold uppercase tracking-wider">Example Config</span>
+            </div>
+            <pre class="text-[10px] font-mono text-[#854F0B]/80 leading-relaxed">[
+  {
+    "key": "alt",
+    "type": "numeric",
+    "unit": "m",
+    "alias": "Baro Altitude"
+  },
+  {
+    "key": "extT",
+    "type": "numeric",
+    "unit": "°C",
+    "alias": "External Temp"
+  }
+]</pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
