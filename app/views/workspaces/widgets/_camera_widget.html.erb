@@ -1,0 +1,39 @@
+<%# Live Camera Feed Widget %>
+<div class="widget-card flex-none flex flex-col h-full" style="--accent: rgba(217,70,239,0.5); position:relative; overflow:hidden;"
+     data-controller="camera-feed"
+     data-camera-feed-workspace-id-value="<%= workspace_id %>">
+  
+  <div class="widget-header z-10 absolute bg-[#0b0d14]/90 backdrop-blur top-0 left-0 right-0">
+    <span>OPTICAL PAYLOAD — CAM 01</span>
+    <div class="flex items-center gap-2">
+      <span class="text-[0.45rem] font-bold text-[#d946ef] animate-pulse uppercase tracking-[0.2em]">Live REC</span>
+      <span class="live-dot bg-[#d946ef]"></span>
+    </div>
+  </div>
+
+  <div class="flex-1 w-full h-full relative mt-7 rounded-[8px] overflow-hidden bg-[#050810] border border-[#1a1d2e] flex items-center justify-center">
+    
+    <%# The actual image container %>
+    <img data-camera-feed-target="feed" 
+         src="" 
+         class="w-full h-full object-cover hidden" 
+         alt="Live satellite feed" />
+    
+    <%# Empty state (waiting for signal) %>
+    <div data-camera-feed-target="offline" class="flex flex-col items-center justify-center opacity-40">
+      <div class="text-2xl mb-2 opacity-50">📡</div>
+      <div class="text-[0.55rem] tracking-[0.2em] font-mono text-[#666]">AWAITING SIGNAL</div>
+    </div>
+
+    <%# Scanline / CRT overlay effect (pointer-events-none so it doesnt block right-click saving) %>
+    <div class="pointer-events-none absolute inset-0 mix-blend-overlay opacity-30" 
+         style="background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.8) 2px, rgba(0,0,0,0.8) 4px);"></div>
+    
+    <%# Dynamic Timestamp Overlay %>
+    <div class="absolute bottom-2 left-2 px-2 py-1 bg-[#050810]/70 backdrop-blur text-[0.45rem] font-mono text-[#E5E5E5] tracking-[0.1em] rounded-sm hidden"
+         data-camera-feed-target="timestamp">
+      SYS: --
+    </div>
+
+  </div>
+</div>

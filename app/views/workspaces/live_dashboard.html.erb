@@ -29,14 +29,8 @@
 
       <%= render "workspaces/widgets/attitude_widget", workspace_id: @workspace.id %>
 
-      <%# Center — shows raw background + live clock %>
-      <div class="flex-1 min-w-0 flex flex-col items-center justify-center gap-3 opacity-60">
-        <div class="text-center">
-          <div class="text-[0.55rem] tracking-[0.35em] text-[#6366F1]/60 uppercase mb-2">// Telemetry Feed //</div>
-          <div class="text-[0.5rem] tracking-[0.2em] text-[#444] uppercase" id="center-clock">00:00:00 UTC</div>
-        </div>
-        <div style="width:1px; height:60px; background: linear-gradient(to bottom, transparent, rgba(99,102,241,0.3), transparent);"></div>
-        <div class="text-[0.48rem] tracking-[0.18em] text-[#333] uppercase">ARCKONE v2.1 · CANSAT</div>
+      <div class="flex-1 min-w-0" style="display:flex; flex-direction:column;">
+        <%= render "workspaces/widgets/camera_widget", workspace_id: @workspace.id %>
       </div>
 
       <%= render "workspaces/widgets/gps_widget", workspace_id: @workspace.id %>

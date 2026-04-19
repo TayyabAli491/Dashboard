@@ -40,6 +40,22 @@ module Api
       end
     end
 
+    # POST /api/workspaces/:id/images
+    def images
+      raw_payload = params.slice(:iimage, :timestamp).to_unsafe_h
+
+      if raw_payload[:iimage].present?
+        # Stream it directly without persisting it slowly to database
+        ActionCable.server.broadcast(
+          "workspace_camera_#{@workspace.id}",
+          raw_payload
+        )
+        render json: { success: true, processed: true }, status: :created
+      else
+        render json: { error: "Missing iimage data" }, status: :unprocessable_entity
+      end
+    end
+
     private
 
     def authenticate_hardware!

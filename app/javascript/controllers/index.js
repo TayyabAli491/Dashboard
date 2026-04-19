@@ -45,3 +45,6 @@ application.register("widget-form", WidgetFormController)
 
 import LiveTelemetryController from "controllers/live_telemetry_controller"
 application.register("live-telemetry", LiveTelemetryController)
+
+import CameraFeedController from "controllers/camera_feed_controller"
+application.register("camera-feed", CameraFeedController)
