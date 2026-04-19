@@ -1,0 +1,11 @@
+<%# MPU6050 3D CanSat Attitude Widget %>
+<div class="widget-card accent-violet flex-none" style="width:38%; position:relative;">
+  <div class="widget-header">
+    <span>MPU6050 — CanSat Attitude</span>
+    <span class="text-[#8b5cf6] text-[0.55rem] font-bold tracking-wider" data-attitude-3d-target="stats">P: 0.0° R: 0.0° Y: 0.0°</span>
+  </div>
+  <div class="absolute inset-0 pt-8 rounded-[10px] overflow-hidden"
+       data-controller="attitude-3d"
+       data-attitude-3d-workspace-id-value="<%= workspace_id %>">
+  </div>
+</div>

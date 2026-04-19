@@ -1,0 +1,14 @@
+<%# GPS NEO-6M Map Widget %>
+<div class="widget-card accent-cyan flex-none" style="width:38%; position:relative;">
+  <div class="widget-header z-10 absolute bg-[#0b0d14]/90 backdrop-blur top-0 left-0 right-0">
+    <span>GPS NEO-6M — Position Feed</span>
+    <span class="live-dot bg-[#06B6D4]"></span>
+  </div>
+  <div class="absolute inset-0 pt-8 rounded-[10px] overflow-hidden">
+    <div class="w-full h-full"
+         data-controller="gps-map"
+         data-gps-map-workspace-id-value="<%= workspace_id %>"
+         data-gps-map-follow-value="true">
+    </div>
+  </div>
+</div>

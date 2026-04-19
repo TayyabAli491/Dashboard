@@ -1,0 +1,50 @@
+<%# BMP280 Pressure Widget %>
+<div class="sensor-card" style="--accent: rgba(16,185,129,0.6);">
+  <div class="sc-header">
+    <div class="sc-header-left">
+      <div class="sc-icon" style="background:rgba(16,185,129,0.12);color:#10B981;">📡</div>
+      <div>
+        <div class="sc-title">BMP280</div>
+        <div class="sc-subtitle">Pressure &middot; hPa</div>
+      </div>
+    </div>
+    <span class="sc-badge" style="color:#10B981;">ACTIVE</span>
+  </div>
+
+  <div class="sc-value-row"
+       data-controller="value-card"
+       data-action="telemetry:received@window->value-card#update"
+       data-value-card-data-key-value="pressure">
+    <div class="sc-big" style="color:#10B981;"><span data-value-card-target="value" id="pres-val">1013</span></div>
+    <span class="sc-unit">hPa</span>
+    <div data-value-card-target="status" class="hidden"></div>
+  </div>
+
+  <div class="sc-scale-wrap">
+    <div class="sc-scale-bar" style="background: linear-gradient(90deg, #06B6D4, #10B981, #84cc16, #F59E0B);">
+      <div class="sc-scale-marker" id="pres-marker" style="left:75%;"></div>
+    </div>
+    <div class="sc-scale-labels"><span>900</span><span>950</span><span>1000</span><span>1025</span><span>1050</span></div>
+  </div>
+
+  <div class="sc-stats" style="padding-top:6px; padding-bottom:4px;">
+    <div class="sc-stat"><div class="sc-stat-l">Est. Altitude</div><div class="sc-stat-v" style="color:#10B981;" id="pres-alt">~12m</div></div>
+    <div class="sc-stat"><div class="sc-stat-l">Sea Level Ref.</div><div class="sc-stat-v">1013 <span style="font-size:0.6rem;color:#555;">hPa</span></div></div>
+  </div>
+
+  <div class="sc-chart-wrap" style="padding-top:0;">
+    <div class="sc-line-chart">
+      <svg id="pres-chart" preserveAspectRatio="none">
+        <defs>
+          <linearGradient id="presGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%"   stop-color="#10B981" stop-opacity="0.25"/>
+            <stop offset="100%" stop-color="#10B981" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+        <path id="pres-area" fill="url(#presGrad)"/>
+        <path id="pres-line" fill="none" stroke="#10B981" stroke-width="1.5" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <div class="sc-chart-time">seconds</div>
+  </div>
+</div>
