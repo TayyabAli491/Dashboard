@@ -6,11 +6,16 @@ export default class extends Controller {
     dataKey: String
   }
 
+  connect() {
+    console.log(`[WIDGET HOOK] Value Card initialized locally. Targeting semantic key: "${this.dataKeyValue}"`)
+  }
+
   update(event) {
     const payload = event.detail
     
     // Attempt to locate the value in the hardware payload based on the widget label (e.g. "altitude")
     const searchKey = this.dataKeyValue.toLowerCase()
+    console.log(`[WIDGET DATA] Value Card parsing payload for '${searchKey}':`, payload)
     
     if (payload[searchKey] !== undefined) {
       // Securely update DOM elements dynamically bypassing any complex virtual DOM overhead!
@@ -26,6 +31,8 @@ export default class extends Controller {
       setTimeout(() => {
         this.valueTarget.style.color = "#E5E5E5"
       }, 500)
+    } else {
+      console.log(`[WIDGET MISS] Payload did not contain expected key: '${searchKey}'`)
     }
   }
 }

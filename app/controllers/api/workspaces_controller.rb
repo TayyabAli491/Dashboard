@@ -6,12 +6,15 @@ module Api
     # We don't use Devise user sessions for hardware pings
     skip_before_action :authenticate_user!, raise: false
 
+    # Hardware is not a browser, skip modern browser checks
+    skip_before_action :allow_browser, raise: false
+
     before_action :authenticate_hardware!
 
     # POST /api/workspaces/:id/telemetry
     def telemetry
-      # We process either `_json` (if payload is array) or the raw robust body
-      raw_payload = request.request_parameters
+      # Robustly extract the sensor payload from the incoming request
+      raw_payload = params.except(:controller, :action, :id, :workspace).to_unsafe_h
 
       # Bind payload to an active session if one exists
       active_session = @workspace.sessions.in_progress.first
@@ -24,7 +27,7 @@ module Api
 
       if record.save
         # Payload successfully committed to database!
-        # Step 2: Instantly blast this payload across the Rails WebSocket 
+        # Step 2: Instantly blast this payload across the Rails WebSocket
         # to any browser heavily watching the Live Dashboard.
         ActionCable.server.broadcast(
           "workspace_#{@workspace.id}_telemetry",
@@ -40,11 +43,11 @@ module Api
     private
 
     def authenticate_hardware!
-      api_key = request.headers['X-API-Key']
+      api_key = request.headers["X-API-Key"]
 
       @workspace = Workspace.find_by(id: params[:id], api_key: api_key)
       unless @workspace
-        render json: { error: 'Unauthorized hardware API key' }, status: :unauthorized
+        render json: { error: "Unauthorized hardware API key" }, status: :unauthorized
       end
     end
   end

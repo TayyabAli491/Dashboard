@@ -29,7 +29,7 @@ export default class extends Controller {
             console.log("[IoT PACKET RECEIVED]", telemetryRecord.raw_payload)
             // Dynamically blast this incoming packet throughout the DOM so deeply nested Stimulus widgets can self-hydrate!
             const event = new CustomEvent("telemetry:received", { detail: telemetryRecord.raw_payload })
-            document.dispatchEvent(event)
+            window.dispatchEvent(event)
           }
         }
       )

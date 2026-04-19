@@ -44,7 +44,7 @@
             <% if widget['type'] == 'Value Card' %>
               <div class="flex flex-col items-center justify-center w-full h-full pt-4"
                    data-controller="value-card" 
-                   data-action="telemetry:received@document->value-card#update" 
+                   data-action="telemetry:received@window->value-card#update" 
                    data-value-card-data-key-value="<%= widget['label'].downcase %>">
                    
                 <div data-value-card-target="value" class="text-5xl text-[#E5E5E5] font-mono font-bold transition-colors duration-300 drop-shadow-md">--</div>
