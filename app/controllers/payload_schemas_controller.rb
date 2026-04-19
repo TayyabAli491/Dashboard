@@ -3,6 +3,8 @@ class PayloadSchemasController < ApplicationController
   before_action :find_workspace_belonging_to_current_user
   before_action :find_or_build_payload_schema
 
+  def show; end
+
   def new; end
 
   def create

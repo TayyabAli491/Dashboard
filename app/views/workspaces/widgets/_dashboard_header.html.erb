@@ -41,6 +41,27 @@
   </div>
 
   <div class="flex items-center gap-3">
+    <%= link_to workspace_sessions_path(workspace),
+                class: "px-3 py-1.5 text-[0.6rem] font-bold tracking-widest text-[#B5B0A8]
+                        border border-[#2A2B30] hover:border-[#6366F1] hover:text-[#6366F1]
+                        transition-all bg-[#0e0f16]/80 backdrop-blur-sm rounded-sm cursor-pointer" do %>
+      [ SESSIONS ]
+    <% end %>
+
+    <%= link_to workspace_telemetry_records_path(workspace),
+                class: "px-3 py-1.5 text-[0.6rem] font-bold tracking-widest text-[#B5B0A8]
+                        border border-[#2A2B30] hover:border-[#6366F1] hover:text-[#6366F1]
+                        transition-all bg-[#0e0f16]/80 backdrop-blur-sm rounded-sm cursor-pointer" do %>
+      [ STORED DATA ]
+    <% end %>
+
+    <%= link_to workspace_payload_schema_path(workspace),
+                class: "px-3 py-1.5 text-[0.6rem] font-bold tracking-widest text-[#B5B0A8]
+                        border border-[#2A2B30] hover:border-[#6366F1] hover:text-[#6366F1]
+                        transition-all bg-[#0e0f16]/80 backdrop-blur-sm rounded-sm cursor-pointer" do %>
+      [ SCHEMA ]
+    <% end %>
+
     <div class="text-[0.55rem] text-[#444] tracking-widest">SYS UTC</div>
     <button onclick="window.close()"
             class="px-4 py-1.5 text-[0.6rem] font-bold tracking-widest text-[#B5B0A8]

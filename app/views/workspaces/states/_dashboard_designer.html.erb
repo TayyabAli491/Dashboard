@@ -23,6 +23,18 @@
       </div>
     <% end %>
 
+    <%= link_to workspace_sessions_path(@workspace), class: "btn-secondary" do %>
+      <i class="fa-solid fa-list-check text-sm"></i> Sessions
+    <% end %>
+
+    <%= link_to workspace_telemetry_records_path(@workspace), class: "btn-secondary" do %>
+      <i class="fa-solid fa-database text-sm"></i> Stored Data
+    <% end %>
+
+    <%= link_to workspace_payload_schema_path(@workspace), class: "btn-secondary" do %>
+      <i class="fa-solid fa-diagram-project text-sm"></i> Schema
+    <% end %>
+
     <%= link_to setup_workspace_path(@workspace), class: "btn-secondary" do %>
       <i class="fa-solid fa-gear text-sm"></i> Settings
     <% end %>

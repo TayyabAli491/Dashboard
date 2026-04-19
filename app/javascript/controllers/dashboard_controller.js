@@ -36,13 +36,6 @@ export default class extends Controller {
     }
   }
 
-  disconnect() {
-    if (this.telemetrySubscription) {
-      console.log("[IoT UPLINK] Terminating WebSocket Tunnel...")
-      this.telemetrySubscription.unsubscribe()
-    }
-  }
-
   initGrid() {
     if (!this.hasGridTarget) return
 
@@ -173,6 +166,10 @@ export default class extends Controller {
   }
 
   disconnect() {
+    if (this.telemetrySubscription) {
+      console.log("[IoT UPLINK] Terminating WebSocket Tunnel...")
+      this.telemetrySubscription.unsubscribe()
+    }
     if (this.grid) this.grid.destroy(false)
   }
 }
