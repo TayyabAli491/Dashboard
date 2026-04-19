@@ -1,0 +1,45 @@
+/* Custom Static UI Theme for CanSat Dashboard */
+.cansat-dashboard {
+  background-color: #050810;
+  color: #E5E5E5;
+  font-family: 'Space Mono', 'JetBrains Mono', monospace;
+}
+
+.widget-card {
+  background: rgba(18, 19, 24, 0.95);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(42, 43, 48, 0.8);
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.widget-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.4), transparent);
+}
+
+.widget-header {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: rgba(229, 229, 229, 0.5);
+  padding: 1rem 1rem 0;
+  font-weight: bold;
+}
+
+.widget-content {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}

@@ -1,74 +1,140 @@
-<div class="fixed inset-0 z-[100] bg-[#0B0C10] overflow-hidden flex flex-col font-mono" 
-     style="background-image: radial-gradient(rgba(193, 68, 14, 0.25) 1.5px, transparent 1.5px); background-size: 32px 32px;"
+<style>
+  .cansat-dashboard { background-color: #050810; color: #E5E5E5; font-family: 'Space Mono', 'JetBrains Mono', monospace; }
+  .widget-card { background: rgba(18, 19, 24, 0.95); backdrop-filter: blur(8px); border: 1px solid rgba(42, 43, 48, 0.8); border-radius: 0.75rem; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); position: relative; overflow: hidden; display: flex; flex-direction: column; }
+  .widget-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px; background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.4), transparent); }
+  .widget-header { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.2em; color: rgba(229, 229, 229, 0.5); padding: 1rem 1rem 0; font-weight: bold; }
+  .widget-content { flex: 1; display: flex; align-items: center; justify-content: center; padding: 1rem; }
+</style>
+
+<div class="fixed inset-0 z-[100] bg-[#050810] cansat-dashboard overflow-hidden flex flex-col font-mono" 
+     style="background-image: radial-gradient(rgba(99, 102, 241, 0.15) 1.5px, transparent 1.5px); background-size: 32px 32px;"
      data-controller="dashboard" 
      data-dashboard-workspace-id-value="<%= @workspace.id %>"
      data-dashboard-edit-mode-value="false">
 
-  <%# Dynamic Background Layer %>
+  <%# Dynamic Background Layer (If video is present) %>
   <% if @workspace.dashboard_theme == 'video' && @workspace.background_video.attached? %>
     <video src="<%= url_for(@workspace.background_video) %>" class="fixed inset-0 w-full h-full object-cover z-0 opacity-100 pointer-events-none" autoplay loop muted playsinline></video>
   <% end %>
 
-  <%# Subdued Full Screen Designer Header - Mars Edition %>
-  <div class="absolute top-0 left-0 w-full flex justify-between items-center px-8 py-6 z-20 pointer-events-auto bg-gradient-to-b from-[#0B0C10] to-transparent">
+  <%# Header Segment %>
+  <div class="absolute top-0 left-0 w-full flex justify-between items-center px-8 py-6 z-20 bg-gradient-to-b from-[#050810] to-transparent pointer-events-auto">
     <div class="flex items-center gap-4">
-      <h1 class="text-2xl font-bold tracking-widest text-[#E5E5E5] uppercase"><%= @workspace.name %> <span class="text-[#C1440E] opacity-70">/// ORBITAL</span></h1>
+      <h1 class="text-2xl font-bold tracking-widest text-[#E5E5E5] uppercase"><%= @workspace.name %> <span class="text-[#6366F1] opacity-70">/// ORBITAL</span></h1>
+      
+      <%# Battery Status specific widget %>
+      <div class="flex items-center gap-3 bg-[#121318]/80 backdrop-blur border border-[#2A2B30] px-3 py-1.5 rounded-sm"
+           data-controller="value-card" 
+           data-action="telemetry:received@window->value-card#update" 
+           data-value-card-data-key-value="battery">
+        <i class="fa-solid fa-battery-three-quarters text-[#10B981]"></i>
+        <span class="text-sm font-bold tracking-wider" data-value-card-target="value">--</span><span class="text-xs text-[#a3a3a3]">%</span>
+      </div>
+
       <% if @workspace.awaiting_first_data? %>
-        <div class="px-3 py-1 text-xs font-bold text-[#A32D2D] border border-[#A32D2D] rounded-sm bg-[#A32D2D]/10 flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-[#A32D2D] animate-pulse"></span> DISCONNECTED</div>
+        <div class="px-3 py-1.5 text-xs font-bold text-[#A32D2D] border border-[#A32D2D] rounded-sm bg-[#A32D2D]/10 flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-[#A32D2D] animate-pulse"></span> DISCONNECTED</div>
       <% elsif @active_session %>
-        <div class="px-3 py-1 text-xs font-bold text-[#E77D11] border border-[#E77D11] rounded-sm bg-[#E77D11]/10 flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-[#E77D11] animate-pulse"></span> <%= @active_session.name %> (LIVE)</div>
+        <div class="px-3 py-1.5 text-xs font-bold text-[#10B981] border border-[#10B981] rounded-sm bg-[#10B981]/10 flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-[#10B981] animate-pulse"></span> <%= @active_session.name %> (LIVE)</div>
       <% else %>
-        <div class="px-3 py-1 text-xs font-bold text-[#666] border border-[#444] rounded-sm flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-[#666]"></span> NO UPLINK</div>
+        <div class="px-3 py-1.5 text-xs font-bold text-[#666] border border-[#444] rounded-sm flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-[#666]"></span> NO UPLINK</div>
       <% end %>
     </div>
     
-    <button onclick="window.close()" class="px-4 py-2 text-xs font-bold tracking-widest text-[#B5B0A8] border border-[#2A2B30] hover:border-[#C1440E] hover:text-[#C1440E] transition-all bg-[#121318]/80 backdrop-blur-sm rounded-sm cursor-pointer">
+    <button onclick="window.close()" class="px-4 py-2 text-xs font-bold tracking-widest text-[#B5B0A8] border border-[#2A2B30] hover:border-[#6366F1] hover:text-[#6366F1] transition-all bg-[#121318]/80 backdrop-blur-sm rounded-sm cursor-pointer">
       [ ABORT ]
     </button>
   </div>
 
-  <%# Live Grid Configuration %>
+  <%# Static Grid Layout %>
   <div class="pt-24 px-8 pb-8 h-full w-full relative z-10">
-    <div class="grid-stack flex-1 w-full h-full" data-dashboard-target="grid">
-      <% @workspace.parsed_dashboard_widgets.each do |widget| %>
-        <div class="grid-stack-item pointer-events-none" 
-             gs-x="<%= widget['grid']['x'] %>" 
-             gs-y="<%= widget['grid']['y'] %>" 
-             gs-w="<%= widget['grid']['w'] %>" 
-             gs-h="<%= widget['grid']['h'] %>">
-             
-          <div class="grid-stack-item-content p-4 flex flex-col justify-center items-center bg-[#121318]/90 backdrop-blur-md border border-[#2A2B30] shadow-[0_0_15px_rgba(193,68,14,0.03)] rounded-lg relative overflow-hidden">
-            <%# Mars Glow Edge Effect %>
-            <div class="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-[#C1440E]/40 to-transparent"></div>
-            
-            <div class="font-bold text-[#E5E5E5] absolute top-3 left-4 opacity-70 tracking-widest uppercase text-[10px]"><%= widget['label'] %></div>
+    <div class="grid grid-cols-12 grid-rows-6 gap-6 h-full w-full">
 
-            <% if widget['type'] == 'Value Card' %>
-              <div class="flex flex-col items-center justify-center w-full h-full pt-4"
-                   data-controller="value-card" 
-                   data-action="telemetry:received@window->value-card#update" 
-                   data-value-card-data-key-value="<%= widget['label'].downcase %>">
-                   
-                <div data-value-card-target="value" class="text-5xl text-[#E5E5E5] font-mono font-bold transition-colors duration-300 drop-shadow-md">--</div>
-                <% if @workspace.awaiting_first_data? %>
-                  <div data-value-card-target="status" class="text-[9px] font-semibold text-[#A32D2D] uppercase tracking-[0.25em] mt-3 animate-pulse">[ NO DATA RECEIVED ]</div>
-                <% else %>
-                  <div data-value-card-target="status" class="text-[9px] font-semibold text-[#C1440E] uppercase tracking-[0.25em] mt-3 animate-pulse">[ AWAITING PING ]</div>
-                <% end %>
-              </div>
-            <% else %>
-              <div class="w-12 h-12 rounded bg-[#1A1C23] border border-[#2A2B30] flex items-center justify-center mb-3 text-[#E77D11]">
-                <i class="fa-solid fa-shapes text-lg drop-shadow-[0_0_8px_rgba(231,125,17,0.5)]"></i>
-              </div>
-              <% if @workspace.awaiting_first_data? %>
-                <div class="text-[10px] font-semibold text-[#A32D2D] uppercase tracking-[0.2em] mt-2 animate-pulse">[ NO DATA RECEIVED ]</div>
-              <% else %>
-                <div class="text-[10px] font-semibold text-[#C1440E] uppercase tracking-[0.2em] mt-2 animate-pulse">[ AWAITING PING ]</div>
-              <% end %>
-            <% end %>
+      <%# MPU6050 3D Visualization -> Span 6 cols, 4 rows%>
+      <div class="widget-card col-span-12 md:col-span-6 row-span-4">
+        <div class="widget-header flex justify-between absolute top-0 w-full z-10">
+          <span>MPU6050 / Attitude</span>
+          <span class="text-[#6366F1] mr-4" data-attitude-3d-target="stats">Initializing model...</span>
+        </div>
+        <div class="absolute inset-0 p-0" 
+             data-controller="attitude-3d" 
+             data-attitude-3d-workspace-id-value="<%= @workspace.id %>">
+             <!-- Canvas goes here via controller -->
+        </div>
+      </div>
+
+      <%# GPS Map -> Span 6 cols, 4 rows %>
+      <div class="widget-card col-span-12 md:col-span-6 row-span-4">
+        <div class="widget-header z-10 absolute bg-[#121318]/90 backdrop-blur top-0 w-full">GPS NEO-6M / Map Feed</div>
+        <div class="absolute inset-0 pt-8 p-0">
+           <div class="w-full h-full bg-[#0A0C13]"
+                data-controller="gps-map"
+                data-gps-map-workspace-id-value="<%= @workspace.id %>"
+                data-gps-map-follow-value="true">
+           </div>
+        </div>
+      </div>
+
+      <%# Bottom Row: QMC5883L (Magnetometer), MQ135 (Gas), BMP (Temp), BMP (Pressure) %>
+      <%# Span 3 cols each => 12 cols total %>
+
+      <%# Magnetometer %>
+      <div class="widget-card col-span-6 md:col-span-3 row-span-2 shadow-[0_0_15px_rgba(99,102,241,0.03)]">
+        <div class="widget-header">QMC5883L / Magnetometer</div>
+        <div class="widget-content flex-col gap-2 relative"
+             data-controller="value-card" 
+             data-action="telemetry:received@window->value-card#update" 
+             data-value-card-data-key-value="heading">
+          <div class="text-5xl text-[#E5E5E5] font-bold"><span data-value-card-target="value">--</span><span class="text-xl text-[#666]">°</span></div>
+          <div data-value-card-target="status" class="text-[9px] font-semibold text-[#666] tracking-[0.25em] mt-3 uppercase animate-pulse">[ AWAITING DATA ]</div>
+        </div>
+      </div>
+
+      <%# Gas Sensor %>
+      <div class="widget-card col-span-6 md:col-span-3 row-span-2 shadow-[0_0_15px_rgba(6,182,212,0.03)]">
+        <div class="widget-header flex justify-between">
+          <span>MQ135 / Air Quality</span>
+          <span class="text-[10px] text-cyan-400">PPM</span>
+        </div>
+        <div class="widget-content relative">
+          <div class="w-28 h-28 relative">
+            <canvas data-controller="gauge-chart"
+                    data-gauge-chart-workspace-id-value="<%= @workspace.id %>"
+                    data-gauge-chart-field-value="mq135"
+                    data-gauge-chart-min-value="0"
+                    data-gauge-chart-max-value="1000"
+                    data-gauge-chart-color-value="cyan">
+            </canvas>
+            <div class="absolute inset-0 flex items-center justify-center mt-3">
+               <span class="text-xl font-bold text-[#E5E5E5] shadow-black drop-shadow-md" data-gauge-chart-target="readout">--</span>
+            </div>
           </div>
         </div>
-      <% end %>
+      </div>
+
+      <%# BMP Temperature %>
+      <div class="widget-card col-span-6 md:col-span-3 row-span-2 shadow-[0_0_15px_rgba(245,158,11,0.03)]">
+        <div class="widget-header text-right">BMP / Temperature °C</div>
+        <div class="widget-content flex-col items-end w-full"
+             data-controller="value-card" 
+             data-action="telemetry:received@window->value-card#update" 
+             data-value-card-data-key-value="temperature">
+          <div class="text-5xl text-[#F59E0B] font-bold mr-4"><span data-value-card-target="value">--</span></div>
+          <div data-value-card-target="status" class="text-[9px] font-semibold text-[#666] tracking-[0.25em] mt-3 mr-4 uppercase animate-pulse">[ AWAITING DATA ]</div>
+        </div>
+      </div>
+
+      <%# BMP Pressure %>
+      <div class="widget-card col-span-6 md:col-span-3 row-span-2 border-l shadow-[0_0_15px_rgba(16,185,129,0.03)] border-[#10B981]/10">
+        <div class="widget-header text-right">BMP / Pressure (hPa)</div>
+        <div class="widget-content flex-col items-end w-full"
+             data-controller="value-card" 
+             data-action="telemetry:received@window->value-card#update" 
+             data-value-card-data-key-value="pressure">
+          <div class="text-5xl text-[#10B981] font-bold mr-4"><span data-value-card-target="value">--</span></div>
+          <div data-value-card-target="status" class="text-[9px] font-semibold text-[#666] tracking-[0.25em] mt-3 mr-4 uppercase animate-pulse">[ AWAITING DATA ]</div>
+        </div>
+      </div>
+
     </div>
   </div>
 </div>
