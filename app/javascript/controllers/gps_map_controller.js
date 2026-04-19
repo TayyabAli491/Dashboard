@@ -1,5 +1,4 @@
 import { Controller } from "@hotwired/stimulus"
-import consumer from "channels/consumer"
 import * as L from "leaflet"
 
 export default class extends Controller {
@@ -12,18 +11,18 @@ export default class extends Controller {
     this.pathCoordinates = []
 
     this.map = L.map(this.element, {
-      center: [30.3753, 69.3451],
-      zoom: 13,
+      center: [31.463888, 74.442777],
+      zoom: 17,
       zoomControl: true,
       attributionControl: false
     })
 
     L.tileLayer(
-      "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
+      "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
       { maxZoom: 19 }
     ).addTo(this.map)
 
-    this.marker = L.circleMarker([30.3753, 69.3451], {
+    this.marker = L.circleMarker([31.463888, 74.442777], {
       radius: 8,
       fillColor: "#6366F1",
       color: "#fff",
@@ -38,21 +37,18 @@ export default class extends Controller {
       opacity: 0.6
     }).addTo(this.map)
 
-    this.subscription = consumer.subscriptions.create(
-      {
-        channel: "WorkspaceTelemetryChannel",
-        workspace_id: this.workspaceIdValue
-      },
-      { received: (data) => this.handlePacket(data) }
-    )
+    this.handleTelemetry = this.handleTelemetry.bind(this)
+    window.addEventListener("telemetry:received", this.handleTelemetry)
   }
 
   disconnect() {
     this.map?.remove()
-    this.subscription?.unsubscribe()
+    window.removeEventListener("telemetry:received", this.handleTelemetry)
   }
 
-  handlePacket(data) {
+  handleTelemetry(event) {
+    // Reconstruct the expected object wrapper to keep identical logic
+    const data = { raw_payload: event.detail }
     const payload = data.processed_payload || 
                     data.raw_payload
 

@@ -9,19 +9,14 @@
     </h1>
 
     <%# Animated battery pill %>
-    <div id="battery-header-pill" class="battery-pill"
-         data-controller="value-card"
-         data-action="telemetry:received@window->value-card#update"
-         data-value-card-data-key-value="battery">
+    <div id="battery-header-pill" class="battery-pill">
       <svg width="26" height="13" viewBox="0 0 26 13">
         <rect x="0.5" y="0.5" width="22" height="12" rx="2.5"
               stroke="rgba(16,185,129,0.65)" stroke-width="1" fill="none"/>
         <rect id="batt-fill-header" x="2" y="2" width="16" height="9" rx="1.5" fill="#10B981"/>
         <rect x="23" y="3.5" width="2.5" height="6" rx="1" fill="rgba(16,185,129,0.4)"/>
       </svg>
-      <span class="text-xs font-bold text-[#10B981]"
-            id="batt-pct-header"
-            data-value-card-target="value">78</span>
+      <span class="text-xs font-bold text-[#10B981]" id="batt-pct-header">78</span>
       <span class="text-[10px] text-[#666]">%</span>
       <span class="live-dot bg-[#10B981]"></span>
     </div>

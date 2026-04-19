@@ -42,3 +42,6 @@ application.register("value-card", ValueCardController)
 
 import WidgetFormController from "controllers/widget_form_controller"
 application.register("widget-form", WidgetFormController)
+
+import LiveTelemetryController from "controllers/live_telemetry_controller"
+application.register("live-telemetry", LiveTelemetryController)

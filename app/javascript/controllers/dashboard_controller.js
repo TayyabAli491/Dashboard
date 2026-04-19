@@ -23,7 +23,7 @@ export default class extends Controller {
       console.log(`[IoT UPLINK] Establishing WebSocket Tunnel for Workspace ${this.workspaceIdValue}...`)
       
       this.telemetrySubscription = consumer.subscriptions.create(
-        { channel: "TelemetryChannel", workspace_id: this.workspaceIdValue },
+        { channel: "WorkspaceTelemetryChannel", workspace_id: this.workspaceIdValue },
         {
           received: (telemetryRecord) => {
             console.log("[IoT PACKET RECEIVED]", telemetryRecord.raw_payload)

@@ -30,7 +30,7 @@ module Api
         # Step 2: Instantly blast this payload across the Rails WebSocket
         # to any browser heavily watching the Live Dashboard.
         ActionCable.server.broadcast(
-          "workspace_#{@workspace.id}_telemetry",
+          "workspace_telemetry_#{@workspace.id}",
           record.as_json
         )
 

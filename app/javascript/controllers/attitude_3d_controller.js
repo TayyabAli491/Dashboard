@@ -1,5 +1,4 @@
 import { Controller } from "@hotwired/stimulus"
-import consumer from "channels/consumer"
 import * as THREE from "three"
 
 export default class extends Controller {
@@ -19,7 +18,7 @@ export default class extends Controller {
   disconnect() {
     cancelAnimationFrame(this.animationFrameId)
     this.renderer?.dispose()
-    this.subscription?.unsubscribe()
+    window.removeEventListener("telemetry:received", this.handleTelemetry)
     this._ro?.disconnect()
   }
 
@@ -206,10 +205,12 @@ export default class extends Controller {
   }
 
   subscribeToChannel() {
-    this.subscription = consumer.subscriptions.create(
-      { channel: "WorkspaceTelemetryChannel", workspace_id: this.workspaceIdValue },
-      { received: (data) => this.handlePacket(data) }
-    )
+    this.handleTelemetry = this.handleTelemetry.bind(this)
+    window.addEventListener("telemetry:received", this.handleTelemetry)
+  }
+
+  handleTelemetry(event) {
+    this.handlePacket({ raw_payload: event.detail })
   }
 
   handlePacket(data) {
