@@ -1,12 +1,12 @@
 <div class="fixed inset-0 z-[100] bg-[#0B0C10] overflow-hidden flex flex-col font-mono" 
-     style="background-image: radial-gradient(rgba(193, 68, 14, 0.05) 1.5px, transparent 1.5px); background-size: 32px 32px;"
+     style="background-image: radial-gradient(rgba(193, 68, 14, 0.25) 1.5px, transparent 1.5px); background-size: 32px 32px;"
      data-controller="dashboard" 
      data-dashboard-workspace-id-value="<%= @workspace.id %>"
      data-dashboard-edit-mode-value="false">
 
   <%# Dynamic Background Layer %>
   <% if @workspace.dashboard_theme == 'video' && @workspace.background_video.attached? %>
-    <video src="<%= url_for(@workspace.background_video) %>" class="fixed inset-0 w-full h-full object-cover z-0 opacity-40 mix-blend-screen pointer-events-none" autoplay loop muted playsinline></video>
+    <video src="<%= url_for(@workspace.background_video) %>" class="fixed inset-0 w-full h-full object-cover z-0 opacity-100 pointer-events-none" autoplay loop muted playsinline></video>
   <% end %>
 
   <%# Subdued Full Screen Designer Header - Mars Edition %>

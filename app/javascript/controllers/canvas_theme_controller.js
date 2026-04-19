@@ -11,6 +11,15 @@ export default class extends Controller {
 
   connect() {
     console.log("Canvas Theme Controller initialized.")
+    
+    // Automatically synchronize the UI state with the database's saved theme selection
+    if (this.element.dataset.themeSelection === "video") {
+      this.gridAreaTarget.style.backgroundColor = "transparent"
+      this.gridAreaTarget.style.backgroundImage = "none"
+      
+      this.videoBtnTarget.classList.add("border-[#1A1A1A]", "bg-[#F7F5F1]")
+      this.blueprintBtnTarget.classList.remove("border-[#1A1A1A]", "bg-[#F7F5F1]")
+    }
   }
 
   selectBlueprint() {
