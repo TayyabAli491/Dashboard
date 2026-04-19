@@ -1,81 +1,56 @@
-<div class="flex flex-col items-center justify-center 
-            min-h-[60vh] gap-8">
+<div class="flex flex-col items-center justify-center
+            min-h-[70vh] gap-10 py-8">
 
-  <div class="text-center">
+  <%# ── Stepper ── %>
+  <%= render "workspaces/states/stepper", current_step: 1 %>
+
+  <%# ── Content ── %>
+  <div class="flex flex-col items-center gap-4 text-center max-w-md">
+    <div class="w-16 h-16 rounded-full bg-[#1A1A1A] flex items-center justify-center shadow-[0_0_0_6px_rgba(26,26,26,0.06),0_4px_16px_rgba(26,26,26,0.12)]">
+      <i class="fa-solid fa-cube text-xl text-[#F7F5F1]"></i>
+    </div>
     <h1 class="page-title">
       Welcome to <%= @workspace.name %>
     </h1>
-    <p class="page-subtitle mt-2">
-      Complete these steps to start receiving live data
+    <p class="text-sm text-[#9E9891] leading-relaxed">
+      Define the payload structure your device will send.
+      This tells ArckOne how to parse and visualise incoming telemetry.
     </p>
   </div>
 
-  <div class="card w-full max-w-lg flex flex-col gap-4">
+  <%# ── Action Card ── %>
+  <div class="card w-full max-w-lg flex flex-col gap-5"
+       style="min-height: auto;">
 
-    <%# Step 1 — always incomplete here %>
-    <div class="flex items-center gap-4 p-4 
-                rounded-lg bg-glass-subtle 
-                border border-primary">
-      <div class="w-8 h-8 rounded-full bg-primary 
-                  flex items-center justify-center 
-                  text-text-primary text-sm font-semibold 
-                  shadow-glow flex-shrink-0">
+    <div class="flex items-center gap-4 p-4
+                rounded-lg bg-[#F7F5F1]
+                border border-[#1A1A1A]">
+      <div class="w-10 h-10 rounded-full bg-[#1A1A1A]
+                  flex items-center justify-center
+                  text-[#F7F5F1] text-sm font-semibold
+                  shadow-[0_0_0_4px_rgba(26,26,26,0.08)] flex-shrink-0">
         1
       </div>
       <div class="flex-1">
-        <p class="text-text-primary font-medium text-base">
+        <p class="text-[#1A1A1A] font-semibold text-sm">
           Define your payload schema
         </p>
-        <p class="text-text-muted text-sm">
-          Tell Drift what fields your device will send
+        <p class="text-[#9E9891] text-xs mt-0.5">
+          Tell ArckOne what fields your device will send
         </p>
       </div>
-      <%= link_to 'Start', 
+      <%= link_to 'Get Started',
             edit_workspace_payload_schema_path(@workspace),
             class: 'btn-primary' %>
     </div>
 
-    <%# Step 2 — locked %>
-    <div class="flex items-center gap-4 p-4 
-                rounded-lg bg-glass-subtle 
-                border border-border opacity-40">
-      <div class="w-8 h-8 rounded-full bg-glass 
-                  border border-border
-                  flex items-center justify-center 
-                  text-text-muted text-sm font-semibold 
-                  flex-shrink-0">
-        2
-      </div>
-      <div class="flex-1">
-        <p class="text-text-secondary font-medium text-base">
-          Connect your device
-        </p>
-        <p class="text-text-muted text-sm">
-          Get your API key and endpoint URL
-        </p>
-      </div>
-    </div>
-
-    <%# Step 3 — locked %>
-    <div class="flex items-center gap-4 p-4 
-                rounded-lg bg-glass-subtle 
-                border border-border opacity-40">
-      <div class="w-8 h-8 rounded-full bg-glass 
-                  border border-border
-                  flex items-center justify-center 
-                  text-text-muted text-sm font-semibold 
-                  flex-shrink-0">
-        3
-      </div>
-      <div class="flex-1">
-        <p class="text-text-secondary font-medium text-base">
-          Start your first session
-        </p>
-        <p class="text-text-muted text-sm">
-          Group your data into named collection windows
-        </p>
-      </div>
-    </div>
-
   </div>
+
+  <%# ── Navigation ── %>
+  <div class="stepper-nav stepper-nav-end">
+    <%= link_to workspace_path(@workspace), class: "btn-skip" do %>
+      Skip for now <i class="fa-solid fa-arrow-right fa-xs"></i>
+    <% end %>
+  </div>
+
 </div>

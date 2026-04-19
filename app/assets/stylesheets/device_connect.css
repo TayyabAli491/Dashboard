@@ -1,0 +1,246 @@
+/* ── Device Connect & Shared Stepper ── */
+
+/* ============================================
+   Horizontal Stepper
+   ============================================ */
+
+.stepper {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 0;
+  width: 100%;
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 0 8px;
+}
+
+.stepper-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  flex: 0 0 auto;
+  min-width: 120px;
+  position: relative;
+}
+
+.stepper-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  flex-shrink: 0;
+  position: relative;
+  z-index: 2;
+}
+
+.stepper-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: #1A1A1A;
+  text-align: center;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+
+.stepper-desc {
+  font-size: 11px;
+  color: #9E9891;
+  text-align: center;
+  line-height: 1.4;
+  max-width: 130px;
+}
+
+/* Connector line */
+.stepper-line {
+  flex: 1;
+  height: 2px;
+  background: #E8E4DD;
+  margin-top: 20px; /* vertically center with circle */
+  min-width: 40px;
+  position: relative;
+  z-index: 1;
+}
+
+.stepper-line-done {
+  background: #3B6D11;
+}
+
+/* ── Step States ── */
+
+/* Done */
+.stepper-done .stepper-circle {
+  background: #3B6D11;
+  color: #fff;
+  box-shadow: 0 0 0 4px rgba(59, 109, 17, 0.1);
+}
+
+.stepper-done .stepper-label {
+  color: #3B6D11;
+}
+
+/* Active */
+.stepper-active .stepper-circle {
+  background: #1A1A1A;
+  color: #F7F5F1;
+  box-shadow: 0 0 0 4px rgba(26, 26, 26, 0.08), 0 4px 12px rgba(26, 26, 26, 0.15);
+}
+
+.stepper-active .stepper-label {
+  color: #1A1A1A;
+}
+
+/* Locked */
+.stepper-locked .stepper-circle {
+  background: #F7F5F1;
+  color: #B5B0A8;
+  border: 1.5px solid #E8E4DD;
+}
+
+.stepper-locked .stepper-label {
+  color: #B5B0A8;
+}
+
+.stepper-locked .stepper-desc {
+  color: #C8C3BB;
+}
+
+/* ============================================
+   Device Connect Page — specific classes
+   ============================================ */
+
+/* Icon ring with subtle glow */
+.dc-icon-ring {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: #1A1A1A;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #F7F5F1;
+  font-size: 22px;
+  box-shadow: 0 0 0 6px rgba(26, 26, 26, 0.06), 0 4px 16px rgba(26, 26, 26, 0.12);
+}
+
+/* Pulse animation for listening indicator */
+@keyframes dc-pulse {
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50%      { opacity: 1;   transform: scale(1.6); }
+}
+
+.dc-pulse {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #3B6D11;
+  animation: dc-pulse 2s ease-in-out infinite;
+}
+
+/* Credential row styling */
+.dc-credential-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: #F7F5F1;
+  border: 1px solid #E8E4DD;
+  border-radius: 10px;
+  transition: border-color 0.2s;
+}
+
+.dc-credential-row:hover {
+  border-color: #C8C3BB;
+}
+
+.dc-credential-row code {
+  flex: 1;
+  font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+  font-size: 12px;
+  color: #1A1A1A;
+  word-break: break-all;
+  line-height: 1.5;
+}
+
+/* Payload block */
+.dc-payload-block {
+  font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+  font-size: 12px;
+  line-height: 1.7;
+  color: #6B6560;
+  padding: 16px;
+  background: #F7F5F1;
+  border: 1px solid #E8E4DD;
+  border-radius: 10px;
+  overflow-x: auto;
+  margin: 0;
+}
+
+/* ============================================
+   Navigation row (Back / Skip)
+   ============================================ */
+
+.stepper-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 560px;
+  margin: 0 auto;
+}
+
+.stepper-nav-end {
+  justify-content: flex-end;
+}
+
+.btn-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  color: #6B6560;
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 9px 16px;
+  border-radius: 8px;
+  border: 1px solid #E8E4DD;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.btn-back:hover {
+  background: #F7F5F1;
+  border-color: #C8C3BB;
+  color: #1A1A1A;
+}
+
+.btn-skip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  color: #9E9891;
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 9px 16px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.btn-skip:hover {
+  color: #6B6560;
+  background: #F7F5F1;
+}

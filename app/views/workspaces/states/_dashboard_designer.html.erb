@@ -5,9 +5,9 @@
 
 <%# Topbar utilizing application.css theme %>
 <div class="topbar mb-0">
-  <div>
-    <div class="page-eyebrow">Workspace Configuration</div>
-    <h1 class="page-title"><%= @workspace.name %> <em>Layout</em></h1>
+  <div class="flex-1">
+    <%= render "workspaces/states/stepper", current_step: 3 %>
+    <h1 class="page-title mt-4"><%= @workspace.name %> <em>Layout</em></h1>
   </div>
   
   <div class="flex items-center gap-3">
