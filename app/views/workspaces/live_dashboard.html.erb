@@ -1,140 +1,439 @@
 <style>
-  .cansat-dashboard { background-color: #050810; color: #E5E5E5; font-family: 'Space Mono', 'JetBrains Mono', monospace; }
-  .widget-card { background: rgba(18, 19, 24, 0.95); backdrop-filter: blur(8px); border: 1px solid rgba(42, 43, 48, 0.8); border-radius: 0.75rem; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); position: relative; overflow: hidden; display: flex; flex-direction: column; }
-  .widget-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px; background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.4), transparent); }
-  .widget-header { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.2em; color: rgba(229, 229, 229, 0.5); padding: 1rem 1rem 0; font-weight: bold; }
-  .widget-content { flex: 1; display: flex; align-items: center; justify-content: center; padding: 1rem; }
+  @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap');
+
+  .cansat-dashboard { background-color: #050810; color: #E5E5E5; font-family: 'Space Mono','JetBrains Mono',monospace; }
+
+  /* Widget Card */
+  .widget-card {
+    background: rgba(11, 13, 20, 0.97);
+    backdrop-filter: blur(14px);
+    border: 1px solid rgba(40, 42, 60, 0.9);
+    border-radius: 10px;
+    box-shadow: 0 2px 20px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.03);
+    position: relative; overflow: hidden;
+    display: flex; flex-direction: column;
+    transition: box-shadow 0.3s ease, border-color 0.3s ease;
+  }
+  .widget-card:hover { box-shadow: 0 4px 30px rgba(0,0,0,0.55); }
+  .widget-card::before { content:''; position:absolute; top:0; left:0; width:100%; height:2px; background: linear-gradient(90deg, transparent, rgba(99,102,241,0.55), transparent); z-index:2; }
+  .widget-card.accent-cyan::before    { background: linear-gradient(90deg, transparent, rgba(6,182,212,0.65), transparent); }
+  .widget-card.accent-amber::before   { background: linear-gradient(90deg, transparent, rgba(245,158,11,0.65), transparent); }
+  .widget-card.accent-emerald::before { background: linear-gradient(90deg, transparent, rgba(16,185,129,0.65), transparent); }
+  .widget-card.accent-violet::before  { background: linear-gradient(90deg, transparent, rgba(139,92,246,0.65), transparent); }
+  .widget-card::after { content:''; position:absolute; bottom:0; right:0; width:28px; height:28px;
+    border-bottom: 1px solid rgba(255,255,255,0.05); border-right: 1px solid rgba(255,255,255,0.05); border-radius: 0 0 10px 0; }
+
+  .widget-header { font-size: 0.6rem; text-transform:uppercase; letter-spacing:0.2em; color:rgba(229,229,229,0.38);
+    padding: 0.75rem 1rem 0; font-weight:700; display:flex; justify-content:space-between; align-items:center; position:relative; z-index:1; flex-shrink: 0; }
+  .widget-content { flex:1; display:flex; align-items:center; justify-content:center; padding: 0.6rem 0.9rem 0.8rem; min-height: 0; }
+
+  .data-label { font-size: 0.52rem; letter-spacing:0.15em; text-transform:uppercase; color:rgba(229,229,229,0.28); }
+  .live-dot { width:5px; height:5px; border-radius:50%; animation: livePulse 1.4s ease-in-out infinite; flex-shrink:0; }
+  @keyframes livePulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.35;transform:scale(0.75)} }
+
+  /* Compass */
+  .compass-wrap { position:relative; width:100px; height:100px; flex-shrink:0; }
+  .compass-needle { transform-origin: 50px 50px; transition: transform 0.5s cubic-bezier(0.34,1.56,0.64,1); }
+
+  /* Gauge arc */
+  .gauge-arc-bg   { fill:none; stroke:rgba(255,255,255,0.05); stroke-width:9; stroke-linecap:round; }
+  .gauge-arc-fill { fill:none; stroke-width:9; stroke-linecap:round; transition: stroke-dasharray 0.6s ease; }
+  .gauge-wrap { position:relative; width:110px; height:68px; flex-shrink:0; }
+
+  /* Spark bar */
+  .spark-bar { display:flex; align-items:flex-end; gap:2px; height:36px; }
+  .spark-bar .bar { flex:1; border-radius:2px 2px 0 0; transition:height 0.4s ease; min-width:4px; }
+
+  /* Battery pill */
+  .battery-pill { display:flex; align-items:center; gap:7px; background:rgba(16,185,129,0.08); border:1px solid rgba(16,185,129,0.25); border-radius:4px; padding:4px 10px; transition: background 0.5s, border-color 0.5s; }
+  .battery-pill.critical { background:rgba(244,63,94,0.08); border-color:rgba(244,63,94,0.35); }
+  .battery-pill.warning  { background:rgba(245,158,11,0.08); border-color:rgba(245,158,11,0.35); }
+
+  /* Ticker */
+  .ticker-row { font-size:0.5rem; letter-spacing:0.13em; color:rgba(229,229,229,0.2); padding:0.3rem 1rem;
+    border-top:1px solid rgba(255,255,255,0.03); white-space:nowrap; overflow:hidden; flex-shrink:0; display:flex; gap:1.5rem; }
+
+  /* Stat chips below big value */
+  .stat-chip { display:flex; flex-direction:column; gap:2px; }
+  .stat-chip .v { font-size:0.78rem; font-weight:700; color:#E5E5E5; }
+  .stat-chip .l { font-size:0.5rem; letter-spacing:0.12em; color:rgba(229,229,229,0.3); text-transform:uppercase; }
+
+  /* Big value */
+  .big-value { font-size:2.6rem; font-weight:700; line-height:1; letter-spacing:-1.5px; }
 </style>
 
-<div class="fixed inset-0 z-[100] bg-[#050810] cansat-dashboard overflow-hidden flex flex-col font-mono" 
-     style="background-image: radial-gradient(rgba(99, 102, 241, 0.15) 1.5px, transparent 1.5px); background-size: 32px 32px;"
-     data-controller="dashboard" 
+<div class="fixed inset-0 z-[100] bg-[#050810] cansat-dashboard overflow-hidden flex flex-col"
+     style="background-image: radial-gradient(rgba(99,102,241,0.10) 1.5px, transparent 1.5px); background-size:32px 32px;"
+     data-controller="dashboard"
      data-dashboard-workspace-id-value="<%= @workspace.id %>"
      data-dashboard-edit-mode-value="false">
 
-  <%# Dynamic Background Layer (If video is present) %>
+  <%# Background video %>
   <% if @workspace.dashboard_theme == 'video' && @workspace.background_video.attached? %>
-    <video src="<%= url_for(@workspace.background_video) %>" class="fixed inset-0 w-full h-full object-cover z-0 opacity-100 pointer-events-none" autoplay loop muted playsinline></video>
+    <video src="<%= url_for(@workspace.background_video) %>" class="fixed inset-0 w-full h-full object-cover z-0 pointer-events-none" autoplay loop muted playsinline></video>
   <% end %>
 
-  <%# Header Segment %>
-  <div class="absolute top-0 left-0 w-full flex justify-between items-center px-8 py-6 z-20 bg-gradient-to-b from-[#050810] to-transparent pointer-events-auto">
-    <div class="flex items-center gap-4">
-      <h1 class="text-2xl font-bold tracking-widest text-[#E5E5E5] uppercase"><%= @workspace.name %> <span class="text-[#6366F1] opacity-70">/// ORBITAL</span></h1>
-      
-      <%# Battery Status specific widget %>
-      <div class="flex items-center gap-3 bg-[#121318]/80 backdrop-blur border border-[#2A2B30] px-3 py-1.5 rounded-sm"
-           data-controller="value-card" 
-           data-action="telemetry:received@window->value-card#update" 
+  <%# ——— HEADER ——— %>
+  <div class="absolute top-0 left-0 w-full flex justify-between items-center px-7 py-4 z-20 bg-gradient-to-b from-[#050810] to-transparent pointer-events-auto">
+    <div class="flex items-center gap-3">
+      <h1 class="text-lg font-bold tracking-[0.2em] text-[#E5E5E5] uppercase"><%= @workspace.name %> <span class="text-[#6366F1] opacity-60">/// ORBITAL</span></h1>
+
+      <%# Battery pill %>
+      <div id="battery-header-pill" class="battery-pill"
+           data-controller="value-card"
+           data-action="telemetry:received@window->value-card#update"
            data-value-card-data-key-value="battery">
-        <i class="fa-solid fa-battery-three-quarters text-[#10B981]"></i>
-        <span class="text-sm font-bold tracking-wider" data-value-card-target="value">--</span><span class="text-xs text-[#a3a3a3]">%</span>
+        <svg width="26" height="13" viewBox="0 0 26 13">
+          <rect x="0.5" y="0.5" width="22" height="12" rx="2.5" stroke="rgba(16,185,129,0.65)" stroke-width="1" fill="none"/>
+          <rect id="batt-fill-header" x="2" y="2" width="16" height="9" rx="1.5" fill="#10B981"/>
+          <rect x="23" y="3.5" width="2.5" height="6" rx="1" fill="rgba(16,185,129,0.4)"/>
+        </svg>
+        <span class="text-xs font-bold text-[#10B981]" id="batt-pct-header" data-value-card-target="value">78</span>
+        <span class="text-[10px] text-[#666]">%</span>
+        <span class="live-dot bg-[#10B981]"></span>
       </div>
 
       <% if @workspace.awaiting_first_data? %>
-        <div class="px-3 py-1.5 text-xs font-bold text-[#A32D2D] border border-[#A32D2D] rounded-sm bg-[#A32D2D]/10 flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-[#A32D2D] animate-pulse"></span> DISCONNECTED</div>
+        <div class="px-3 py-1 text-[0.6rem] font-bold text-[#f43f5e] border border-[#f43f5e]/40 rounded-sm bg-[#f43f5e]/08 flex items-center gap-2"><span class="live-dot bg-[#f43f5e]"></span>DISCONNECTED</div>
       <% elsif @active_session %>
-        <div class="px-3 py-1.5 text-xs font-bold text-[#10B981] border border-[#10B981] rounded-sm bg-[#10B981]/10 flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-[#10B981] animate-pulse"></span> <%= @active_session.name %> (LIVE)</div>
+        <div class="px-3 py-1 text-[0.6rem] font-bold text-[#10B981] border border-[#10B981]/40 rounded-sm bg-[#10B981]/08 flex items-center gap-2"><span class="live-dot bg-[#10B981]"></span><%= @active_session.name %> (LIVE)</div>
       <% else %>
-        <div class="px-3 py-1.5 text-xs font-bold text-[#666] border border-[#444] rounded-sm flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-[#666]"></span> NO UPLINK</div>
+        <div class="px-3 py-1 text-[0.6rem] font-bold text-[#555] border border-[#333] rounded-sm flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-[#555]"></span>NO UPLINK</div>
       <% end %>
     </div>
-    
-    <button onclick="window.close()" class="px-4 py-2 text-xs font-bold tracking-widest text-[#B5B0A8] border border-[#2A2B30] hover:border-[#6366F1] hover:text-[#6366F1] transition-all bg-[#121318]/80 backdrop-blur-sm rounded-sm cursor-pointer">
-      [ ABORT ]
-    </button>
+
+    <div class="flex items-center gap-3">
+      <div class="text-[0.55rem] text-[#444] tracking-widest">SYS UTC 2026-04-19</div>
+      <button onclick="window.close()" class="px-4 py-1.5 text-[0.6rem] font-bold tracking-widest text-[#B5B0A8] border border-[#2A2B30] hover:border-[#6366F1] hover:text-[#6366F1] transition-all bg-[#0e0f16]/80 backdrop-blur-sm rounded-sm cursor-pointer">[ ABORT ]</button>
+    </div>
   </div>
 
-  <%# Static Grid Layout %>
-  <div class="pt-24 px-8 pb-8 h-full w-full relative z-10">
-    <div class="grid grid-cols-12 grid-rows-6 gap-6 h-full w-full">
+  <%# ——— MAIN LAYOUT ——— %>
+  <%# Layout: pt-16 so content sits below header, full remaining height %>
+  <div class="pt-16 px-5 pb-5 h-full w-full relative z-10 flex flex-col gap-4">
 
-      <%# MPU6050 3D Visualization -> Span 6 cols, 4 rows%>
-      <div class="widget-card col-span-12 md:col-span-6 row-span-4">
-        <div class="widget-header flex justify-between absolute top-0 w-full z-10">
-          <span>MPU6050 / Attitude</span>
-          <span class="text-[#6366F1] mr-4" data-attitude-3d-target="stats">Initializing model...</span>
+    <%# TOP ROW: CanSat 3D (left) | EMPTY center | GPS (right) %>
+    <div class="flex gap-4 flex-1 min-h-0">
+
+      <%# MPU6050 / CanSat 3D — left 38% %>
+      <div class="widget-card accent-violet flex-none" style="width:38%; position:relative;">
+        <div class="widget-header">
+          <span>MPU6050 — CanSat Attitude</span>
+          <span class="text-[#8b5cf6] text-[0.55rem] font-bold tracking-wider" data-attitude-3d-target="stats">P: 0.0° R: 0.0° Y: 0.0°</span>
         </div>
-        <div class="absolute inset-0 p-0" 
-             data-controller="attitude-3d" 
+        <div class="absolute inset-0 pt-8 rounded-[10px] overflow-hidden"
+             data-controller="attitude-3d"
              data-attitude-3d-workspace-id-value="<%= @workspace.id %>">
-             <!-- Canvas goes here via controller -->
         </div>
       </div>
 
-      <%# GPS Map -> Span 6 cols, 4 rows %>
-      <div class="widget-card col-span-12 md:col-span-6 row-span-4">
-        <div class="widget-header z-10 absolute bg-[#121318]/90 backdrop-blur top-0 w-full">GPS NEO-6M / Map Feed</div>
-        <div class="absolute inset-0 pt-8 p-0">
-           <div class="w-full h-full bg-[#0A0C13]"
-                data-controller="gps-map"
-                data-gps-map-workspace-id-value="<%= @workspace.id %>"
-                data-gps-map-follow-value="true">
-           </div>
+      <%# CENTER — empty (shows dashboard background) %>
+      <div class="flex-1 min-w-0 flex flex-col items-center justify-center gap-3 opacity-60">
+        <%# Subtle mission info overlay %>
+        <div class="text-center">
+          <div class="text-[0.55rem] tracking-[0.35em] text-[#6366F1]/60 uppercase mb-2">// Telemetry Feed //</div>
+          <div class="text-[0.5rem] tracking-[0.2em] text-[#444] uppercase" id="center-clock">00:00:00 UTC</div>
         </div>
+        <div style="width:1px; height:60px; background: linear-gradient(to bottom, transparent, rgba(99,102,241,0.3), transparent);"></div>
+        <div class="text-[0.48rem] tracking-[0.18em] text-[#333] uppercase">ARCKONE v2.1 · CANSAT</div>
       </div>
 
-      <%# Bottom Row: QMC5883L (Magnetometer), MQ135 (Gas), BMP (Temp), BMP (Pressure) %>
-      <%# Span 3 cols each => 12 cols total %>
-
-      <%# Magnetometer %>
-      <div class="widget-card col-span-6 md:col-span-3 row-span-2 shadow-[0_0_15px_rgba(99,102,241,0.03)]">
-        <div class="widget-header">QMC5883L / Magnetometer</div>
-        <div class="widget-content flex-col gap-2 relative"
-             data-controller="value-card" 
-             data-action="telemetry:received@window->value-card#update" 
-             data-value-card-data-key-value="heading">
-          <div class="text-5xl text-[#E5E5E5] font-bold"><span data-value-card-target="value">--</span><span class="text-xl text-[#666]">°</span></div>
-          <div data-value-card-target="status" class="text-[9px] font-semibold text-[#666] tracking-[0.25em] mt-3 uppercase animate-pulse">[ AWAITING DATA ]</div>
+      <%# GPS Map — right 38% %>
+      <div class="widget-card accent-cyan flex-none" style="width:38%; position:relative;">
+        <div class="widget-header z-10 absolute bg-[#0b0d14]/90 backdrop-blur top-0 left-0 right-0">
+          <span>GPS NEO-6M — Position Feed</span>
+          <span class="live-dot bg-[#06B6D4]"></span>
         </div>
-      </div>
-
-      <%# Gas Sensor %>
-      <div class="widget-card col-span-6 md:col-span-3 row-span-2 shadow-[0_0_15px_rgba(6,182,212,0.03)]">
-        <div class="widget-header flex justify-between">
-          <span>MQ135 / Air Quality</span>
-          <span class="text-[10px] text-cyan-400">PPM</span>
-        </div>
-        <div class="widget-content relative">
-          <div class="w-28 h-28 relative">
-            <canvas data-controller="gauge-chart"
-                    data-gauge-chart-workspace-id-value="<%= @workspace.id %>"
-                    data-gauge-chart-field-value="mq135"
-                    data-gauge-chart-min-value="0"
-                    data-gauge-chart-max-value="1000"
-                    data-gauge-chart-color-value="cyan">
-            </canvas>
-            <div class="absolute inset-0 flex items-center justify-center mt-3">
-               <span class="text-xl font-bold text-[#E5E5E5] shadow-black drop-shadow-md" data-gauge-chart-target="readout">--</span>
-            </div>
+        <div class="absolute inset-0 pt-8 rounded-[10px] overflow-hidden">
+          <div class="w-full h-full"
+               data-controller="gps-map"
+               data-gps-map-workspace-id-value="<%= @workspace.id %>"
+               data-gps-map-follow-value="true">
           </div>
         </div>
       </div>
 
-      <%# BMP Temperature %>
-      <div class="widget-card col-span-6 md:col-span-3 row-span-2 shadow-[0_0_15px_rgba(245,158,11,0.03)]">
-        <div class="widget-header text-right">BMP / Temperature °C</div>
-        <div class="widget-content flex-col items-end w-full"
-             data-controller="value-card" 
-             data-action="telemetry:received@window->value-card#update" 
+    </div><!-- /top row -->
+
+    <%# BOTTOM ROW: 4 compact sensor widgets %>
+    <div class="grid grid-cols-4 gap-4" style="height: 200px; flex-shrink: 0;">
+
+      <%# ——— QMC5883L Magnetometer ——— %>
+      <div class="widget-card accent-violet" style="height:200px; overflow:hidden;">
+        <div class="widget-header">
+          <span>QMC5883L / Magnetometer</span>
+          <span class="live-dot bg-[#8b5cf6]"></span>
+        </div>
+        <div class="widget-content gap-3 items-center"
+             data-controller="value-card"
+             data-action="telemetry:received@window->value-card#update"
+             data-value-card-data-key-value="heading">
+
+          <div class="compass-wrap" id="compass-wrap">
+            <svg width="100" height="100" viewBox="0 0 100 100" fill="none">
+              <circle cx="50" cy="50" r="46" stroke="rgba(139,92,246,0.15)" stroke-width="1"/>
+              <circle cx="50" cy="50" r="38" stroke="rgba(139,92,246,0.08)" stroke-width="7" fill="none"/>
+              <line x1="50" y1="4" x2="50" y2="12" stroke="rgba(139,92,246,0.7)" stroke-width="2"/>
+              <line x1="96" y1="50" x2="88" y2="50" stroke="rgba(255,255,255,0.12)" stroke-width="1.5"/>
+              <line x1="50" y1="96" x2="50" y2="88" stroke="rgba(255,255,255,0.12)" stroke-width="1.5"/>
+              <line x1="4" y1="50" x2="12" y2="50" stroke="rgba(255,255,255,0.12)" stroke-width="1.5"/>
+              <text x="50" y="19" text-anchor="middle" fill="rgba(139,92,246,0.85)" font-size="7" font-family="monospace" font-weight="bold">N</text>
+              <text x="92" y="53" text-anchor="middle" fill="rgba(255,255,255,0.2)" font-size="6" font-family="monospace">E</text>
+              <text x="50" y="93" text-anchor="middle" fill="rgba(255,255,255,0.2)" font-size="6" font-family="monospace">S</text>
+              <text x="8" y="53" text-anchor="middle" fill="rgba(255,255,255,0.2)" font-size="6" font-family="monospace">W</text>
+              <g id="compass-needle" class="compass-needle" style="transform-origin:50px 50px; transform: rotate(137deg);">
+                <polygon points="50,14 47,52 53,52" fill="rgba(139,92,246,0.95)"/>
+                <polygon points="50,86 47,52 53,52" fill="rgba(255,255,255,0.12)"/>
+              </g>
+              <circle cx="50" cy="50" r="4" fill="#8b5cf6"/>
+              <circle cx="50" cy="50" r="2" fill="#050810"/>
+            </svg>
+          </div>
+
+          <div class="flex flex-col gap-1.5">
+            <div class="flex items-end gap-1">
+              <span class="text-2xl font-bold text-[#E5E5E5]" data-value-card-target="value" id="compass-deg">137</span>
+              <span class="text-sm text-[#555] mb-0.5">°</span>
+              <span class="text-sm font-bold text-[#8b5cf6] ml-1" id="compass-dir">SE</span>
+            </div>
+            <div class="data-label">Magnetic Heading</div>
+            <div data-value-card-target="status" class="text-[0.5rem] text-[#8b5cf6] tracking-widest">[ ACTIVE ]</div>
+            <div class="flex gap-3 mt-1">
+              <div class="stat-chip"><div class="v" id="mag-x">-42</div><div class="l">X µT</div></div>
+              <div class="stat-chip"><div class="v" id="mag-y">+89</div><div class="l">Y µT</div></div>
+              <div class="stat-chip"><div class="v" id="mag-z">-12</div><div class="l">Z µT</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="ticker-row"><span>MAG: -42, +89, -12 µT</span><span>·</span><span>DECL: +3.2°</span><span>·</span><span>CALIB: OK</span></div>
+      </div>
+
+      <%# ——— MQ135 Air Quality ——— %>
+      <div class="widget-card accent-cyan" style="height:200px; overflow:hidden;">
+        <div class="widget-header">
+          <span>MQ135 — Air Quality</span>
+          <span class="text-[#06B6D4] text-[0.58rem] font-bold">PPM</span>
+        </div>
+        <div class="widget-content flex-col gap-2">
+          <div class="gauge-wrap" id="gas-gauge-wrap">
+            <svg width="110" height="68" viewBox="0 0 110 68" overflow="visible">
+              <path d="M 10 62 A 46 46 0 0 1 100 62" class="gauge-arc-bg"/>
+              <path id="gas-arc" d="M 10 62 A 46 46 0 0 1 100 62"
+                    class="gauge-arc-fill" stroke="#06B6D4"
+                    stroke-dasharray="84 144" stroke-dashoffset="0"/>
+              <text x="7"  y="69" fill="rgba(255,255,255,0.18)" font-size="6" font-family="monospace">0</text>
+              <text x="96" y="69" fill="rgba(255,255,255,0.18)" font-size="6" font-family="monospace">1k</text>
+            </svg>
+            <div style="position:absolute; bottom:-2px; left:50%; transform:translateX(-50%); text-align:center;">
+              <div class="text-xl font-bold text-[#06B6D4]"><span id="gas-readout">382</span></div>
+              <div class="data-label">ppm</div>
+            </div>
+          </div>
+          <div class="w-full px-1">
+            <div class="flex justify-between mb-1">
+              <span class="data-label">AQI</span>
+              <span class="text-[0.55rem] font-bold text-[#06B6D4]" id="gas-status">MODERATE</span>
+            </div>
+            <div class="w-full h-1.5 rounded-full bg-white/5 overflow-hidden">
+              <div id="gas-bar" class="h-full rounded-full transition-all" style="width:38%; background: linear-gradient(90deg, #10B981, #06B6D4, #f43f5e);"></div>
+            </div>
+          </div>
+        </div>
+        <div class="ticker-row"><span>CO₂ EQ: 382ppm</span><span>·</span><span>THRESH: 700ppm</span><span>·</span><span>WARM</span></div>
+        <canvas class="hidden"
+                data-controller="gauge-chart"
+                data-gauge-chart-workspace-id-value="<%= @workspace.id %>"
+                data-gauge-chart-field-value="mq135"
+                data-gauge-chart-min-value="0"
+                data-gauge-chart-max-value="1000"
+                data-gauge-chart-color-value="cyan">
+        </canvas>
+      </div>
+
+      <%# ——— BMP Temperature ——— %>
+      <div class="widget-card accent-amber" style="height:200px; overflow:hidden;">
+        <div class="widget-header">
+          <span>BMP280 — Temperature</span>
+          <span class="live-dot bg-[#F59E0B]"></span>
+        </div>
+        <div class="widget-content flex-col gap-2 items-start"
+             data-controller="value-card"
+             data-action="telemetry:received@window->value-card#update"
              data-value-card-data-key-value="temperature">
-          <div class="text-5xl text-[#F59E0B] font-bold mr-4"><span data-value-card-target="value">--</span></div>
-          <div data-value-card-target="status" class="text-[9px] font-semibold text-[#666] tracking-[0.25em] mt-3 mr-4 uppercase animate-pulse">[ AWAITING DATA ]</div>
+          <div class="flex items-end gap-1">
+            <div class="big-value text-[#F59E0B]"><span data-value-card-target="value" id="temp-val">24.7</span></div>
+            <span class="text-lg text-[#555] mb-1">°C</span>
+          </div>
+          <div class="w-full">
+            <div class="flex justify-between mb-1"><span class="data-label">−20°C</span><span class="data-label">85°C</span></div>
+            <div class="w-full h-1.5 rounded-full bg-white/5 overflow-hidden">
+              <div id="temp-bar" class="h-full rounded-full transition-all duration-700"
+                   style="width:43%; background: linear-gradient(90deg, #06B6D4, #F59E0B, #f43f5e);"></div>
+            </div>
+          </div>
+          <div class="w-full">
+            <div class="data-label mb-1">Trend</div>
+            <div class="spark-bar" id="temp-spark">
+              <div class="bar bg-[#F59E0B]/25" style="height:55%"></div>
+              <div class="bar bg-[#F59E0B]/30" style="height:60%"></div>
+              <div class="bar bg-[#F59E0B]/38" style="height:48%"></div>
+              <div class="bar bg-[#F59E0B]/45" style="height:65%"></div>
+              <div class="bar bg-[#F59E0B]/52" style="height:72%"></div>
+              <div class="bar bg-[#F59E0B]/60" style="height:58%"></div>
+              <div class="bar bg-[#F59E0B]/70" style="height:68%"></div>
+              <div class="bar bg-[#F59E0B]/82" style="height:80%"></div>
+              <div class="bar bg-[#F59E0B]"    style="height:100%"></div>
+            </div>
+          </div>
+          <div data-value-card-target="status" class="text-[0.5rem] text-[#F59E0B] tracking-widest">[ ACTIVE ]</div>
         </div>
+        <div class="ticker-row"><span>MIN: 19.2°C</span><span>·</span><span>MAX: 31.8°C</span><span>·</span><span>1Hz</span></div>
       </div>
 
-      <%# BMP Pressure %>
-      <div class="widget-card col-span-6 md:col-span-3 row-span-2 border-l shadow-[0_0_15px_rgba(16,185,129,0.03)] border-[#10B981]/10">
-        <div class="widget-header text-right">BMP / Pressure (hPa)</div>
-        <div class="widget-content flex-col items-end w-full"
-             data-controller="value-card" 
-             data-action="telemetry:received@window->value-card#update" 
+      <%# ——— BMP Pressure ——— %>
+      <div class="widget-card accent-emerald" style="height:200px; overflow:hidden;">
+        <div class="widget-header">
+          <span>BMP280 — Pressure</span>
+          <span class="live-dot bg-[#10B981]"></span>
+        </div>
+        <div class="widget-content flex-col gap-2 items-start"
+             data-controller="value-card"
+             data-action="telemetry:received@window->value-card#update"
              data-value-card-data-key-value="pressure">
-          <div class="text-5xl text-[#10B981] font-bold mr-4"><span data-value-card-target="value">--</span></div>
-          <div data-value-card-target="status" class="text-[9px] font-semibold text-[#666] tracking-[0.25em] mt-3 mr-4 uppercase animate-pulse">[ AWAITING DATA ]</div>
+          <div class="flex items-end gap-1">
+            <div class="big-value text-[#10B981]"><span data-value-card-target="value" id="pres-val">1013</span></div>
+            <span class="text-sm text-[#555] mb-1.5">hPa</span>
+          </div>
+          <div class="w-full flex gap-3">
+            <div class="flex-1 p-2 rounded-lg bg-[#10B981]/05 border border-[#10B981]/10">
+              <div class="data-label">Est. Altitude</div>
+              <div class="text-base font-bold text-[#10B981] mt-0.5" id="pres-alt">~12m</div>
+            </div>
+            <div class="flex-1 p-2 rounded-lg bg-white/02 border border-white/05">
+              <div class="data-label">Sea Ref.</div>
+              <div class="text-base font-bold text-[#E5E5E5] mt-0.5">1013<span class="text-[0.55rem] text-[#555]">hPa</span></div>
+            </div>
+          </div>
+          <div class="w-full">
+            <div class="data-label mb-1">Trend</div>
+            <div class="spark-bar" id="pres-spark">
+              <div class="bar bg-[#10B981]/25" style="height:90%"></div>
+              <div class="bar bg-[#10B981]/32" style="height:85%"></div>
+              <div class="bar bg-[#10B981]/40" style="height:88%"></div>
+              <div class="bar bg-[#10B981]/50" style="height:92%"></div>
+              <div class="bar bg-[#10B981]/58" style="height:87%"></div>
+              <div class="bar bg-[#10B981]/67" style="height:93%"></div>
+              <div class="bar bg-[#10B981]/77" style="height:97%"></div>
+              <div class="bar bg-[#10B981]/88" style="height:95%"></div>
+              <div class="bar bg-[#10B981]"    style="height:100%"></div>
+            </div>
+          </div>
+          <div data-value-card-target="status" class="text-[0.5rem] text-[#10B981] tracking-widest">[ ACTIVE ]</div>
         </div>
+        <div class="ticker-row"><span>MIN: 1008hPa</span><span>·</span><span>MAX: 1019hPa</span><span>·</span><span>-0.2/h</span></div>
       </div>
 
-    </div>
-  </div>
+    </div><!-- /bottom row -->
+  </div><!-- /main layout -->
 </div>
+
+<%# ——— DUMMY ANIMATION SCRIPT ——— %>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+  // Clock
+  const clockEl = document.getElementById("center-clock");
+  function tick() {
+    const n = new Date();
+    if (clockEl) clockEl.textContent = n.toUTCString().slice(17,25) + " UTC";
+  }
+  setInterval(tick, 1000); tick();
+
+  // --- Compass ---
+  let heading = 137;
+  const compassNeedle = document.getElementById("compass-needle");
+  const compassDeg    = document.getElementById("compass-deg");
+  const compassDir    = document.getElementById("compass-dir");
+  const magX = document.getElementById("mag-x");
+  const magY = document.getElementById("mag-y");
+  const magZ = document.getElementById("mag-z");
+  const dirs = ["N","NE","E","SE","S","SW","W","NW"];
+  setInterval(() => {
+    heading = (heading + (Math.random()*8-4) + 360) % 360;
+    if (compassNeedle) compassNeedle.style.transform = `rotate(${heading}deg)`;
+    if (compassDeg)    compassDeg.textContent = Math.round(heading);
+    if (compassDir)    compassDir.textContent = dirs[Math.round(heading/45)%8];
+    if (magX) magX.textContent = (Math.random()>0.5?"+":"-") + Math.floor(Math.random()*120);
+    if (magY) magY.textContent = (Math.random()>0.5?"+":"-") + Math.floor(Math.random()*120);
+    if (magZ) magZ.textContent = (Math.random()>0.5?"+":"-") + Math.floor(Math.random()*35);
+  }, 1200);
+
+  // --- Gas Gauge ---
+  let ppm = 382;
+  const gasArc    = document.getElementById("gas-arc");
+  const gasReadout = document.getElementById("gas-readout");
+  const gasBar    = document.getElementById("gas-bar");
+  const gasStatus = document.getElementById("gas-status");
+  const ARC_TOTAL = 144;
+  function gasLabel(v){ return v<300?"CLEAN":v<600?"MODERATE":v<800?"POOR":"HAZARDOUS"; }
+  setInterval(() => {
+    ppm = Math.max(0, Math.min(1000, ppm + (Math.random()*30-15)));
+    const fill = (ppm/1000)*ARC_TOTAL;
+    if (gasArc)     gasArc.setAttribute("stroke-dasharray", `${fill.toFixed(1)} ${ARC_TOTAL}`);
+    if (gasReadout) gasReadout.textContent = Math.round(ppm);
+    if (gasBar)     gasBar.style.width = (ppm/10)+"%";
+    if (gasStatus)  gasStatus.textContent = gasLabel(ppm);
+  }, 1500);
+
+  // --- Temperature ---
+  let temp = 24.7;
+  const tempValEl = document.querySelector("[data-value-card-data-key-value='temperature'] [data-value-card-target='value']");
+  const tempBar   = document.getElementById("temp-bar");
+  const tempSpark = document.getElementById("temp-spark");
+  setInterval(() => {
+    temp = Math.max(-20, Math.min(85, temp + (Math.random()*1.4-0.7)));
+    if (tempValEl) tempValEl.textContent = temp.toFixed(1);
+    const pct = ((temp+20)/105)*100;
+    if (tempBar) tempBar.style.width = pct+"%";
+    if (tempSpark) {
+      const bars = tempSpark.querySelectorAll(".bar");
+      bars.forEach((b,i) => { if(i<bars.length-1) b.style.height = bars[i+1].style.height; });
+      bars[bars.length-1].style.height = Math.max(8, pct)+"%";
+    }
+  }, 1800);
+
+  // --- Pressure ---
+  let pressure = 1013;
+  const presValEl = document.querySelector("[data-value-card-data-key-value='pressure'] [data-value-card-target='value']");
+  const presAlt   = document.getElementById("pres-alt");
+  const presSpark = document.getElementById("pres-spark");
+  setInterval(() => {
+    pressure = Math.max(900, Math.min(1050, pressure + (Math.random()*2-1)));
+    if (presValEl) presValEl.textContent = Math.round(pressure);
+    const altM = Math.round(44330*(1-Math.pow(pressure/1013.25,0.1903)));
+    if (presAlt) presAlt.textContent = `~${altM}m`;
+    if (presSpark) {
+      const bars = presSpark.querySelectorAll(".bar");
+      bars.forEach((b,i)=>{if(i<bars.length-1) b.style.height=bars[i+1].style.height;});
+      bars[bars.length-1].style.height = Math.max(5,((pressure-900)/150)*100)+"%";
+    }
+  }, 2000);
+
+  // --- Battery drain ---
+  let batt = 78;
+  const battFill = document.getElementById("batt-fill-header");
+  const battPct  = document.getElementById("batt-pct-header");
+  const battPill = document.getElementById("battery-header-pill");
+  setInterval(() => {
+    batt = Math.max(0, Math.min(100, batt - 0.08));
+    const fill = Math.max(1, Math.round((batt/100)*20));
+    if (battFill) battFill.setAttribute("width", fill);
+    if (battPct)  battPct.textContent = Math.round(batt);
+    const color = batt<20?"#f43f5e":batt<40?"#F59E0B":"#10B981";
+    if (battFill) battFill.setAttribute("fill", color);
+    if (battPct)  battPct.style.color = color;
+    if (battPill) battPill.className = batt<20?"battery-pill critical":batt<40?"battery-pill warning":"battery-pill";
+  }, 2000);
+
+});
+</script>
