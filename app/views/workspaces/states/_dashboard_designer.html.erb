@@ -23,9 +23,9 @@
       </div>
     <% end %>
 
-    <button class="btn-secondary">
+    <%= link_to setup_workspace_path(@workspace), class: "btn-secondary" do %>
       <i class="fa-solid fa-gear text-sm"></i> Settings
-    </button>
+    <% end %>
     <button class="btn-primary text-sm flex items-center gap-2" data-action="click->dashboard#saveLayout">
       <i class="fa-solid fa-check text-sm text-[10px]"></i> Save Layout
     </button>

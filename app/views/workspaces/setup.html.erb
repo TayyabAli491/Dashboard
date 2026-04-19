@@ -1,116 +1,144 @@
-<div class="flex flex-col gap-8 max-w-2xl mx-auto">
+<% content_for :head do %>
+  <%= stylesheet_link_tag "setup_theme", "data-turbo-track": "reload" %>
+<% end %>
 
-  <div>
-    <h1 class="page-title">Setup</h1>
-    <p class="page-subtitle">
-      <%= @workspace.name %>
-    </p>
-  </div>
+<div class="page-wrap">
+  <%= render "shared/nav" %>
 
-  <%# Tab navigation %>
-  <div class="flex gap-2 border-b border-border pb-0">
-    <a href="#connection"
-       class="px-4 py-2 text-base font-medium
-              text-text-primary border-b-2
-              border-primary -mb-px">
-      Connection
-    </a>
-    <a href="#schema"
-       class="px-4 py-2 text-base font-medium
-              text-text-muted hover:text-text-primary">
-      Payload Schema
-    </a>
-  </div>
+  <main class="main-content" data-controller="tabs">
+    <div class="mb-10">
+      <%= link_to workspace_path(@workspace), class: "btn-secondary" do %>
+        <i class="fa-solid fa-arrow-left fa-xs mr-2"></i> Live Dashboard
+      <% end %>
+    </div>
 
-  <%# Connection section %>
-  <div id="connection" class="card flex flex-col gap-6">
+    <div class="max-w-4xl mx-auto pb-20">
+      
+      <div class="mb-10">
+        <div class="page-eyebrow">Workspace Configuration</div>
+        <h1 class="page-title"><%= @workspace.name %> <em>Setup</em></h1>
+      </div>
 
-    <div>
-      <p class="section-label mb-2">Endpoint URL</p>
-      <div class="flex items-center gap-3 p-3
-                  bg-glass-subtle rounded-lg
-                  border border-border">
-        <code class="mono flex-1">
-          <%= request.base_url %>/api/workspaces/<%= @workspace.id %>/telemetry
-        </code>
-        <button class="btn-ghost text-sm"
-                data-controller="clipboard"
-                data-action="clipboard#copy"
-                data-clipboard-target="button"
-                data-clipboard-text-value="<%= request.base_url %>/api/workspaces/<%= @workspace.id %>/telemetry">
-          Copy
+      <%# Horizontal Tabs %>
+      <div class="flex gap-2 border-b border-[#E8E4DD] mb-8">
+        <button data-action="click->tabs#select" data-tabs-target="tab" 
+                class="px-5 py-2 text-sm font-medium transition-all -mb-px border-b-2 aria-[selected=true]:border-[#1A1A1A] aria-[selected=true]:text-[#1A1A1A] aria-[selected=false]:border-transparent aria-[selected=false]:text-[#B5B0A8] hover:text-[#6B6560]" 
+                aria-selected="true">
+          Connection Details
+        </button>
+        <button data-action="click->tabs#select" data-tabs-target="tab" 
+                class="px-5 py-2 text-sm font-medium transition-all -mb-px border-b-2 aria-[selected=true]:border-[#1A1A1A] aria-[selected=true]:text-[#1A1A1A] aria-[selected=false]:border-transparent aria-[selected=false]:text-[#B5B0A8] hover:text-[#6B6560]" 
+                aria-selected="false">
+          Payload Schema
         </button>
       </div>
-    </div>
 
-    <div>
-      <p class="section-label mb-2">API Key</p>
-      <div class="flex items-center gap-3 p-3 bg-glass-subtle rounded-lg border border-border"
-           data-controller="reveal"
-           data-reveal-api-key-value="<%= @workspace.api_key %>">
-        <code class="mono flex-1" data-reveal-target="value">••••••••••••••••</code>
-        <button class="btn-ghost text-sm" 
-                data-action="click->reveal#toggle" 
-                data-reveal-target="button">Reveal</button>
-        <button class="btn-ghost text-sm" 
-                data-controller="clipboard" 
-                data-action="clipboard#copy"
-                data-clipboard-target="button"
-                data-clipboard-text-value="<%= @workspace.api_key %>">Copy</button>
+      <%# Connection Section %>
+      <section data-tabs-target="panel" class="setup-card animate-fade-in block">
+        <h3 class="setup-card-header">
+          <i class="fa-solid fa-plug text-[#1A1A1A] mr-3"></i> 
+          Network Integration
+        </h3>
         
-        <%= button_to "Regenerate",
-              workspace_path(@workspace, regenerate_api_key: true),
-              method: :patch,
-              data: { turbo: false, confirm: "Regenerating will invalidate your current hardware connection immediately. Are you sure?" },
-              class: "btn-danger text-sm" %>
-      </div>
-      <p class="input-error mt-2">
-        Regenerating invalidates your current key immediately
-      </p>
-    </div>
+        <div class="flex flex-col gap-8">
+          <div>
+            <label class="setup-field-label">POST Ingestion Endpoint</label>
+            <div class="setup-input-wrapper group">
+              <code class="setup-code-block">
+                <%= request.base_url %>/api/workspaces/<%= @workspace.id %>/telemetry
+              </code>
+              <button class="setup-btn-secondary"
+                      data-controller="clipboard"
+                      data-action="clipboard#copy"
+                      data-clipboard-target="button"
+                      data-clipboard-text-value="<%= request.base_url %>/api/workspaces/<%= @workspace.id %>/telemetry">
+                Copy
+              </button>
+            </div>
+            <p class="mt-2 text-[11px] text-[#9E9891]">Point your hardware's HTTP POST requests to this URL.</p>
+          </div>
 
-  </div>
+          <div>
+            <label class="setup-field-label">Authentication Token (X-API-Key)</label>
+            <div class="setup-input-wrapper group"
+                 data-controller="reveal"
+                 data-reveal-api-key-value="<%= @workspace.api_key %>">
+              
+              <code class="setup-code-block tracking-[0.2em]" data-reveal-target="value">••••••••••••••••</code>
+              
+              <button class="setup-btn-secondary"
+                      data-action="click->reveal#toggle"
+                      data-reveal-target="button">
+                Reveal
+              </button>
+              <button class="btn-icon"
+                      data-controller="clipboard"
+                      data-action="clipboard#copy"
+                      data-clipboard-target="button"
+                      data-clipboard-text-value="<%= @workspace.api_key %>">
+                <i class="fa-regular fa-copy"></i>
+              </button>
 
-  <%# Schema section %>
-  <div id="schema" class="card flex flex-col gap-4">
-    <div class="flex items-center justify-between">
-      <p class="section-label">Payload Schema</p>
-      <%= link_to "Edit Schema",
-            edit_workspace_payload_schema_path(@workspace),
-            class: "btn-ghost text-sm" %>
-    </div>
-    <% if @workspace.payload_schema_defined? %>
-      <table class="w-full text-sm">
-        <thead>
-          <tr class="text-left border-b border-border">
-            <th class="pb-2 text-text-muted font-medium">Key</th>
-            <th class="pb-2 text-text-muted font-medium">Type</th>
-            <th class="pb-2 text-text-muted font-medium">Unit</th>
-            <th class="pb-2 text-text-muted font-medium">Alias</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% @workspace.payload_schema.fields.each do |field| %>
-            <tr class="border-b border-border-subtle">
-              <td class="py-3 mono"><%= field["key"] %></td>
-              <td class="py-3 text-text-secondary">
-                <%= field["type"] %>
-              </td>
-              <td class="py-3 text-text-secondary">
-                <%= field["unit"] %>
-              </td>
-              <td class="py-3 text-text-secondary">
-                <%= field["alias"] %>
-              </td>
-            </tr>
+              <%= button_to workspace_path(@workspace, regenerate_api_key: true),
+                    method: :patch,
+                    data: { turbo: false, confirm: "Regenerating will invalidate your current hardware connection. Proceed?" },
+                    class: "setup-btn-danger ml-2" do %>
+                Regenerate
+              <% end %>
+            </div>
+            <p class="mt-2 text-[11px] text-[#9E9891]">Include this in the `X-API-Key` header of your requests.</p>
+          </div>
+        </div>
+      </section>
+
+      <%# Schema Section %>
+      <section data-tabs-target="panel" class="setup-card animate-fade-in hidden">
+        <div class="flex items-center justify-between border-b border-[#E8E4DD] pb-5 mb-6">
+          <h3 class="text-[15px] font-semibold text-[#1A1A1A] flex items-center">
+            <i class="fa-solid fa-code text-[#1A1A1A] mr-3"></i> 
+            Telemetry Schema
+          </h3>
+          <%= link_to edit_workspace_payload_schema_path(@workspace), class: "btn-primary" do %>
+            <i class="fa-regular fa-pen-to-square mr-2 text-[10px]"></i> Edit Schema
           <% end %>
-        </tbody>
-      </table>
-    <% else %>
-      <p class="text-text-muted text-sm">
-        No schema defined yet.
-      </p>
-    <% end %>
-  </div>
+        </div>
 
+        <% if @workspace.payload_schema_defined? %>
+          <div class="overflow-hidden rounded-lg border border-[#E8E4DD]">
+            <table class="w-full text-sm text-left">
+              <thead class="setup-table-header">
+                <tr>
+                  <th class="px-5 py-3 font-semibold">Key</th>
+                  <th class="px-5 py-3 font-semibold">Type</th>
+                  <th class="px-5 py-3 font-semibold">Unit</th>
+                  <th class="px-5 py-3 font-semibold">Alias</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-[#E8E4DD]">
+                <% @workspace.payload_schema.fields.each do |field| %>
+                  <tr class="setup-table-row">
+                    <td class="px-5 py-4 font-mono text-[#1A1A1A]"><%= field["key"] %></td>
+                    <td class="px-5 py-4">
+                      <span class="bg-[#F7F5F1] px-2 py-0.5 rounded text-[10px] font-medium text-[#6B6560] border border-[#E8E4DD]">
+                        <%= field["type"].upcase %>
+                      </span>
+                    </td>
+                    <td class="px-5 py-4 text-[#9E9891]"><%= field["unit"].presence || "—" %></td>
+                    <td class="px-5 py-4 font-medium text-[#1A1A1A]"><%= field["alias"] %></td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+        <% else %>
+          <div class="py-16 text-center border-2 border-dashed border-[#E8E4DD] rounded-xl bg-white/50">
+            <i class="fa-solid fa-triangle-exclamation text-2xl mb-4 text-[#B5B0A8]"></i>
+            <p class="text-sm font-semibold text-[#1A1A1A]">No Schema Defined</p>
+            <p class="text-xs text-[#9E9891] mt-1">Please configure your telemetry schema to start processing data.</p>
+          </div>
+        <% end %>
+      </section>
+
+    </div>
+  </main>
 </div>

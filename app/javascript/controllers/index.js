@@ -48,3 +48,5 @@ application.register("live-telemetry", LiveTelemetryController)
 
 import CameraFeedController from "controllers/camera_feed_controller"
 application.register("camera-feed", CameraFeedController)
+import TabsController from "controllers/tabs_controller"
+application.register("tabs", TabsController)
