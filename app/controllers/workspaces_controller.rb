@@ -15,7 +15,9 @@ class WorkspacesController < ApplicationController
     @active_session = @workspace.sessions.in_progress.first
   end
 
-  def setup; end
+  def setup
+    @payload_schema = @workspace.payload_schema
+  end
 
   def new
     @workspace = current_user.workspaces.new
@@ -80,7 +82,11 @@ class WorkspacesController < ApplicationController
     end
     params.require(:workspace).permit(
       :dashboard_theme, :background_video,
-      dashboard_layout: [ :id, :type, :label, grid: [ :x, :y, :w, :h ] ]
+      dashboard_layout: [
+        :id, :type, :label,
+        grid:   [ :x, :y, :w, :h ],
+        config: [ :color, :unit, :decimals, :min, :max, { fields: [] } ]
+      ]
     )
   end
 end
