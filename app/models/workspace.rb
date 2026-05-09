@@ -41,8 +41,9 @@ class Workspace < ApplicationRecord
   end
 
   def parsed_dashboard_widgets
-    return [] if dashboard_layout.blank?
-    dashboard_layout.is_a?(Array) ? dashboard_layout : []
+    return [] unless dashboard_layout.is_a?(Array)
+
+    dashboard_layout.filter_map { |raw| DashboardWidgetCatalog.normalize_widget(raw) }
   end
 
   private
