@@ -1,49 +1,77 @@
-<%# CanSat Live Dashboard — clean orchestration view.
-    Widgets live in: app/views/workspaces/widgets/_*.html.erb %>
-
 <% content_for :head do %>
   <%= stylesheet_link_tag "static_theme", "data-turbo-track": "reload" %>
 <% end %>
-<div class="fixed inset-0 z-[100] bg-[#050810] cansat-dashboard overflow-hidden flex flex-col"
-     style="background-image: radial-gradient(rgba(99,102,241,0.10) 1.5px, transparent 1.5px); background-size:32px 32px;"
-     data-controller="dashboard live-telemetry"
+
+<% widgets = @workspace.parsed_dashboard_widgets %>
+
+<div class="fixed inset-0 z-[100] cansat-dashboard overflow-hidden flex flex-col"
+     data-controller="dashboard"
      data-dashboard-workspace-id-value="<%= @workspace.id %>"
      data-dashboard-edit-mode-value="false">
 
-  <%# Background video (optional) %>
   <% if @workspace.dashboard_theme == 'video' && @workspace.background_video.attached? %>
     <video src="<%= url_for(@workspace.background_video) %>"
-           class="fixed inset-0 w-full h-full object-cover z-0 pointer-events-none"
-           autoplay loop muted playsinline>
-    </video>
+           class="fixed inset-0 w-full h-full object-cover z-0 opacity-30 pointer-events-none"
+           autoplay loop muted playsinline></video>
   <% end %>
 
-  <%# ——— HEADER ——— %>
-  <%= render "workspaces/widgets/dashboard_header", workspace: @workspace, active_session: @active_session %>
-
-  <%# ——— MAIN LAYOUT ——— %>
-  <div class="pt-16 px-5 pb-5 h-full w-full relative z-10 flex flex-col gap-4">
-
-    <%# TOP ROW: CanSat 3D (left) | empty center | GPS (right) %>
-    <div class="flex gap-4 flex-1 min-h-0">
-
-      <%= render "workspaces/widgets/attitude_widget", workspace_id: @workspace.id %>
-
-      <div class="flex-1 min-w-0" style="display:flex; flex-direction:column;">
-        <%= render "workspaces/widgets/camera_widget", workspace_id: @workspace.id %>
+  <%# Header %>
+  <header class="live-header">
+    <div class="live-header-left">
+      <div class="live-brand">
+        <div class="live-brand-mark"><i class="fa-solid fa-satellite-dish"></i></div>
+        <div>
+          <div class="live-brand-eyebrow">Live Telemetry</div>
+          <div class="live-brand-title"><%= @workspace.name %></div>
+        </div>
       </div>
-
-      <%= render "workspaces/widgets/gps_widget", workspace_id: @workspace.id %>
-
-    </div><!-- /top row -->
-
-    <%# BOTTOM ROW: 4 sensor cards, equal-width grid %>
-    <div class="bottom-scroller" style="flex-shrink:0; height:230px;">
-      <%= render "workspaces/widgets/magnetometer_widget" %>
-      <%= render "workspaces/widgets/gas_widget",         workspace_id: @workspace.id %>
-      <%= render "workspaces/widgets/temperature_widget" %>
-      <%= render "workspaces/widgets/pressure_widget" %>
     </div>
 
-  </div><!-- /main layout -->
+    <div class="live-header-center">
+      <div class="live-clock" data-controller="clock" data-clock-target="display">--:--:-- UTC</div>
+    </div>
+
+    <div class="live-header-right">
+      <% if @active_session %>
+        <div class="live-session">
+          <span class="live-dot" style="background:#10B981"></span>
+          <div class="text-left leading-tight">
+            <div class="text-[9px] text-[rgba(229,229,229,0.5)] uppercase tracking-widest">Session</div>
+            <div class="text-[12px] font-semibold"><%= @active_session.name %></div>
+          </div>
+        </div>
+      <% else %>
+        <div class="live-session live-session-idle">
+          <span class="live-dot" style="background:#F59E0B"></span>
+          <div class="text-left leading-tight">
+            <div class="text-[9px] text-[rgba(229,229,229,0.5)] uppercase tracking-widest">Session</div>
+            <div class="text-[12px] font-semibold">Idle</div>
+          </div>
+        </div>
+      <% end %>
+
+      <%= link_to workspace_path(@workspace), class: "live-header-btn" do %>
+        <i class="fa-solid fa-pen text-[11px]"></i> Edit Layout
+      <% end %>
+    </div>
+  </header>
+
+  <%# Grid %>
+  <main class="live-main">
+    <% if widgets.empty? %>
+      <div class="live-empty">
+        <div class="live-empty-icon"><i class="fa-solid fa-border-all"></i></div>
+        <h2 class="live-empty-title">No widgets configured</h2>
+        <p class="live-empty-sub">Open the layout editor and add widgets bound to your payload schema fields.</p>
+        <%= link_to "Open Editor", workspace_path(@workspace), class: "live-empty-btn" %>
+      </div>
+    <% else %>
+      <div class="grid-stack live-grid"
+           data-dashboard-target="grid">
+        <% widgets.each do |widget| %>
+          <%= render "widgets/#{widget['type']}", widget: widget, workspace: @workspace %>
+        <% end %>
+      </div>
+    <% end %>
+  </main>
 </div>
