@@ -1,75 +1,146 @@
-<div class="designer-sidebar-header">
-  <div class="flex items-center gap-2">
-    <i class="fa-solid fa-shapes text-[#6B6560] text-sm"></i>
-    <span class="designer-sidebar-title">Widget Library</span>
-  </div>
-</div>
+<% schema_fields = @workspace.payload_schema&.fields || [] %>
+<% catalog = DashboardWidgetCatalog::CATALOG.group_by { |_, spec| spec[:group] } %>
 
-<div class="p-4 border-b border-[#E8E4DD] bg-[#F7F5F1]">
-  <div class="auth-input-wrap">
-    <i class="fa-solid fa-search auth-input-icon"></i>
-    <input type="text" placeholder="Search widgets..." class="auth-input auth-input-with-icon border-transparent bg-white shadow-sm focus:border-[#1A1A1A]">
-  </div>
-</div>
+<%# Controller wraps header + scroll area + modal so all targets are in scope.
+    The modal MUST be a sibling of the overflow-y-auto div (not inside it) so
+    position:fixed is resolved against the viewport, not the scroll container. %>
+<div class="flex flex-col flex-1 min-h-0"
+     data-controller="widget-form"
+     data-widget-form-schema-fields-value="<%= schema_fields.to_json %>"
+     data-widget-form-catalog-value="<%= DashboardWidgetCatalog::CATALOG.to_json %>"
+     data-widget-form-colors-value="<%= DashboardWidgetCatalog::COLOR_CHOICES.to_json %>">
 
-<div class="flex-1 overflow-y-auto p-5 space-y-7" data-controller="widget-form">
-  
-  <%# Theme Selector %>
-  <div>
-    <div class="nav-label ml-0 pl-1 mb-3">Canvas Theme</div>
-    <div class="grid grid-cols-2 gap-3">
-      <%# Hidden input for video local upload %>
-      <input type="file" accept="video/*" class="hidden" data-canvas-theme-target="fileInput" data-action="change->canvas-theme#handleVideoSelect">
-      
-      <button class="widget-btn border-[#1A1A1A] bg-[#F7F5F1]" data-canvas-theme-target="blueprintBtn" data-action="click->canvas-theme#selectBlueprint">
-        <div class="widget-btn-icon"><i class="fa-solid fa-border-none"></i></div>
-        <span class="widget-btn-name">Blueprint</span>
-        <span class="widget-btn-desc">Dots</span>
-      </button>
-      
-      <button class="widget-btn" data-canvas-theme-target="videoBtn" data-action="click->canvas-theme#triggerVideoUpload">
-        <div class="widget-btn-icon"><i class="fa-solid fa-video"></i></div>
-        <span class="widget-btn-name">Live Feed</span>
-        <span class="widget-btn-desc">Upload file</span>
-      </button>
+  <div class="designer-sidebar-header">
+    <div class="flex items-center gap-2">
+      <i class="fa-solid fa-shapes text-[#6B6560] text-sm"></i>
+      <span class="designer-sidebar-title">Widget Library</span>
     </div>
   </div>
 
-  <%# Data Display Widgets %>
-  <div>
-    <div class="nav-label ml-0 pl-1 mb-3">Data Display</div>
-    <div class="grid grid-cols-2 gap-3">
-      <% [
-          { icon: "fa-font", label: "Value Card", desc: "Single metric" },
-          { icon: "fa-chart-line", label: "Line Chart", desc: "Time series" },
-          { icon: "fa-gauge-high", label: "Gauge", desc: "Current value" },
-          { icon: "fa-chart-column", label: "Bar Chart", desc: "Comparisons" }
-      ].each do |wt| %>
-        <button class="widget-btn" data-action="click->widget-form#addTestWidget" data-widget-type="<%= wt[:label] %>">
-          <div class="widget-btn-icon"><i class="fa-solid <%= wt[:icon] %>"></i></div>
-          <span class="widget-btn-name"><%= wt[:label] %></span>
-          <span class="widget-btn-desc"><%= wt[:desc] %></span>
+  <%# Scrollable widget list — modal is NOT inside this div %>
+  <div class="flex-1 overflow-y-auto p-5 space-y-7">
+
+    <%# Theme Selector %>
+    <div>
+      <div class="nav-label ml-0 pl-1 mb-3">Canvas Theme</div>
+      <div class="grid grid-cols-2 gap-3">
+        <input type="file" accept="video/*" class="hidden" data-canvas-theme-target="fileInput" data-action="change->canvas-theme#handleVideoSelect">
+        <button class="widget-btn border-[#1A1A1A] bg-[#F7F5F1]" data-canvas-theme-target="blueprintBtn" data-action="click->canvas-theme#selectBlueprint">
+          <div class="widget-btn-icon"><i class="fa-solid fa-border-none"></i></div>
+          <span class="widget-btn-name">Blueprint</span>
+          <span class="widget-btn-desc">Dots</span>
         </button>
-      <% end %>
-    </div>
-  </div>
-
-  <div>
-    <div class="nav-label ml-0 pl-1 mb-3">Telemetry</div>
-    <div class="grid grid-cols-2 gap-3">
-      <% [
-          { icon: "fa-map-location-dot", label: "GPS Map", desc: "Live tracking" },
-          { icon: "fa-cube", label: "3D Attitude", desc: "Orientation" },
-          { icon: "fa-compass", label: "Compass", desc: "Heading" },
-          { icon: "fa-bars-staggered", label: "Altitude", desc: "Vertical bar" }
-      ].each do |wt| %>
-        <button class="widget-btn" data-action="click->widget-form#addTestWidget" data-widget-type="<%= wt[:label] %>">
-          <div class="widget-btn-icon"><i class="fa-solid <%= wt[:icon] %>"></i></div>
-          <span class="widget-btn-name"><%= wt[:label] %></span>
-          <span class="widget-btn-desc"><%= wt[:desc] %></span>
+        <button class="widget-btn" data-canvas-theme-target="videoBtn" data-action="click->canvas-theme#triggerVideoUpload">
+          <div class="widget-btn-icon"><i class="fa-solid fa-video"></i></div>
+          <span class="widget-btn-name">Live Feed</span>
+          <span class="widget-btn-desc">Upload file</span>
         </button>
-      <% end %>
+      </div>
     </div>
-  </div>
 
-</div>
+    <% if schema_fields.empty? %>
+      <div class="rounded-xl border border-[#F7C1C1] bg-[#FCEBEB] p-4 text-[12px] text-[#A32D2D]">
+        <i class="fa-solid fa-triangle-exclamation mr-1"></i>
+        Define payload schema fields first — widgets bind to schema keys.
+        <%= link_to "Open schema editor", edit_workspace_payload_schema_path(@workspace), class: "underline font-semibold mt-1 inline-block" %>
+      </div>
+    <% end %>
+
+    <% catalog.each do |group_name, entries| %>
+      <div>
+        <div class="nav-label ml-0 pl-1 mb-3"><%= group_name %></div>
+        <div class="grid grid-cols-2 gap-3">
+          <% entries.each do |type, spec| %>
+            <button type="button"
+                    class="widget-btn"
+                    data-action="click->widget-form#openConfig"
+                    data-widget-type="<%= type %>"
+                    <%= "disabled" if schema_fields.empty? %>>
+              <div class="widget-btn-icon"><i class="fa-solid <%= spec[:icon] %>"></i></div>
+              <span class="widget-btn-name"><%= spec[:label] %></span>
+              <span class="widget-btn-desc"><%= spec[:description] %></span>
+            </button>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+
+  </div><%# /scrollable list %>
+
+  <%# Config modal — sibling of overflow div so position:fixed escapes the scroll container %>
+  <div class="widget-config-backdrop hidden"
+       data-widget-form-target="modal">
+    <div class="widget-config-card" role="dialog" aria-modal="true">
+      <div class="widget-config-header">
+        <div class="flex items-center gap-3">
+          <div class="widget-config-icon" data-widget-form-target="icon">
+            <i class="fa-solid fa-shapes"></i>
+          </div>
+          <div>
+            <div class="widget-config-eyebrow">Configure Widget</div>
+            <div class="widget-config-title" data-widget-form-target="title">Widget</div>
+          </div>
+        </div>
+        <button type="button" class="widget-config-close" data-close-modal>
+          <i class="fa-solid fa-times"></i>
+        </button>
+      </div>
+
+      <div class="widget-config-body" data-widget-form-target="body">
+        <div class="widget-config-row">
+          <label class="widget-config-label">Display label</label>
+          <input type="text" class="widget-config-input" data-widget-form-target="labelInput" placeholder="e.g. Altitude">
+        </div>
+
+        <div class="widget-config-row" data-widget-form-target="fieldsRow">
+          <label class="widget-config-label">
+            Bound field<span data-widget-form-target="fieldsHint"></span>
+          </label>
+          <div class="widget-config-fields" data-widget-form-target="fieldsContainer"></div>
+        </div>
+
+        <div class="widget-config-row" data-widget-form-target="autoFieldsRow" hidden>
+          <label class="widget-config-label">Auto-bound fields</label>
+          <div class="widget-config-auto" data-widget-form-target="autoFields"></div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div class="widget-config-row" data-widget-form-target="colorRow">
+            <label class="widget-config-label">Accent color</label>
+            <div class="widget-config-colors" data-widget-form-target="colorPicker"></div>
+          </div>
+
+          <div class="widget-config-row" data-widget-form-target="unitRow">
+            <label class="widget-config-label">Unit (optional)</label>
+            <input type="text" class="widget-config-input" data-widget-form-target="unitInput" placeholder="m, °C, hPa…">
+          </div>
+
+          <div class="widget-config-row" data-widget-form-target="decimalsRow">
+            <label class="widget-config-label">Decimals</label>
+            <input type="number" min="0" max="4" class="widget-config-input" data-widget-form-target="decimalsInput" value="1">
+          </div>
+
+          <div class="widget-config-row" data-widget-form-target="minRow" hidden>
+            <label class="widget-config-label">Range min</label>
+            <input type="number" class="widget-config-input" data-widget-form-target="minInput" value="0">
+          </div>
+
+          <div class="widget-config-row" data-widget-form-target="maxRow" hidden>
+            <label class="widget-config-label">Range max</label>
+            <input type="number" class="widget-config-input" data-widget-form-target="maxInput" value="100">
+          </div>
+        </div>
+
+        <div class="widget-config-error hidden" data-widget-form-target="error"></div>
+      </div>
+
+      <div class="widget-config-footer">
+        <button type="button" class="btn-secondary" data-close-modal>Cancel</button>
+        <button type="button" class="btn-primary" data-submit-modal>
+          <i class="fa-solid fa-plus mr-1"></i> Add Widget
+        </button>
+      </div>
+    </div>
+  </div><%# /modal %>
+
+</div><%# /widget-form controller %>
