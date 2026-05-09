@@ -1,38 +1,52 @@
 import { Controller } from "@hotwired/stimulus"
 
+const COLOR_HEX = {
+  primary: "#6366F1",
+  cyan:    "#06B6D4",
+  success: "#10B981",
+  warning: "#F59E0B",
+  danger:  "#EF4444"
+}
+
 export default class extends Controller {
-  static targets = ["value", "status"]
-  static values = { 
-    dataKey: String
+  static targets = ["value", "unit", "pulse"]
+  static values  = {
+    field:    String,
+    unit:     String,
+    decimals: { type: Number, default: 1 },
+    color:    { type: String, default: "primary" }
   }
 
   connect() {
-    console.log(`[WIDGET HOOK] Value Card initialized locally. Targeting semantic key: "${this.dataKeyValue}"`)
+    this.handleTelemetry = this.handleTelemetry.bind(this)
+    window.addEventListener("telemetry:received", this.handleTelemetry)
+    this.lastValue = null
+
+    if (this.hasPulseTarget) {
+      this.pulseTarget.style.background = COLOR_HEX[this.colorValue] || COLOR_HEX.primary
+    }
   }
 
-  update(event) {
+  disconnect() {
+    window.removeEventListener("telemetry:received", this.handleTelemetry)
+  }
+
+  handleTelemetry(event) {
     const payload = event.detail
-    
-    // Attempt to locate the value in the hardware payload based on the widget label (e.g. "altitude")
-    const searchKey = this.dataKeyValue.toLowerCase()
-    console.log(`[WIDGET DATA] Value Card parsing payload for '${searchKey}':`, payload)
-    
-    if (payload[searchKey] !== undefined) {
-      // Securely update DOM elements dynamically bypassing any complex virtual DOM overhead!
-      this.valueTarget.textContent = payload[searchKey]
-      
-      // Update the UI "Awaiting Signal" sequence to indicate active physical connection!
-      this.statusTarget.textContent = "[ SIGNAL ACTIVE ]"
-      this.statusTarget.classList.remove("text-[#C1440E]", "animate-pulse")
-      this.statusTarget.classList.add("text-[#17B876]", "drop-shadow-[0_0_8px_rgba(23,184,118,0.5)]")
-      
-      // Create a micro-animation flash on the value text for highly professional feedback!
-      this.valueTarget.style.color = "#17B876"
-      setTimeout(() => {
-        this.valueTarget.style.color = "#E5E5E5"
-      }, 500)
-    } else {
-      console.log(`[WIDGET MISS] Payload did not contain expected key: '${searchKey}'`)
-    }
+    if (!payload || payload[this.fieldValue] === undefined) return
+
+    const raw     = payload[this.fieldValue]
+    const numeric = parseFloat(raw)
+    const display = isNaN(numeric) ? String(raw) : numeric.toFixed(this.decimalsValue)
+
+    this.valueTarget.textContent = display
+    this.flash()
+  }
+
+  flash() {
+    if (!this.hasPulseTarget) return
+    this.pulseTarget.classList.remove("flash")
+    void this.pulseTarget.offsetWidth
+    this.pulseTarget.classList.add("flash")
   }
 }

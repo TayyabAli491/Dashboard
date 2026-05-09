@@ -3,7 +3,12 @@ import * as THREE from "three"
 
 export default class extends Controller {
   static targets = ["stats"]
-  static values  = { workspaceId: Number }
+  static values  = {
+    workspaceId: Number,
+    rollField:   { type: String, default: "roll" },
+    pitchField:  { type: String, default: "pitch" },
+    yawField:    { type: String, default: "yaw" }
+  }
 
   connect() {
     this.setupScene()
@@ -215,9 +220,9 @@ export default class extends Controller {
 
   handlePacket(data) {
     const payload = data.processed_payload || data.raw_payload
-    const pitch = parseFloat(payload.pitch || 0)
-    const roll  = parseFloat(payload.roll  || 0)
-    const yaw   = parseFloat(payload.yaw   || 0)
+    const pitch = parseFloat(payload[this.pitchFieldValue] ?? payload.pitch ?? 0)
+    const roll  = parseFloat(payload[this.rollFieldValue]  ?? payload.roll  ?? 0)
+    const yaw   = parseFloat(payload[this.yawFieldValue]   ?? payload.yaw   ?? 0)
     const toRad = THREE.MathUtils.degToRad
 
     this.targetRotation.x = toRad(pitch)

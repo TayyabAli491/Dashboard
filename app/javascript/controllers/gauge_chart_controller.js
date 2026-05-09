@@ -1,82 +1,73 @@
 import { Controller } from "@hotwired/stimulus"
-import consumer from "channels/consumer"
 
-const COLOR_MAP = {
+const COLOR_HEX = {
   primary: "#6366F1",
-  cyan: "#06B6D4",
+  cyan:    "#06B6D4",
   success: "#10B981",
   warning: "#F59E0B",
-  danger: "#EF4444"
+  danger:  "#EF4444"
 }
 const Chart = window.Chart
 
 export default class extends Controller {
-  static targets = ["readout"]
+  static targets = ["canvas", "readout"]
   static values  = {
-    field:       String,
-    workspaceId: Number,
-    min:         Number,
-    max:         Number,
-    color:       String
+    field:    String,
+    min:      { type: Number, default: 0 },
+    max:      { type: Number, default: 100 },
+    unit:     String,
+    decimals: { type: Number, default: 1 },
+    color:    { type: String, default: "primary" }
   }
 
   connect() {
-    const accent = COLOR_MAP[this.colorValue] || 
-                   COLOR_MAP.primary
+    const accent = COLOR_HEX[this.colorValue] || COLOR_HEX.primary
 
-    this.chart = new Chart(this.element, {
+    this.chart = new Chart(this.canvasTarget, {
       type: "doughnut",
       data: {
         datasets: [{
-          data: [0, this.maxValue],
-          backgroundColor: [
-            accent,
-            "rgba(255,255,255,0.05)"
-          ],
+          data: [0, this.maxValue - this.minValue],
+          backgroundColor: [accent, "rgba(255,255,255,0.06)"],
           borderWidth: 0,
-          circumference: 180,
-          rotation: 270
+          circumference: 220,
+          rotation: 250
         }]
       },
       options: {
-        responsive: false,
-        cutout: "75%",
-        plugins: { legend: { display: false } },
-        animation: { duration: 400 }
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: "78%",
+        plugins: { legend: { display: false }, tooltip: { enabled: false } },
+        animation: { duration: 350 }
       }
     })
 
-    this.subscription = consumer.subscriptions.create(
-      {
-        channel: "WorkspaceTelemetryChannel",
-        workspace_id: this.workspaceIdValue
-      },
-      { received: (data) => this.handlePacket(data) }
-    )
+    this.handleTelemetry = this.handleTelemetry.bind(this)
+    window.addEventListener("telemetry:received", this.handleTelemetry)
   }
 
   disconnect() {
     this.chart?.destroy()
-    this.subscription?.unsubscribe()
+    window.removeEventListener("telemetry:received", this.handleTelemetry)
   }
 
-  handlePacket(data) {
-    const payload = data.processed_payload || 
-                    data.raw_payload
-    const value   = parseFloat(payload[this.fieldValue])
+  handleTelemetry(event) {
+    const payload = event.detail
+    if (!payload) return
 
+    const value = parseFloat(payload[this.fieldValue])
     if (isNaN(value)) return
 
-    const clamped  = Math.min(
-      Math.max(value, this.minValue), this.maxValue
-    )
-    const remainder = this.maxValue - clamped
+    const range   = this.maxValue - this.minValue
+    const clamped = Math.min(Math.max(value, this.minValue), this.maxValue)
+    const filled  = clamped - this.minValue
 
-    this.chart.data.datasets[0].data = [clamped, remainder]
-    this.chart.update()
+    this.chart.data.datasets[0].data = [filled, range - filled]
+    this.chart.update("none")
 
     if (this.hasReadoutTarget) {
-      this.readoutTarget.textContent = value.toFixed(1)
+      this.readoutTarget.textContent = `${value.toFixed(this.decimalsValue)}${this.unitValue ? " " + this.unitValue : ""}`
     }
   }
 }
