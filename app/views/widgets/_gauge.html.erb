@@ -1,0 +1,18 @@
+<%= render "widgets/widget_wrapper", widget: widget do %>
+  <% field = widget['config']['fields'].first %>
+  <div class="gauge-body"
+       data-controller="gauge-chart"
+       data-gauge-chart-field-value="<%= field %>"
+       data-gauge-chart-min-value="<%= widget['config']['min'] %>"
+       data-gauge-chart-max-value="<%= widget['config']['max'] %>"
+       data-gauge-chart-unit-value="<%= widget['config']['unit'] %>"
+       data-gauge-chart-decimals-value="<%= widget['config']['decimals'] %>"
+       data-gauge-chart-color-value="<%= widget['config']['color'] %>">
+    <canvas data-gauge-chart-target="canvas"></canvas>
+    <div class="gauge-readout" data-gauge-chart-target="readout">--</div>
+    <div class="gauge-range">
+      <span><%= widget['config']['min'] %></span>
+      <span><%= widget['config']['max'] %></span>
+    </div>
+  </div>
+<% end %>

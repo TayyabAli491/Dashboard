@@ -1,18 +1,16 @@
 <%= render "widgets/widget_wrapper", widget: widget do %>
-  <div class="flex flex-col justify-center h-full gap-1"
+  <% field = widget['config']['fields'].first %>
+  <div class="value-card-body"
        data-controller="value-card"
-       data-value-card-field-value="<%= widget['fields']&.first || widget['field'] %>"
-       data-value-card-workspace-id-value="<%= workspace.id %>"
-       data-value-card-color-value="<%= widget['color'] || 'primary' %>">
-    <p class="text-4xl font-semibold text-text-primary"
-       data-value-card-target="value">
-      --
-    </p>
-    <p class="text-text-muted text-sm"
-       data-value-card-target="unit">
-    </p>
-    <p class="text-sm"
-       data-value-card-target="trend">
-    </p>
+       data-value-card-field-value="<%= field %>"
+       data-value-card-unit-value="<%= widget['config']['unit'] %>"
+       data-value-card-decimals-value="<%= widget['config']['decimals'] %>"
+       data-value-card-color-value="<%= widget['config']['color'] %>">
+    <div class="value-card-value" data-value-card-target="value">--</div>
+    <div class="value-card-meta">
+      <span class="value-card-unit" data-value-card-target="unit"><%= widget['config']['unit'] %></span>
+      <span class="value-card-field-key font-mono"><%= field %></span>
+    </div>
+    <div class="value-card-pulse" data-value-card-target="pulse"></div>
   </div>
 <% end %>

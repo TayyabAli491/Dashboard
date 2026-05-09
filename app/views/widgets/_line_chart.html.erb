@@ -1,7 +1,7 @@
 <%= render "widgets/widget_wrapper", widget: widget do %>
-  <canvas data-controller="line-chart"
-          data-line-chart-fields-value="<%= (widget['fields'] || [widget['field']]).to_json %>"
-          data-line-chart-workspace-id-value="<%= workspace.id %>"
-          data-line-chart-color-value="<%= widget['color'] || 'primary' %>">
-  </canvas>
+  <div class="line-chart-body">
+    <canvas data-controller="line-chart"
+            data-line-chart-fields-value="<%= widget['config']['fields'].to_json %>"
+            data-line-chart-color-value="<%= widget['config']['color'] %>"></canvas>
+  </div>
 <% end %>

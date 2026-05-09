@@ -1,7 +1,9 @@
 <%= render "widgets/widget_wrapper", widget: widget do %>
-  <div class="h-full w-full rounded-lg overflow-hidden"
+  <% lat_field = widget['config']['fields'][0] || 'latitude' %>
+  <% lng_field = widget['config']['fields'][1] || 'longitude' %>
+  <div class="gps-map-body"
        data-controller="gps-map"
-       data-gps-map-workspace-id-value="<%= workspace.id %>"
-       data-gps-map-follow-value="true">
-  </div>
+       data-gps-map-lat-field-value="<%= lat_field %>"
+       data-gps-map-lng-field-value="<%= lng_field %>"
+       data-gps-map-color-value="<%= widget['config']['color'] %>"></div>
 <% end %>
