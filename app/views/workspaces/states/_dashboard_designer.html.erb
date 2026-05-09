@@ -3,115 +3,120 @@
      data-dashboard-workspace-id-value="<%= @workspace.id %>"
      data-dashboard-save-url-value="<%= save_layout_workspace_path(@workspace) %>">
 
-<%# Topbar utilizing application.css theme %>
-<div class="topbar mb-0">
-  <div>
-    <div class="page-eyebrow">Workspace Configuration</div>
-    <h1 class="page-title"><%= @workspace.name %> <em>Layout</em></h1>
-  </div>
-  
-  <div class="flex items-center gap-3">
-    <% if @active_session %>
-      <div class="badge badge-ok">
-        <span class="badge-dot"></span>
-        <%= @active_session.name %> (Live)
-      </div>
-    <% else %>
-      <div class="badge badge-warn">
-        <span class="badge-dot"></span>
-        Offline
-      </div>
-    <% end %>
+  <%# Topbar %>
+  <div class="topbar mb-0">
+    <div>
+      <div class="page-eyebrow">Workspace Configuration</div>
+      <h1 class="page-title"><%= @workspace.name %> <em>Layout</em></h1>
+    </div>
 
-    <%= link_to workspace_sessions_path(@workspace), class: "btn-secondary" do %>
-      <i class="fa-solid fa-list-check text-sm"></i> Sessions
-    <% end %>
-
-    <%= link_to workspace_telemetry_records_path(@workspace), class: "btn-secondary" do %>
-      <i class="fa-solid fa-database text-sm"></i> Stored Data
-    <% end %>
-
-    <%= link_to workspace_payload_schema_path(@workspace), class: "btn-secondary" do %>
-      <i class="fa-solid fa-diagram-project text-sm"></i> Schema
-    <% end %>
-
-    <%= link_to setup_workspace_path(@workspace), class: "btn-secondary" do %>
-      <i class="fa-solid fa-gear text-sm"></i> Settings
-    <% end %>
-    <button class="btn-primary text-sm flex items-center gap-2" data-action="click->dashboard#saveLayout">
-      <i class="fa-solid fa-check text-sm text-[10px]"></i> Save Layout
-    </button>
-  </div>
-</div>
-
-<%# The Designer Wrap %>
-<div class="designer-wrap flex-1"
-     data-theme-selection="<%= @workspace.dashboard_theme || 'blueprint' %>">
-  
-  <%# Main Grid Area %>
-  <div class="designer-main p-6 flex flex-col relative z-0">
-    <div class="relative flex-1 w-full flex flex-col rounded-2xl overflow-hidden">
-      
-      <%# Dynamic Background Layer (Video) behind the grid %>
-      <% if @workspace.dashboard_theme == 'video' && @workspace.background_video.attached? %>
-        <video data-canvas-theme-target="videoLayer" 
-               src="<%= url_for(@workspace.background_video) %>"
-               class="absolute inset-0 w-full h-full object-cover opacity-100 transition-opacity duration-500 z-0 rounded-2xl pointer-events-none" 
-               autoplay loop muted playsinline></video>
+    <div class="flex items-center gap-3">
+      <% if @active_session %>
+        <div class="badge badge-ok">
+          <span class="badge-dot"></span>
+          <%= @active_session.name %> (Live)
+        </div>
       <% else %>
-        <video data-canvas-theme-target="videoLayer" 
-               class="absolute inset-0 w-full h-full object-cover hidden opacity-0 transition-opacity duration-500 z-0 rounded-2xl pointer-events-none" 
-               autoplay loop muted playsinline></video>
-      <% end %>
-
-      <%# Transparent grid wrapper (z-index ensures it sits above video) %>
-      <div class="designer-grid-area grid-stack flex-1 relative z-10 transition-all duration-300" data-dashboard-target="grid" data-canvas-theme-target="gridArea">
-        <% @workspace.parsed_dashboard_widgets.each do |widget| %>
-          <div class="grid-stack-item group" 
-               gs-x="<%= widget['grid']['x'] %>" 
-               gs-y="<%= widget['grid']['y'] %>" 
-               gs-w="<%= widget['grid']['w'] %>" 
-               gs-h="<%= widget['grid']['h'] %>" 
-               data-widget-id="<%= widget['id'] %>"
-               data-widget-type="<%= widget['type'] %>"
-               data-widget-label="<%= widget['label'] %>">
-               
-            <div class="grid-stack-item-content p-4 flex flex-col justify-center items-center bg-white border border-[#E8E4DD] rounded-xl overflow-hidden cursor-move transition-all hover:shadow-[0_8px_20px_rgba(26,26,26,0.06)] hover:border-[#C8C3BB]">
-              <button class="absolute top-2 left-2 w-6 h-6 rounded flex items-center justify-center text-[#B5B0A8] hover:bg-[#FCEBEB] hover:text-[#A32D2D] opacity-0 group-hover:opacity-100 transition-all cursor-pointer z-10"
-                      onclick="this.closest('.grid-stack-item').dispatchEvent(new CustomEvent('dashboard:remove-widget', { bubbles: true }))">
-                <i class="fa-solid fa-times text-xs"></i>
-              </button>
-              <div class="absolute top-3 right-3 text-[#B5B0A8] text-[10px]">
-                <i class="fa-solid fa-grip"></i>
-              </div>
-              <div class="w-10 h-10 rounded-full bg-[#F7F5F1] flex items-center justify-center mb-3 text-[#1A1A1A]">
-                <i class="fa-solid fa-shapes text-sm"></i>
-              </div>
-              <div class="font-semibold text-sm text-[#1A1A1A]"><%= widget['label'] %></div>
-              <div class="text-[9px] font-semibold text-[#9E9891] uppercase tracking-widest mt-1">Draggable</div>
-            </div>
-          </div>
-        <% end %>
-      </div>
-      
-      <% if @workspace.parsed_dashboard_widgets.empty? %>
-        <div class="empty-state-overlay absolute inset-0 flex flex-col items-center justify-center pointer-events-none z-10 animate-fade-in">
-          <div class="w-16 h-16 rounded-2xl bg-white flex items-center justify-center mb-5 border border-[#E8E4DD] shadow-[0_8px_20px_rgba(26,26,26,0.05)]">
-            <i class="fa-solid fa-border-all text-2xl text-[#1A1A1A]"></i>
-          </div>
-          <h3 class="font-semibold text-lg text-[#1A1A1A]">Dashboard is empty</h3>
-          <p class="text-[13px] text-[#9E9891] max-w-[280px] mx-auto text-center mt-2 leading-relaxed">
-            Drag and drop widgets from the library on the right to build your telemetry view.
-          </p>
+        <div class="badge badge-warn">
+          <span class="badge-dot"></span>
+          Offline
         </div>
       <% end %>
+
+      <%= link_to workspace_sessions_path(@workspace), class: "btn-secondary" do %>
+        <i class="fa-solid fa-list-check text-sm"></i> Sessions
+      <% end %>
+
+      <%= link_to workspace_telemetry_records_path(@workspace), class: "btn-secondary" do %>
+        <i class="fa-solid fa-database text-sm"></i> Stored Data
+      <% end %>
+
+      <%= link_to workspace_payload_schema_path(@workspace), class: "btn-secondary" do %>
+        <i class="fa-solid fa-diagram-project text-sm"></i> Schema
+      <% end %>
+
+      <%= link_to setup_workspace_path(@workspace), class: "btn-secondary" do %>
+        <i class="fa-solid fa-gear text-sm"></i> Settings
+      <% end %>
+
+      <%= link_to live_dashboard_workspace_path(@workspace), target: "_blank", class: "btn-secondary" do %>
+        <i class="fa-solid fa-eye text-sm"></i> Preview
+      <% end %>
+
+      <button class="btn-primary text-sm flex items-center gap-2" data-action="click->dashboard#saveLayout">
+        <i class="fa-solid fa-check text-sm text-[10px]"></i> Save & Launch
+      </button>
     </div>
   </div>
 
-  <%# Sidebar / Widget Panel %>
-  <div class="designer-sidebar">
-    <%= render "workspaces/widget_panel" %>
-  </div>
+  <%# Designer canvas %>
+  <div class="designer-wrap flex-1"
+       data-theme-selection="<%= @workspace.dashboard_theme || 'blueprint' %>">
 
-</div>
+    <div class="designer-main p-6 flex flex-col relative z-0">
+      <div class="relative flex-1 w-full flex flex-col rounded-2xl overflow-hidden">
+
+        <% if @workspace.dashboard_theme == 'video' && @workspace.background_video.attached? %>
+          <video data-canvas-theme-target="videoLayer"
+                 src="<%= url_for(@workspace.background_video) %>"
+                 class="absolute inset-0 w-full h-full object-cover opacity-100 transition-opacity duration-500 z-0 rounded-2xl pointer-events-none"
+                 autoplay loop muted playsinline></video>
+        <% else %>
+          <video data-canvas-theme-target="videoLayer"
+                 class="absolute inset-0 w-full h-full object-cover hidden opacity-0 transition-opacity duration-500 z-0 rounded-2xl pointer-events-none"
+                 autoplay loop muted playsinline></video>
+        <% end %>
+
+        <div class="designer-grid-area grid-stack flex-1 relative z-10 transition-all duration-300"
+             data-dashboard-target="grid"
+             data-canvas-theme-target="gridArea">
+          <% @workspace.parsed_dashboard_widgets.each do |widget| %>
+            <% spec = DashboardWidgetCatalog.find(widget["type"]) %>
+            <% icon = spec ? spec[:icon] : "fa-shapes" %>
+            <% fields_str = (widget["config"]["fields"] || []).join(", ").presence || "—" %>
+
+            <div class="grid-stack-item designer-widget group"
+                 gs-x="<%= widget['grid']['x'] %>"
+                 gs-y="<%= widget['grid']['y'] %>"
+                 gs-w="<%= widget['grid']['w'] %>"
+                 gs-h="<%= widget['grid']['h'] %>"
+                 gs-id="<%= widget['id'] %>"
+                 data-widget-id="<%= widget['id'] %>"
+                 data-widget-type="<%= widget['type'] %>"
+                 data-widget-label="<%= widget['label'] %>"
+                 data-widget-config="<%= widget['config'].to_json %>">
+              <div class="grid-stack-item-content designer-widget-card">
+                <button class="designer-widget-remove"
+                        onclick="this.closest('.grid-stack-item').dispatchEvent(new CustomEvent('dashboard:remove-widget', { bubbles: true }))"
+                        aria-label="Remove widget">
+                  <i class="fa-solid fa-times"></i>
+                </button>
+                <div class="designer-widget-grip"><i class="fa-solid fa-grip"></i></div>
+                <div class="designer-widget-icon"><i class="fa-solid <%= icon %>"></i></div>
+                <div class="designer-widget-label"><%= widget["label"] %></div>
+                <div class="designer-widget-fields"><span class="font-mono"><%= fields_str %></span></div>
+              </div>
+            </div>
+          <% end %>
+        </div>
+
+        <% if @workspace.parsed_dashboard_widgets.empty? %>
+          <div class="empty-state-overlay absolute inset-0 flex flex-col items-center justify-center pointer-events-none z-10 animate-fade-in">
+            <div class="w-16 h-16 rounded-2xl bg-white flex items-center justify-center mb-5 border border-[#E8E4DD] shadow-[0_8px_20px_rgba(26,26,26,0.05)]">
+              <i class="fa-solid fa-border-all text-2xl text-[#1A1A1A]"></i>
+            </div>
+            <h3 class="font-semibold text-lg text-[#1A1A1A]">Dashboard is empty</h3>
+            <p class="text-[13px] text-[#9E9891] max-w-[320px] mx-auto text-center mt-2 leading-relaxed">
+              Click a widget in the library to bind it to a payload field.
+            </p>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="designer-sidebar">
+      <%= render "workspaces/widget_panel" %>
+    </div>
+
+  </div>
 </div>
