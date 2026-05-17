@@ -50,3 +50,12 @@ import CameraFeedController from "controllers/camera_feed_controller"
 application.register("camera-feed", CameraFeedController)
 import TabsController from "controllers/tabs_controller"
 application.register("tabs", TabsController)
+
+import TestPacketController from "controllers/test_packet_controller"
+application.register("test-packet", TestPacketController)
+
+import ListeningStatusController from "controllers/listening_status_controller"
+application.register("listening-status", ListeningStatusController)
+
+import SerialBridgeController from "controllers/serial_bridge_controller"
+application.register("serial-bridge", SerialBridgeController)

@@ -19,6 +19,7 @@ Rails.application.routes.draw do
       get :setup
       patch :save_layout
       get :live_dashboard
+      post :send_test_telemetry
     end
     resource :payload_schema, only: %i[show new create edit update]
     resources :telemetry_records, only: %i[index show]

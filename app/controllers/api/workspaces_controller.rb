@@ -13,27 +13,18 @@ module Api
 
     # POST /api/workspaces/:id/telemetry
     def telemetry
-      # Robustly extract the sensor payload from the incoming request
       raw_payload = params.except(:controller, :action, :id, :workspace).to_unsafe_h
 
-      # Bind payload to an active session if one exists
-      active_session = @workspace.sessions.in_progress.first
+      validation = ValidateTelemetryPayload.new(workspace: @workspace, raw_payload: raw_payload).call
+      return render json: { errors: validation.errors }, status: :unprocessable_entity unless validation.valid?
 
       record = @workspace.telemetry_records.new(
-        raw_payload: raw_payload,
-        session: active_session,
-        recorded_at: Time.current
+        raw_payload:  raw_payload,
+        session:      @workspace.sessions.in_progress.first,
+        recorded_at:  Time.current
       )
 
       if record.save
-        # Payload successfully committed to database!
-        # Step 2: Instantly blast this payload across the Rails WebSocket
-        # to any browser heavily watching the Live Dashboard.
-        ActionCable.server.broadcast(
-          "workspace_telemetry_#{@workspace.id}",
-          record.as_json
-        )
-
         render json: { success: true, processed: true }, status: :created
       else
         render json: { errors: record.errors.full_messages }, status: :unprocessable_entity

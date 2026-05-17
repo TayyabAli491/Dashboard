@@ -1,0 +1,77 @@
+<%
+  show_regenerate = local_assigns.fetch(:show_regenerate, false)
+  allowed_methods = %w[wifi usb]
+  selected_method = allowed_methods.include?(params[:method].to_s) ? params[:method].to_s : nil
+  endpoint_url    = "#{request.base_url}/api/workspaces/#{@workspace.id}/telemetry"
+%>
+
+<div class="cp-stack">
+
+  <%# ── Credentials ── %>
+  <div class="card w-full max-w-3xl flex flex-col gap-5"
+       style="min-height: auto;">
+
+    <div>
+      <p class="section-label mb-2">POST Endpoint</p>
+      <div class="dc-credential-row">
+        <code><%= endpoint_url %></code>
+        <button class="btn-secondary text-xs"
+                data-controller="clipboard"
+                data-action="clipboard#copy"
+                data-clipboard-target="button"
+                data-clipboard-text-value="<%= endpoint_url %>">
+          <i class="fa-regular fa-copy"></i> Copy
+        </button>
+      </div>
+    </div>
+
+    <div>
+      <p class="section-label mb-2">API Key</p>
+      <div class="dc-credential-row"
+           data-controller="reveal"
+           data-reveal-api-key-value="<%= @workspace.api_key %>">
+        <code data-reveal-target="value">••••••••••••••••</code>
+        <button class="btn-secondary text-xs"
+                data-action="click->reveal#toggle"
+                data-reveal-target="button">Reveal</button>
+        <button class="btn-secondary text-xs"
+                data-controller="clipboard"
+                data-action="clipboard#copy"
+                data-clipboard-target="button"
+                data-clipboard-text-value="<%= @workspace.api_key %>">
+          <i class="fa-regular fa-copy"></i> Copy
+        </button>
+        <% if show_regenerate %>
+          <%= button_to workspace_path(@workspace, regenerate_api_key: true),
+                method: :patch,
+                data: { turbo: false, confirm: "Regenerating will invalidate your current hardware connection. Proceed?" },
+                class: "btn-secondary text-xs cp-regen-btn" do %>
+            <i class="fa-solid fa-rotate-right"></i> Regenerate
+          <% end %>
+        <% end %>
+      </div>
+      <p class="text-[11px] text-[#9E9891] mt-2 leading-relaxed">
+        <i class="fa-solid fa-lock fa-xs"></i>
+        Treat this like a password — it's how your device proves it's yours.<% unless show_regenerate %> If it leaks, regenerate it from workspace settings.<% end %>
+      </p>
+    </div>
+  </div>
+
+  <%# ── Method picker OR chosen guide ── %>
+  <% if selected_method.nil? %>
+    <%= render "workspaces/states/method_picker" %>
+  <% else %>
+    <%= render "workspaces/states/connect_#{selected_method}" %>
+
+    <%= link_to request.path, class: "text-xs text-[#6B6560] hover:text-[#1A1A1A] font-medium" do %>
+      <i class="fa-solid fa-arrow-left fa-xs"></i> Choose a different connection method
+    <% end %>
+  <% end %>
+
+  <%# ── Listening status ── %>
+  <%= render "workspaces/states/listening_status" %>
+
+  <%# ── Developer tools (collapsed by default) ── %>
+  <%= render "workspaces/states/developer_tools" %>
+
+</div>

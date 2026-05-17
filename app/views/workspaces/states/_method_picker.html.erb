@@ -1,0 +1,34 @@
+<div class="w-full max-w-3xl">
+  <div class="text-center mb-6">
+    <h2 class="text-base font-semibold text-[#1A1A1A]">How does your device send data?</h2>
+    <p class="text-xs text-[#9E9891] mt-1">Pick the option that matches your hardware — we'll show you exactly what to do, no terminal required.</p>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+    <%= link_to workspace_path(@workspace, method: "wifi"),
+          class: "mp-card group" do %>
+      <div class="mp-card-icon">
+        <i class="fa-solid fa-wifi"></i>
+      </div>
+      <div class="mp-card-title">WiFi / Internet</div>
+      <div class="mp-card-body">
+        Your device connects to the internet on its own and sends data directly to ArckOne. <span class="text-[#1A1A1A] font-medium">ESP32, Raspberry Pi, cellular modules, anything online.</span>
+      </div>
+      <div class="mp-card-tag">Recommended</div>
+    <% end %>
+
+    <%= link_to workspace_path(@workspace, method: "usb"),
+          class: "mp-card group" do %>
+      <div class="mp-card-icon">
+        <i class="fa-solid fa-plug"></i>
+      </div>
+      <div class="mp-card-title">USB — via this browser</div>
+      <div class="mp-card-body">
+        Plug your device into your laptop, click a button, and this browser tab forwards every packet. <span class="text-[#1A1A1A] font-medium">Also works for radio receivers and ground stations.</span>
+      </div>
+      <div class="mp-card-tag">No install</div>
+    <% end %>
+
+  </div>
+</div>

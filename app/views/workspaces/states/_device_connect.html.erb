@@ -1,84 +1,24 @@
-<%= turbo_stream_from "workspace_#{@workspace.id}_status" %>
-
-<div class="flex flex-col items-center justify-center
-            min-h-[70vh] gap-10 py-8"
-     data-controller="auto-refresh"
-     data-auto-refresh-url-value="<%= workspace_path(@workspace) %>"
-     data-auto-refresh-interval-value="3000">
+<div class="flex flex-col items-center min-h-[70vh] gap-8 py-8">
 
   <%# ── Stepper ── %>
   <%= render "workspaces/states/stepper", current_step: 2 %>
 
   <%# ── Header ── %>
-  <div class="flex flex-col items-center gap-4 text-center">
+  <div class="flex flex-col items-center gap-3 text-center">
     <div class="dc-icon-ring">
       <i class="fa-solid fa-satellite-dish"></i>
     </div>
     <div>
       <h1 class="page-title">Connect Your Device</h1>
       <p class="text-sm text-[#9E9891] mt-2 max-w-md">
-        Your schema is configured for <strong class="text-[#1A1A1A] font-semibold"><%= @workspace.name %></strong>.
+        Schema configured for <strong class="text-[#1A1A1A] font-semibold"><%= @workspace.name %></strong>.
         Send your first telemetry packet to go live.
       </p>
     </div>
   </div>
 
-  <%# ── Connection Details Card ── %>
-  <div class="card w-full max-w-lg flex flex-col gap-6"
-       style="min-height: auto;">
-
-    <%# POST endpoint %>
-    <div>
-      <p class="section-label mb-2">POST Endpoint</p>
-      <div class="dc-credential-row">
-        <code><%= request.base_url %>/api/workspaces/<%= @workspace.id %>/telemetry</code>
-        <button class="btn-secondary text-xs"
-                data-controller="clipboard"
-                data-action="clipboard#copy"
-                data-clipboard-target="button"
-                data-clipboard-text-value="<%= request.base_url %>/api/workspaces/<%= @workspace.id %>/telemetry">
-          <i class="fa-regular fa-copy"></i> Copy
-        </button>
-      </div>
-    </div>
-
-    <%# API key %>
-    <div>
-      <p class="section-label mb-2">API Key</p>
-      <div class="dc-credential-row"
-           data-controller="reveal"
-           data-reveal-api-key-value="<%= @workspace.api_key %>">
-        <code data-reveal-target="value">••••••••••••••••</code>
-        <button class="btn-secondary text-xs"
-                data-action="click->reveal#toggle"
-                data-reveal-target="button">Reveal</button>
-        <button class="btn-secondary text-xs"
-                data-controller="clipboard"
-                data-action="clipboard#copy"
-                data-clipboard-target="button"
-                data-clipboard-text-value="<%= @workspace.api_key %>">
-          <i class="fa-regular fa-copy"></i> Copy
-        </button>
-      </div>
-    </div>
-
-    <%# Expected payload %>
-    <div>
-      <p class="section-label mb-2">Expected Payload</p>
-      <pre class="dc-payload-block"><%= example_payload_json(@workspace.payload_schema) %></pre>
-    </div>
-
-  </div>
-
-  <%# ── Listening indicator ── %>
-  <div class="flex items-center gap-3 px-5 py-3
-              bg-white border border-[#E8E4DD] rounded-full
-              shadow-[0_2px_8px_-2px_rgba(0,0,0,0.04)]">
-    <span class="dc-pulse"></span>
-    <span class="text-xs font-medium text-[#6B6560]">
-      Listening for data — this page updates automatically
-    </span>
-  </div>
+  <%# ── Reusable panel ── %>
+  <%= render "workspaces/states/connection_panel", show_regenerate: false %>
 
   <%# ── Navigation ── %>
   <div class="stepper-nav">

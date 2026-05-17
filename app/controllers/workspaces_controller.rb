@@ -1,6 +1,6 @@
 class WorkspacesController < ApplicationController
   before_action :authenticate_user!
-  before_action :find_workspace_belonging_to_current_user, only: %i[show edit update setup save_layout destroy live_dashboard]
+  before_action :find_workspace_belonging_to_current_user, only: %i[show edit update setup save_layout destroy live_dashboard send_test_telemetry]
 
   def index
     @workspaces = current_user.workspaces.order(created_at: :desc)
@@ -63,6 +63,25 @@ class WorkspacesController < ApplicationController
       head :ok
     else
       head :unprocessable_entity
+    end
+  end
+
+  def send_test_telemetry
+    raw_payload = TestTelemetryPayloadBuilder.new(workspace: @workspace).call
+
+    validation = ValidateTelemetryPayload.new(workspace: @workspace, raw_payload: raw_payload).call
+    return render json: { success: false, errors: validation.errors }, status: :unprocessable_entity unless validation.valid?
+
+    record = @workspace.telemetry_records.create(
+      raw_payload:  raw_payload,
+      session:      @workspace.sessions.in_progress.first,
+      recorded_at:  Time.current
+    )
+
+    if record.persisted?
+      render json: { success: true, message: "Test packet delivered" }
+    else
+      render json: { success: false, errors: record.errors.full_messages }, status: :unprocessable_entity
     end
   end
 
