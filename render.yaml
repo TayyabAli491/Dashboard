@@ -11,7 +11,7 @@ services:
     plan: free
     region: oregon
     healthCheckPath: /up
-    dockerCommand: bash -lc "./bin/rails db:prepare && bundle exec puma -C config/puma.rb"
+    dockerCommand: ./bin/render-start
     envVars:
       - key: DATABASE_URL
         fromDatabase:
