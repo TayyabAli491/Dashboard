@@ -1,0 +1,51 @@
+<div class="page-wrap">
+  <%= render "shared/nav" %>
+
+  <main class="main-content">
+    <div class="topbar">
+      <div>
+        <div class="mb-5">
+          <%= link_to workspace_sessions_path(@workspace), class: "inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-[#6B6560] bg-[#E8E4DD]/50 hover:bg-[#E8E4DD] hover:text-[#1A1A1A] px-2.5 py-1.5 rounded-lg transition-colors border border-transparent hover:border-[#C8C3BB]" do %>
+            <i class="fa-solid fa-arrow-left text-[9px]"></i> View All Sessions
+          <% end %>
+        </div>
+        <div class="page-eyebrow">Session Monitor</div>
+        <h1 class="page-title"><%= @session.name %></h1>
+      </div>
+      
+      <div class="flex items-center gap-3">
+        <% if @session.pending? %>
+          <%= button_to session_path(@session), method: :patch, params: { session_state: "start" }, class: "btn-primary" do %>
+            <i class="fa-solid fa-play"></i> Start Session
+          <% end %>
+        <% elsif @session.in_progress? %>
+          <div class="flex items-center gap-2 px-3 py-2 bg-green-50 border border-green-100 rounded-lg text-green-700 text-[11px] font-bold uppercase tracking-wider mr-2">
+            <span class="relative flex h-2 w-2">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+            </span>
+            Live Recording
+          </div>
+          <%= button_to session_path(@session), method: :patch, params: { session_state: "end" }, data: { turbo_confirm: "End this session now? You won't be able to record more data to this session." }, class: "inline-flex items-center gap-2 text-[11px] font-medium text-[#A32D2D] hover:bg-[#FCEBEB] px-3 py-2 rounded-md transition-colors w-auto border border-transparent hover:border-[#F7C1C1] cursor-pointer" do %>
+            <i class="fa-solid fa-stop"></i> Stop Session
+          <% end %>
+        <% else %>
+          <div class="px-3 py-2 bg-gray-100 border border-gray-200 rounded-lg text-[#6B6560] text-[11px] font-bold uppercase tracking-wider">
+            <i class="fa-solid fa-check-double outline-none"></i> Completed
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <!-- Summary Cards -->
+    <%= render "summary_cards", session: @session %>
+
+    <!-- Data Stream -->
+    <%= render "telemetry_stream", 
+               session: @session, 
+               telemetry_records: @telemetry_records, 
+               field_keys: @field_keys,
+               page: @page,
+               total_pages: @total_pages %>
+  </main>
+</div>

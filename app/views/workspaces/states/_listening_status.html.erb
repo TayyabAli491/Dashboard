@@ -1,0 +1,71 @@
+<%
+  most_recent_record = @workspace.telemetry_records.most_recent_first.first
+  has_received_any   = most_recent_record.present?
+  selected_method    = params[:method]
+
+  method_specific_tips = case selected_method
+  when "wifi"
+    [
+      "Device is powered on and connected to WiFi",
+      "Device code uses your API key in the X-API-Key header",
+      "Endpoint URL is exactly the one shown above (no typos)",
+      "Your WiFi can reach the internet"
+    ]
+  when "usb"
+    [
+      "Device is plugged into your laptop's USB port",
+      "Serial output is printing TELEM_JSON: lines (check Arduino Serial Monitor)",
+      "Bridge script is running in a terminal — leave it open",
+      "The --port path matches your actual serial device"
+    ]
+  when "radio"
+    [
+      "Remote device is powered on and transmitting",
+      "Ground station is in range and receiving packets",
+      "Ground station is plugged into your laptop via USB",
+      "Bridge script is running in a terminal — leave it open"
+    ]
+  else
+    [
+      "Device is powered on and able to reach this server",
+      "Your API key is set on the device (X-API-Key header)",
+      "Endpoint URL matches the one above exactly"
+    ]
+  end
+%>
+
+<div class="w-full max-w-3xl flex flex-col items-center gap-4"
+     data-controller="listening-status"
+     data-listening-status-workspace-id-value="<%= @workspace.id %>">
+
+  <%# Live pulse + last-received row — text updates over WebSocket, no page reload %>
+  <div class="ls-pill" data-listening-status-target="pill">
+    <span class="dc-pulse" data-listening-status-target="pulse"></span>
+    <% if has_received_any %>
+      <span class="text-xs font-medium text-[#1A1A1A]" data-listening-status-target="label">
+        Last packet received <strong><%= time_ago_in_words(most_recent_record.recorded_at) %> ago</strong>
+      </span>
+    <% else %>
+      <span class="text-xs font-medium text-[#6B6560]" data-listening-status-target="label">
+        Waiting for your first packet — once your device sends data, you'll see it appear here instantly
+      </span>
+    <% end %>
+  </div>
+
+  <%# Troubleshooting (collapsed by default) %>
+  <details class="ls-troubleshoot">
+    <summary>
+      <i class="fa-solid fa-circle-question"></i>
+      Not seeing data? Check these
+    </summary>
+    <ul class="ls-troubleshoot-list">
+      <% method_specific_tips.each do |tip| %>
+        <li>
+          <i class="fa-regular fa-square ls-check-icon"></i>
+          <span><%= tip %></span>
+        </li>
+      <% end %>
+    </ul>
+  </details>
+
+</div>

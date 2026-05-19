@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  mount ActionCable.server => "/cable"
+
   devise_for :users, controllers: {
     sessions: "users/sessions",
     registrations: "users/registrations"
@@ -13,8 +15,14 @@ Rails.application.routes.draw do
   end
 
   resources :workspaces do
-    resource :payload_schema, only: %i[edit update]
-    resources :telemetry_records, only: :index
+    member do
+      get :setup
+      patch :save_layout
+      get :live_dashboard
+      post :send_test_telemetry
+    end
+    resource :payload_schema, only: %i[show new create edit update]
+    resources :telemetry_records, only: %i[index show]
     resources :sessions, shallow: true do
       resources :telemetry_records, only: %i[index show], shallow: true
     end

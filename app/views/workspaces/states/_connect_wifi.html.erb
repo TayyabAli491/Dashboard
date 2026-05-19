@@ -1,0 +1,142 @@
+<%
+  endpoint     = "#{request.base_url}/api/workspaces/#{@workspace.id}/telemetry"
+  api_key      = @workspace.api_key
+  example_body = example_payload_json(@workspace.payload_schema) || "{}"
+
+  arduino_snippet = <<~CPP
+    #include <WiFi.h>
+    #include <HTTPClient.h>
+
+    const char* WIFI_SSID     = "YOUR_WIFI_NAME";
+    const char* WIFI_PASSWORD = "YOUR_WIFI_PASSWORD";
+    const char* ENDPOINT      = "#{endpoint}";
+    const char* API_KEY       = "#{api_key}";
+
+    void setup() {
+      Serial.begin(115200);
+      WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+      while (WiFi.status() != WL_CONNECTED) { delay(500); Serial.print("."); }
+      Serial.println("\\nWiFi connected");
+    }
+
+    void loop() {
+      if (WiFi.status() != WL_CONNECTED) { delay(1000); return; }
+
+      HTTPClient http;
+      http.begin(ENDPOINT);
+      http.addHeader("Content-Type", "application/json");
+      http.addHeader("X-API-Key", API_KEY);
+
+      // TODO: replace example values with real sensor readings
+      String body = R"json(#{example_body})json";
+
+      int code = http.POST(body);
+      Serial.printf("POST -> %d\\n", code);
+      http.end();
+      delay(1000);
+    }
+  CPP
+
+  python_snippet = <<~PY
+    import requests, time
+
+    ENDPOINT = "#{endpoint}"
+    API_KEY  = "#{api_key}"
+
+    while True:
+        # TODO: replace example values with real sensor readings
+        payload = #{example_body}
+        r = requests.post(
+            ENDPOINT,
+            json=payload,
+            headers={"X-API-Key": API_KEY},
+            timeout=5,
+        )
+        print(r.status_code, r.text)
+        time.sleep(1)
+  PY
+
+  curl_snippet = "curl -X POST '#{endpoint}' \\\n  -H 'Content-Type: application/json' \\\n  -H 'X-API-Key: #{api_key}' \\\n  -d '#{example_body.gsub(/\s+/, " ").strip}'"
+%>
+
+<div class="w-full max-w-3xl" data-controller="tabs">
+  <div class="flex items-center justify-between mb-3">
+    <div>
+      <h2 class="text-base font-semibold text-[#1A1A1A]">
+        <i class="fa-solid fa-wifi text-[#fb5d08] mr-1"></i>
+        WiFi connection guide
+      </h2>
+      <p class="text-xs text-[#9E9891] mt-0.5">
+        Your device makes an HTTPS POST request to ArckOne whenever it has new data.
+      </p>
+    </div>
+  </div>
+
+  <%# Tabs %>
+  <div class="flex gap-1 border-b border-[#E8E4DD] mb-0">
+    <button type="button" class="cg-tab" data-tabs-target="tab" data-action="click->tabs#select">
+      <i class="fa-brands fa-arduino"></i> Arduino / ESP32
+    </button>
+    <button type="button" class="cg-tab" data-tabs-target="tab" data-action="click->tabs#select">
+      <i class="fa-brands fa-python"></i> Python
+    </button>
+    <button type="button" class="cg-tab" data-tabs-target="tab" data-action="click->tabs#select">
+      <i class="fa-solid fa-terminal"></i> curl
+    </button>
+  </div>
+
+  <%# Panels %>
+  <div class="cg-panel hidden" data-tabs-target="panel">
+    <div class="cg-panel-head">
+      <span class="cg-panel-lang">arduino-sketch.ino</span>
+      <button class="btn-secondary text-xs"
+              data-controller="clipboard"
+              data-action="clipboard#copy"
+              data-clipboard-target="button"
+              data-clipboard-text-value="<%= arduino_snippet %>">
+        <i class="fa-regular fa-copy"></i> Copy
+      </button>
+    </div>
+    <pre class="cg-code"><%= arduino_snippet %></pre>
+    <div class="cg-note">
+      <i class="fa-solid fa-circle-info"></i>
+      Requires the WiFi and HTTPClient libraries (bundled with Arduino-ESP32 core).
+    </div>
+  </div>
+
+  <div class="cg-panel hidden" data-tabs-target="panel">
+    <div class="cg-panel-head">
+      <span class="cg-panel-lang">stream_telemetry.py</span>
+      <button class="btn-secondary text-xs"
+              data-controller="clipboard"
+              data-action="clipboard#copy"
+              data-clipboard-target="button"
+              data-clipboard-text-value="<%= python_snippet %>">
+        <i class="fa-regular fa-copy"></i> Copy
+      </button>
+    </div>
+    <pre class="cg-code"><%= python_snippet %></pre>
+    <div class="cg-note">
+      <i class="fa-solid fa-circle-info"></i>
+      Install once: <code class="cg-inline-code">pip install requests</code>
+    </div>
+  </div>
+
+  <div class="cg-panel hidden" data-tabs-target="panel">
+    <div class="cg-panel-head">
+      <span class="cg-panel-lang">terminal</span>
+      <button class="btn-secondary text-xs"
+              data-controller="clipboard"
+              data-action="clipboard#copy"
+              data-clipboard-target="button"
+              data-clipboard-text-value="<%= curl_snippet %>">
+        <i class="fa-regular fa-copy"></i> Copy
+      </button>
+    </div>
+    <pre class="cg-code"><%= curl_snippet %></pre>
+    <div class="cg-note">
+      <i class="fa-solid fa-circle-info"></i>
+      Fastest smoke-test — paste into any terminal to send one packet right now, no hardware needed.
+    </div>
+  </div>
+</div>

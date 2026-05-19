@@ -1,0 +1,26 @@
+<%= turbo_frame_tag "remote_modal" do %>
+  <div class="fixed inset-0 z-50 flex items-center justify-center bg-[#1A1A1A]/40 backdrop-blur-sm px-4">
+    <div class="card !max-w-[550px] w-full p-0 shadow-2xl relative">
+      <div class="card-accent teal h-[6px]"></div>
+      
+      <div class="p-8">
+        <div class="flex items-center justify-between mb-8">
+          <div class="flex items-center gap-3">
+             <div class="w-10 h-10 rounded-xl bg-[#F7F5F1] border border-[#E8E4DD] flex items-center justify-center text-[#1A1A1A]">
+                <i class="fa-solid fa-satellite-dish"></i>
+             </div>
+             <div>
+               <h2 class="text-xl font-bold text-[#1A1A1A] leading-tight mb-0.5">New Session</h2>
+               <p class="text-[11px] text-[#9E9891]">Initialize a new telemetry data collection window.</p>
+             </div>
+          </div>
+          <button type="button" class="btn-icon" onclick="document.getElementById('remote_modal').innerHTML =''" title="Close">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+
+        <%= render "form", workspace: @workspace, session: @session %>
+      </div>
+    </div>
+  </div>
+<% end %>

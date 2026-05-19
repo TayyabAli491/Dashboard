@@ -1,0 +1,98 @@
+/* Setup Config Page Theme - Application Aligned */
+.setup-container {
+  @apply w-full h-full flex flex-col;
+}
+
+.setup-nav-item {
+  @apply flex items-center w-full text-left px-4 py-3 rounded-lg text-[13px] font-medium transition-all duration-300;
+}
+
+.setup-nav-item[aria-selected="true"] {
+  @apply bg-[#1A1A1A] text-white shadow-sm;
+}
+
+.setup-nav-item[aria-selected="false"] {
+  @apply text-[#6B6560] hover:bg-[#F7F5F1] hover:text-[#1A1A1A];
+}
+
+.setup-main {
+  @apply flex-1 w-full;
+}
+
+/* Base card styling matching .card generic */
+.setup-card {
+  background: #ffffff !important;
+  border: 1px solid #E8E4DD !important;
+  box-shadow: 0 2px 8px -2px rgba(0,0,0,0.03) !important;
+  border-radius: 12px !important;
+  padding: 32px !important;
+  margin-bottom: 32px;
+  position: relative;
+  overflow: hidden;
+}
+
+.setup-card-header {
+  @apply text-[15px] font-semibold text-[#1A1A1A] mb-5 border-b border-[#E8E4DD] pb-4 flex items-center;
+}
+
+.setup-field-label {
+  @apply text-[11px] font-medium text-[#B5B0A8] uppercase tracking-[0.06em] mb-2 block;
+}
+
+.setup-input-wrapper {
+  background: #F7F5F1;
+  border: 1px solid #E8E4DD;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px;
+  transition: border-color 0.2s ease;
+}
+
+.setup-input-wrapper:hover {
+  border-color: #C8C3BB;
+}
+
+.setup-code-block {
+  @apply font-mono text-[13px] flex-1 text-[#1A1A1A] bg-transparent outline-none pl-2;
+}
+
+.setup-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #FFFFFF;
+  color: #1A1A1A;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 9px 14px;
+  border-radius: 7px;
+  border: 1px solid #E8E4DD;
+  cursor: pointer;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+
+.setup-btn-secondary:hover {
+  background: #F7F5F1;
+  border-color: #C8C3BB;
+}
+
+.setup-btn-danger {
+  @apply px-4 py-2 flex items-center justify-center bg-[#FCEBEB] hover:bg-[#F7C1C1] text-[#A32D2D] border border-transparent rounded-[7px] text-[11px] font-medium transition-all;
+}
+
+.setup-table-header {
+  @apply bg-[#F7F5F1] text-[#9E9891] text-[10px] uppercase font-semibold tracking-[0.06em] border-b border-[#E8E4DD];
+}
+
+.setup-table-row {
+  @apply hover:bg-[#F7F5F1]/50 transition-colors border-b border-[#E8E4DD];
+}
+
+.setup-table-row:last-child {
+  border-bottom: none;
+}

@@ -3,6 +3,23 @@ class PayloadSchemasController < ApplicationController
   before_action :find_workspace_belonging_to_current_user
   before_action :find_or_build_payload_schema
 
+  def show; end
+
+  def new; end
+
+  def create
+    parsed_fields = parse_fields_json
+    return render :new, status: :unprocessable_entity if parsed_fields.nil?
+
+    @payload_schema.fields = parsed_fields
+
+    if @payload_schema.save
+      redirect_to workspace_path(@workspace), notice: "Payload schema defined successfully."
+    else
+      render :new, status: :unprocessable_entity
+    end
+  end
+
   def edit; end
 
   def update

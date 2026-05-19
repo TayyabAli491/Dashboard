@@ -1,0 +1,109 @@
+<div class="page-wrap">
+  <%= render "shared/nav" %>
+
+  <main class="main-content">
+    <div class="topbar">
+      <div>
+        <div class="mb-5">
+          <%= link_to workspace_path(@workspace), class: "inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-[#6B6560] bg-[#E8E4DD]/50 hover:bg-[#E8E4DD] hover:text-[#1A1A1A] px-2.5 py-1.5 rounded-lg transition-colors border border-transparent hover:border-[#C8C3BB]" do %>
+            <i class="fa-solid fa-arrow-left text-[9px]"></i> Back to <%= @workspace.name %>
+          <% end %>
+        </div>
+        <div class="page-eyebrow">Telemetry Data</div>
+        <h1 class="page-title">Workspace <em>Sessions</em></h1>
+      </div>
+      <%= link_to new_workspace_session_path(@workspace), data: { turbo_frame: "remote_modal" }, class: "btn-new" do %>
+        <i class="fa-solid fa-plus"></i>
+        New Session
+      <% end %>
+    </div>
+
+    <div class="card p-0">
+      <div class="card-accent teal"></div>
+      <div class="p-6">
+        <div class="flex items-center justify-between mb-5">
+           <div class="text-[12px] font-semibold text-[#6B6560] uppercase tracking-widest">History Log</div>
+           <div class="flex gap-2">
+             <%= link_to "All",
+                         workspace_sessions_path(@workspace),
+                         class: "pill px-3 py-1 #{params[:status].blank? ? 'active' : ''}" %>
+             <%= link_to "Active",
+                         workspace_sessions_path(@workspace, status: "in_progress"),
+                         class: "pill px-3 py-1 #{params[:status] == 'in_progress' ? 'active' : ''}" %>
+             <%= link_to "Completed",
+                         workspace_sessions_path(@workspace, status: "completed"),
+                         class: "pill px-3 py-1 #{params[:status] == 'completed' ? 'active' : ''}" %>
+           </div>
+        </div>
+
+        <% if @sessions.any? %>
+          <div class="overflow-x-auto rounded-lg border border-[#E8E4DD]">
+            <table class="min-w-full text-left border-collapse">
+              <thead class="bg-[#F7F5F1] text-[10px] font-semibold text-[#B5B0A8] uppercase tracking-wider text-center">
+                <tr>
+                  <th class="px-6 py-4 border-b border-[#E8E4DD] text-left">Session Name</th>
+                  <th class="px-6 py-4 border-b border-[#E8E4DD]">Status</th>
+                  <th class="px-6 py-4 border-b border-[#E8E4DD]">Started At</th>
+                  <th class="px-6 py-4 border-b border-[#E8E4DD]">Duration (s)</th>
+                  <th class="px-6 py-4 border-b border-[#E8E4DD]">Records</th>
+                  <th class="px-6 py-4 border-b border-[#E8E4DD] text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody class="text-[13px] text-[#1A1A1A] divide-y divide-[#E8E4DD]">
+                <% @sessions.each do |session| %>
+                  <tr class="hover:bg-[#F7F5F1] transition-colors group">
+                    <td class="px-6 py-4 font-medium text-[14px] text-[#1A1A1A]"><%= session.name %></td>
+                    <td class="px-6 py-4 text-center">
+                      <% if session.in_progress? %>
+                        <div class="flex items-center justify-center gap-2">
+                          <span class="relative flex h-2 w-2">
+                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                          </span>
+                          <span class="text-green-600 font-semibold text-[11px] uppercase tracking-wide">Live</span>
+                        </div>
+                      <% elsif session.completed? %>
+                        <span class="inline-flex items-center justify-center px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-gray-100 text-[#6B6560] border border-gray-200">Completed</span>
+                      <% else %>
+                        <span class="inline-flex items-center justify-center px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#FAEEDA] text-[#854F0B] border border-[#FAC775]">Pending</span>
+                      <% end %>
+                    </td>
+                    <td class="px-6 py-4 text-center text-[#9E9891] font-mono text-[12px]"><%= session.started_at&.strftime("%b %-d, %H:%M:%S") || "-" %></td>
+                    <td class="px-6 py-4 text-center font-medium text-[#6B6560]"><%= session.duration_in_seconds&.round(2) || "0.00" %>s</td>
+                    <td class="px-6 py-4 text-center">
+                      <span class="font-bold text-[#1A1A1A]"><%= number_with_delimiter(session.telemetry_record_count) %></span>
+                    </td>
+                    <td class="px-6 py-4">
+                      <div class="flex items-center justify-end gap-2 transition-opacity">
+                        <%= link_to session_path(session), class: "btn-secondary !px-2.5 !py-1.5", title: "View Records" do %>
+                          <i class="fa-solid fa-eye text-[11px]"></i>
+                        <% end %>
+                        <%= link_to edit_session_path(session), data: { turbo_frame: "remote_modal" }, class: "btn-secondary !px-2.5 !py-1.5", title: "Edit Session" do %>
+                          <i class="fa-solid fa-pen text-[11px]"></i>
+                        <% end %>
+                        <%= button_to session_path(session), method: :delete, data: { turbo_confirm: "Are you sure? This will delete all telemetry data associated with this session." }, class: "btn-icon del shrink-0", title: "Delete Session" do %>
+                          <i class="fa-solid fa-trash text-[11px]"></i>
+                        <% end %>
+                      </div>
+                    </td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+        <% else %>
+          <div class="empty-state">
+            <div class="empty-ring">
+              <i class="fa-solid fa-list-check fa-2x"></i>
+            </div>
+            <div class="empty-title">No Sessions Yet</div>
+            <div class="empty-sub">Create your first data collection session to start monitoring telemetry.</div>
+            <%= link_to new_workspace_session_path(@workspace), data: { turbo_frame: "remote_modal" }, class: "btn-primary w-fit mx-auto mt-2" do %>
+              <i class="fa-solid fa-plus"></i> New Session
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </main>
+</div>

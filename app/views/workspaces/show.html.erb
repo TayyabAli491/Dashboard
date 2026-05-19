@@ -1,97 +1,15 @@
-<div class="min-h-screen bg-gray-50 p-6">
-  <div class="mx-auto max-w-7xl">
-    <h1 class="mb-6 text-3xl font-bold text-gray-900"><%= @workspace.name %></h1>
+<div class="page-wrap">
+  <%= render "shared/nav" %>
 
-    <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
-      <div class="space-y-6 lg:col-span-2">
-        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6" data-controller="reveal clipboard" data-reveal-api-key-value="<%= @workspace.api_key %>" data-clipboard-text-value="<%= @workspace.api_key %>">
-          <h2 class="text-lg font-semibold text-gray-900">API Credentials</h2>
-
-          <div class="mt-4">
-            <p class="text-sm text-gray-500">API Key</p>
-            <p class="mt-1 font-mono text-gray-900" data-reveal-target="value">••••••••</p>
-          </div>
-
-          <div class="mt-3 flex items-center gap-3">
-            <button type="button" class="text-sm text-indigo-600 hover:text-indigo-700" data-reveal-target="button" data-action="reveal#toggle">Reveal</button>
-            <button type="button" class="text-sm text-indigo-600 hover:text-indigo-700" data-clipboard-target="button" data-action="clipboard#copy">Copy</button>
-          </div>
-
-          <div class="mt-4">
-            <p class="text-sm text-gray-500">Endpoint</p>
-            <p class="mt-1 break-all font-mono text-sm text-gray-900"><%= "#{request.base_url}/api/workspaces/#{@workspace.id}/telemetry" %></p>
-          </div>
-
-          <div class="mt-5">
-            <%= button_to "Regenerate Key", workspace_path(@workspace, regenerate_api_key: true), method: :patch, data: { turbo_confirm: "This will invalidate the current key. Continue?" }, class: "bg-red-50 text-red-600 hover:bg-red-100 rounded-lg px-4 py-2" %>
-          </div>
-        </div>
-
-        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-          <h2 class="text-lg font-semibold text-gray-900">Payload Schema</h2>
-
-          <% if @workspace.payload_schema_defined? %>
-            <div class="mt-4 overflow-x-auto">
-              <table class="min-w-full text-sm">
-                <thead>
-                  <tr class="border-b border-gray-200 text-left text-gray-500">
-                    <th class="py-2 pr-4 font-medium">Key</th>
-                    <th class="py-2 pr-4 font-medium">Type</th>
-                    <th class="py-2 pr-4 font-medium">Unit</th>
-                    <th class="py-2 font-medium">Alias</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <% @workspace.payload_schema.fields.each do |field| %>
-                    <tr class="border-b border-gray-100">
-                      <td class="py-2 pr-4 text-gray-900"><%= field["key"] %></td>
-                      <td class="py-2 pr-4 text-gray-700"><%= field["type"] %></td>
-                      <td class="py-2 pr-4 text-gray-700"><%= field["unit"] %></td>
-                      <td class="py-2 text-gray-700"><%= field["alias"] %></td>
-                    </tr>
-                  <% end %>
-                </tbody>
-              </table>
-            </div>
-          <% else %>
-            <div class="mt-4 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-amber-700">
-              Payload schema is not yet defined.
-            </div>
-          <% end %>
-
-          <div class="mt-5">
-            <%= link_to "Edit Payload Schema", edit_workspace_payload_schema_path(@workspace), class: "bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg px-4 py-2" %>
-          </div>
-        </div>
-      </div>
-
-      <div class="space-y-6">
-        <% active_session = @workspace.sessions.order(started_at: :desc).detect(&:session_active?) %>
-        <% if active_session.present? %>
-          <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-            <h2 class="text-lg font-semibold text-gray-900">Active Session</h2>
-            <p class="mt-2 text-sm text-gray-700"><%= active_session.name %></p>
-            <p class="mt-1 text-xs text-gray-500">Started <%= active_session.started_at&.strftime("%b %-d, %Y %H:%M") %></p>
-          </div>
-        <% end %>
-
-        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-          <h2 class="text-lg font-semibold text-gray-900">Telemetry</h2>
-          <p class="mt-2 text-3xl font-bold text-gray-900"><%= @workspace.telemetry_record_count %></p>
-          <p class="text-sm text-gray-500">Recent telemetry count</p>
-        </div>
-
-        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-          <%= link_to "View all sessions", workspace_sessions_path(@workspace), class: "text-indigo-600 hover:text-indigo-700" %>
-        </div>
-
-        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-          <h2 class="text-lg font-semibold text-gray-900">Dashboard Widgets</h2>
-          <div class="mt-3 rounded-lg border-2 border-dashed border-gray-200 p-8 text-center text-sm text-gray-500">
-            Widget area will be available in Phase 4.
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+  <main class="main-content">
+    <% if params[:step] == '3' %>
+      <%= render "workspaces/states/dashboard_designer" %>
+    <% elsif @workspace.schema_missing? %>
+      <%= render "workspaces/states/onboarding" %>
+    <% elsif @workspace.awaiting_first_data? %>
+      <%= render "workspaces/states/device_connect" %>
+    <% else %>
+      <%= render "workspaces/states/dashboard_designer" %>
+    <% end %>
+  </main>
 </div>

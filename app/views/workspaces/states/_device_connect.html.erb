@@ -1,0 +1,33 @@
+<div class="flex flex-col items-center min-h-[70vh] gap-8 py-8">
+
+  <%# ── Stepper ── %>
+  <%= render "workspaces/states/stepper", current_step: 2 %>
+
+  <%# ── Header ── %>
+  <div class="flex flex-col items-center gap-3 text-center">
+    <div class="dc-icon-ring">
+      <i class="fa-solid fa-satellite-dish"></i>
+    </div>
+    <div>
+      <h1 class="page-title">Connect Your Device</h1>
+      <p class="text-sm text-[#9E9891] mt-2 max-w-md">
+        Schema configured for <strong class="text-[#1A1A1A] font-semibold"><%= @workspace.name %></strong>.
+        Send your first telemetry packet to go live.
+      </p>
+    </div>
+  </div>
+
+  <%# ── Reusable panel ── %>
+  <%= render "workspaces/states/connection_panel", show_regenerate: false %>
+
+  <%# ── Navigation ── %>
+  <div class="stepper-nav">
+    <%= link_to edit_workspace_payload_schema_path(@workspace), class: "btn-back" do %>
+      <i class="fa-solid fa-arrow-left fa-xs"></i> Back
+    <% end %>
+    <%= link_to workspace_path(@workspace, step: 3), class: "btn-skip text-[#1A1A1A] font-semibold" do %>
+      Next <i class="fa-solid fa-arrow-right fa-xs"></i>
+    <% end %>
+  </div>
+
+</div>

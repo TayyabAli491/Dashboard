@@ -1,0 +1,12 @@
+<%= render "widgets/widget_wrapper", widget: widget do %>
+  <% roll_field  = widget['config']['fields'][0] || 'roll'  %>
+  <% pitch_field = widget['config']['fields'][1] || 'pitch' %>
+  <% yaw_field   = widget['config']['fields'][2] || 'yaw'   %>
+  <div class="attitude-body"
+       data-controller="attitude-3d"
+       data-attitude-3d-roll-field-value="<%= roll_field %>"
+       data-attitude-3d-pitch-field-value="<%= pitch_field %>"
+       data-attitude-3d-yaw-field-value="<%= yaw_field %>">
+    <div class="attitude-stats" data-attitude-3d-target="stats">P: 0.0° R: 0.0° Y: 0.0°</div>
+  </div>
+<% end %>

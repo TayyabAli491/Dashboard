@@ -1,0 +1,7 @@
+@import "components.css";
+@import "designer.css";
+@import url("https://cdn.jsdelivr.net/npm/gridstack@10.3.1/dist/gridstack.min.css");
+@import url("https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css");
+@import "static_theme.css";
+
+@import "setup_theme.css";

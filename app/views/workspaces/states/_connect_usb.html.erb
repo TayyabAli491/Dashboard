@@ -1,0 +1,129 @@
+<%
+  endpoint     = "#{request.base_url}/api/workspaces/#{@workspace.id}/telemetry"
+  api_key      = @workspace.api_key
+  example_line = "TELEM_JSON:#{(example_payload_json(@workspace.payload_schema) || "{}").gsub(/\s+/, " ").strip}"
+%>
+
+<div class="w-full max-w-3xl"
+     data-controller="serial-bridge"
+     data-serial-bridge-endpoint-value="<%= endpoint %>"
+     data-serial-bridge-api-key-value="<%= api_key %>"
+     data-serial-bridge-baud-rate-value="115200">
+
+  <div class="mb-4">
+    <h2 class="text-base font-semibold text-[#1A1A1A]">
+      <i class="fa-solid fa-plug text-[#fb5d08] mr-1"></i>
+      USB — connect through this browser
+    </h2>
+    <p class="text-xs text-[#9E9891] mt-0.5">
+      No installs. No terminal. Your browser reads serial data from the device and forwards every packet to ArckOne while this tab stays open.
+    </p>
+  </div>
+
+  <%# ── Flow diagram ── %>
+  <div class="cg-flow">
+    <div class="cg-flow-step">
+      <i class="fa-solid fa-microchip"></i>
+      <span>Your device</span>
+    </div>
+    <i class="fa-solid fa-arrow-right cg-flow-arrow"></i>
+    <div class="cg-flow-step">
+      <i class="fa-solid fa-plug"></i>
+      <span>USB</span>
+    </div>
+    <i class="fa-solid fa-arrow-right cg-flow-arrow"></i>
+    <div class="cg-flow-step">
+      <i class="fa-solid fa-globe"></i>
+      <span>This browser tab</span>
+    </div>
+    <i class="fa-solid fa-arrow-right cg-flow-arrow"></i>
+    <div class="cg-flow-step cg-flow-step-end">
+      <i class="fa-solid fa-cloud"></i>
+      <span>ArckOne</span>
+    </div>
+  </div>
+
+  <%# ── Unsupported browser fallback ── %>
+  <div class="hidden cg-unsupported" data-serial-bridge-target="unsupported">
+    <i class="fa-solid fa-triangle-exclamation"></i>
+    <div>
+      <p class="font-semibold text-[#A32D2D] text-[13px] mb-1">This browser can't talk to USB devices</p>
+      <p class="text-xs text-[#6B6560] leading-relaxed">
+        Browser-to-USB connections (Web Serial) need <strong>Chrome</strong>, <strong>Edge</strong>, or <strong>Opera</strong>. Firefox and Safari don't support it yet. If you're stuck on those, use a <%= link_to "WiFi-connected device", workspace_path(@workspace, method: "wifi"), class: "underline text-[#1A1A1A]" %> instead.
+      </p>
+    </div>
+  </div>
+
+  <%# ── Step 1: format ── %>
+  <div class="cg-section">
+    <div class="cg-step-pill">1</div>
+    <div class="flex-1">
+      <h3 class="cg-section-title">Make sure your device prints in this format</h3>
+      <p class="cg-section-body">
+        Each line your device prints over USB serial should start with <code class="cg-inline-code">TELEM_JSON:</code> followed by a JSON object matching your schema:
+      </p>
+      <pre class="cg-code mt-2"><%= example_line %></pre>
+      <div class="cg-note mt-2">
+        <i class="fa-solid fa-circle-info"></i>
+        Most devices print at <strong>115200 baud</strong>. If yours uses a different baud rate, set it in your firmware to match.
+      </div>
+    </div>
+  </div>
+
+  <%# ── Step 2: idle (not connected) ── %>
+  <div class="cg-section" data-serial-bridge-target="idle">
+    <div class="cg-step-pill">2</div>
+    <div class="flex-1">
+      <h3 class="cg-section-title">Plug it in, then connect</h3>
+      <p class="cg-section-body">
+        Click the button below. Your browser will pop up a list of available USB devices — pick yours. You only have to grant permission once per device.
+      </p>
+      <button type="button"
+              class="sb-connect-button mt-3"
+              data-action="click->serial-bridge#start">
+        <i class="fa-solid fa-plug"></i>
+        Connect to USB device
+      </button>
+      <div class="hidden mt-2 text-[12px] text-[#A32D2D]" data-serial-bridge-target="lastError"></div>
+      <div class="cg-note mt-3">
+        <i class="fa-solid fa-lightbulb"></i>
+        <strong>Radio / LoRa / ESP-NOW setups:</strong> plug your ground-station receiver into this laptop and it works the same way — the receiver looks like a regular USB device to your browser.
+      </div>
+    </div>
+  </div>
+
+  <%# ── Active (connected) ── %>
+  <div class="cg-section hidden" data-serial-bridge-target="active">
+    <div class="cg-step-pill sb-step-pill-active">
+      <i class="fa-solid fa-check"></i>
+    </div>
+    <div class="flex-1">
+      <h3 class="cg-section-title">Connected — forwarding packets in real time</h3>
+      <div class="sb-stats">
+        <div class="sb-stat">
+          <span class="sb-stat-label">Port</span>
+          <span class="sb-stat-value" data-serial-bridge-target="portName">—</span>
+        </div>
+        <div class="sb-stat">
+          <span class="sb-stat-label">Packets forwarded</span>
+          <span class="sb-stat-value sb-stat-value-good" data-serial-bridge-target="packetCount">0</span>
+        </div>
+        <div class="sb-stat">
+          <span class="sb-stat-label">Errors</span>
+          <span class="sb-stat-value" data-serial-bridge-target="errorCount">0</span>
+        </div>
+      </div>
+      <div class="hidden mt-2 text-[12px] text-[#A32D2D]" data-serial-bridge-target="lastError"></div>
+      <button type="button"
+              class="sb-disconnect-button mt-3"
+              data-action="click->serial-bridge#stop">
+        <i class="fa-solid fa-circle-stop"></i>
+        Disconnect
+      </button>
+      <div class="cg-note mt-3">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+        Keep this tab open while you want data flowing. Closing the tab stops the relay (your device keeps running, of course).
+      </div>
+    </div>
+  </div>
+</div>

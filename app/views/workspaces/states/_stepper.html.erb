@@ -1,0 +1,38 @@
+<%# Shared horizontal stepper — render with: current_step (1, 2, or 3) %>
+<% current = local_assigns.fetch(:current_step, 1) %>
+
+<% steps = [
+  { num: 1, label: "Define Schema",   desc: "Configure payload fields",   icon: "fa-solid fa-cube" },
+  { num: 2, label: "Connect Device",  desc: "Link hardware & credentials",icon: "fa-solid fa-satellite-dish" },
+  { num: 3, label: "Customize Dashboard", desc: "Set layout & theme",     icon: "fa-solid fa-border-all" }
+] %>
+
+<div class="stepper">
+  <% steps.each_with_index do |step, idx| %>
+
+    <% if step[:num] < current %>
+      <% state_class = "stepper-done" %>
+    <% elsif step[:num] == current %>
+      <% state_class = "stepper-active" %>
+    <% else %>
+      <% state_class = "stepper-locked" %>
+    <% end %>
+
+    <div class="stepper-item <%= state_class %>">
+      <div class="stepper-circle">
+        <% if step[:num] < current %>
+          <i class="fa-solid fa-check fa-xs"></i>
+        <% else %>
+          <i class="<%= step[:icon] %> fa-xs"></i>
+        <% end %>
+      </div>
+      <div class="stepper-label"><%= step[:label] %></div>
+      <div class="stepper-desc"><%= step[:desc] %></div>
+    </div>
+
+    <% unless step[:num] == steps.length %>
+      <div class="stepper-line <%= step[:num] < current ? 'stepper-line-done' : '' %>"></div>
+    <% end %>
+
+  <% end %>
+</div>

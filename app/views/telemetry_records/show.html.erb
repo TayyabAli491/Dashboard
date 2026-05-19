@@ -1,0 +1,80 @@
+<div class="page-wrap">
+  <%= render "shared/nav" %>
+
+  <main class="main-content">
+    <div class="topbar">
+      <div>
+        <div class="mb-5">
+          <%= link_to workspace_telemetry_records_path(@workspace), class: "inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-[#6B6560] bg-[#E8E4DD]/50 hover:bg-[#E8E4DD] hover:text-[#1A1A1A] px-2.5 py-1.5 rounded-lg transition-colors border border-transparent hover:border-[#C8C3BB]" do %>
+            <i class="fa-solid fa-arrow-left text-[9px]"></i> Back to Stored Packets
+          <% end %>
+        </div>
+        <div class="page-eyebrow">Telemetry Packet</div>
+        <h1 class="page-title">Record <em>#<%= @telemetry_record.id %></em></h1>
+        <div class="mt-2 text-[12px] text-[#9E9891] font-medium">
+          Recorded at <span class="text-[#1A1A1A] font-semibold"><%= @telemetry_record.recorded_at.strftime("%b %d, %Y %H:%M:%S.%L") %></span>
+          <% if @telemetry_record.session %>
+            · Session: <span class="text-[#1A1A1A] font-semibold"><%= @telemetry_record.session.name %></span>
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <div class="card p-0 overflow-hidden shadow-sm">
+        <div class="card-accent blue"></div>
+        <div class="p-6">
+          <div class="text-[12px] font-semibold text-[#6B6560] uppercase tracking-widest mb-4">Raw Payload</div>
+          <div class="overflow-hidden rounded-xl border border-[#E8E4DD] bg-[#1A1A1A] shadow-inner">
+            <pre class="text-[12px] font-mono leading-relaxed text-blue-100/90 overflow-x-auto selection:bg-blue-500/30 p-6"><%= JSON.pretty_generate(@telemetry_record.raw_payload || {}) %></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="card p-0 overflow-hidden shadow-sm">
+        <div class="card-accent teal"></div>
+        <div class="p-6">
+          <div class="flex items-center justify-between mb-4">
+            <div class="text-[12px] font-semibold text-[#6B6560] uppercase tracking-widest">Mapped Fields</div>
+            <%= link_to workspace_payload_schema_path(@workspace), class: "btn-secondary !py-2 !px-3" do %>
+              <i class="fa-solid fa-diagram-project mr-2 text-[11px]"></i> View Schema
+            <% end %>
+          </div>
+
+          <% if @field_keys.any? %>
+            <div class="overflow-hidden rounded-xl border border-[#E8E4DD] bg-white shadow-sm">
+              <table class="min-w-full text-left border-collapse">
+                <thead>
+                  <tr class="bg-[#F7F5F1]/80">
+                    <th class="px-6 py-4 text-[10px] font-bold text-[#6B6560] uppercase tracking-widest border-b border-[#E8E4DD]">Field</th>
+                    <th class="px-6 py-4 text-[10px] font-bold text-[#6B6560] uppercase tracking-widest border-b border-[#E8E4DD]">Value</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-[#E8E4DD]">
+                  <% @field_keys.each do |key| %>
+                    <tr>
+                      <td class="px-6 py-4 font-mono text-[12px] text-[#6B6560]"><%= key %></td>
+                      <td class="px-6 py-4 font-semibold text-[#1A1A1A]"><%= @telemetry_record.value_for_field(key) %></td>
+                    </tr>
+                  <% end %>
+                </tbody>
+              </table>
+            </div>
+          <% else %>
+            <div class="empty-state">
+              <div class="empty-ring">
+                <i class="fa-solid fa-circle-info fa-2x"></i>
+              </div>
+              <div class="empty-title">No Schema Mapping</div>
+              <div class="empty-sub">Define a payload schema to display mapped fields here.</div>
+              <%= link_to edit_workspace_payload_schema_path(@workspace), class: "btn-primary w-fit mx-auto mt-2" do %>
+                <i class="fa-solid fa-pen"></i> Define Schema
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+

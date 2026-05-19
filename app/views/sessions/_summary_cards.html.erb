@@ -1,0 +1,65 @@
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+  <div class="card p-5 !min-h-0 flex flex-col justify-between">
+    <div>
+      <div class="flex items-center justify-between mb-3">
+        <div class="card-meta-label">STATUS</div>
+        <div class="w-2 h-2 rounded-full <%= session.in_progress? ? 'bg-green-500 animate-pulse' : 'bg-[#B5B0A8]' %>"></div>
+      </div>
+      <div class="text-[18px] font-bold text-[#1A1A1A]">
+        <% if session.in_progress? %>
+          <span class="text-green-600">Active Monitor</span>
+        <% elsif session.completed? %>
+          <span class="text-[#6B6560]">Completed</span>
+        <% else %>
+          <span class="text-[#854F0B]">Pending Start</span>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <div class="card p-5 !min-h-0 flex flex-col justify-between">
+    <div>
+      <div class="flex items-center justify-between mb-3">
+        <div class="card-meta-label">STARTED AT</div>
+      </div>
+      <div class="text-[15px] font-semibold text-[#1A1A1A]">
+        <% if session.started_at.present? %>
+          <div class="flex flex-col">
+            <span><%= session.started_at.strftime("%-I:%M:%S %p") %></span>
+            <span class="text-[10px] text-[#9E9891] font-normal uppercase tracking-wider mt-0.5"><%= session.started_at.strftime("%b %-d, %Y") %></span>
+          </div>
+        <% else %>
+          <span class="text-[#B5B0A8]">--:--:--</span>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <div class="card p-5 !min-h-0 flex flex-col justify-between">
+    <div>
+      <div class="flex items-center justify-between mb-3">
+        <div class="card-meta-label">DURATION</div>
+      </div>
+      <div class="text-[18px] font-bold text-[#1A1A1A]">
+        <% if session.started_at.present? %>
+          <% duration = session.ended_at.present? ? (session.ended_at - session.started_at) : (Time.current - session.started_at) %>
+          <%= number_with_precision(duration, precision: 1) %><span class="text-[12px] ml-1 text-[#9E9891] font-medium">sec</span>
+        <% else %>
+          <span class="text-[#B5B0A8]">0.0s</span>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <div class="card p-5 !min-h-0 flex flex-col justify-between">
+    <div>
+      <div class="flex items-center justify-between mb-3">
+        <div class="card-meta-label">TELEMETRY</div>
+      </div>
+      <div class="text-[18px] font-bold text-[#1A1A1A]">
+        <%= number_with_delimiter(session.telemetry_record_count) %>
+        <span class="text-[12px] ml-1 text-[#9E9891] font-medium text-sm">pks</span>
+      </div>
+    </div>
+  </div>
+</div>

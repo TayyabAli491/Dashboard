@@ -1,0 +1,64 @@
+<nav class="sidebar">
+  <div class="logo">
+    <div class="logo-mark">
+      <div class="logo-icon">
+        <i class="fa-solid fa-satellite-dish fa-lg" style="color: #fff;"></i>
+      </div>
+      <div>
+        <div class="logo-name">ArckOne</div>
+        <div class="logo-sub">IOT PLATFORM</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="nav-label">Navigation</div>
+  <%= link_to workspaces_path, class: "nav-item #{current_page?(workspaces_path) ? 'active' : ''}" do %>
+    <i class="fa-solid fa-layer-group fa-lg fa-fw"></i>
+    Workspaces
+  <% end %>
+
+  <% if defined?(@workspace) && @workspace.present? %>
+    <%= link_to workspace_sessions_path(@workspace), class: "nav-item #{current_page?(workspace_sessions_path(@workspace)) ? 'active' : ''}" do %>
+      <i class="fa-solid fa-list-check fa-fw"></i>
+      Sessions
+    <% end %>
+    <%= link_to workspace_telemetry_records_path(@workspace), class: "nav-item #{current_page?(workspace_telemetry_records_path(@workspace)) ? 'active' : ''}" do %>
+      <i class="fa-solid fa-wave-square fa-fw"></i>
+      Telemetry
+    <% end %>
+    <%= link_to workspace_payload_schema_path(@workspace), class: "nav-item #{current_page?(workspace_payload_schema_path(@workspace)) ? 'active' : ''}" do %>
+      <i class="fa-solid fa-diagram-project fa-fw"></i>
+      Payload Schema
+    <% end %>
+    <%= link_to live_dashboard_workspace_path(@workspace), class: "nav-item #{current_page?(live_dashboard_workspace_path(@workspace)) ? 'active' : ''}" do %>
+      <i class="fa-solid fa-satellite fa-fw"></i>
+      Live Dashboard
+    <% end %>
+  <% end %>
+
+  <div class="nav-spacer"></div>
+
+  <div class="nav-label">Account</div>
+  <%= link_to edit_user_registration_path, class: "nav-item #{current_page?(edit_user_registration_path) ? 'active' : ''}" do %>
+    <i class="fa-solid fa-circle-user fa-lg fa-fw"></i>
+    Profile
+  <% end %>
+  <%= link_to destroy_user_session_path, data: { turbo_method: :delete }, class: "nav-item hover:!text-red-600 hover:!bg-red-50 transition-colors group" do %>
+    <i class="fa-solid fa-right-from-bracket fa-lg fa-fw group-hover:!text-red-600"></i>
+    Sign Out
+  <% end %>
+
+  <div class="user-profile">
+    <div class="avatar">
+      <% if defined?(current_user) && current_user %>
+        <%= current_user.email.to_s[0,2].upcase %>
+      <% else %>
+        AK
+      <% end %>
+    </div>
+    <div>
+      <div class="user-name"><%= (defined?(current_user) && current_user) ? current_user.email.split('@').first.capitalize : "Ali Khan" %></div>
+      <div class="user-role">Admin</div>
+    </div>
+  </div>
+</nav>

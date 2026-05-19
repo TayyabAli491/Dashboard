@@ -1,24 +1,77 @@
-<div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-  <div class="max-w-md w-full bg-white rounded-lg shadow-md p-8">
-    <div class="mb-8">
-      <h2 class="text-center text-3xl font-bold text-gray-900">Forgot your password?</h2>
-    </div>
+<div class="auth-layout">
+  <%= render "devise/shared/auth_artwork" %>
 
-    <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post, class: "space-y-6" }) do |f| %>
-      <%= render "devise/shared/error_messages", resource: resource %>
+  <section class="auth-form-panel">
+    <div class="auth-form-bg-pattern"></div>
 
-      <div>
-        <%= f.label :email, class: "block text-sm font-medium text-gray-700 mb-2" %>
-        <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" %>
+    <div class="auth-form-container relative z-10">
+      <!-- Logo -->
+      <div class="flex flex-col items-center mb-8">
+        <div class="auth-form-logo">
+          <i class="fa-solid fa-satellite-dish text-[18px]"></i>
+        </div>
+        <div class="text-[16px] font-semibold text-[#1A1A1A] tracking-tight mt-3">ArckOne</div>
+        <div class="text-[10px] text-[#B5B0A8] tracking-[0.16em] mt-0.5">IOT PLATFORM</div>
       </div>
 
-      <div>
-        <%= f.submit "Send me password reset instructions", class: "w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 cursor-pointer" %>
-      </div>
-    <% end %>
+      <div class="auth-form-card">
+        <!-- Header -->
+        <div class="mb-8 text-center">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#FDE8E8] border border-[#F5A3A3] mb-4">
+            <i class="fa-solid fa-key text-[9px] text-[#991B1B]"></i>
+            <span class="text-[10px] font-medium text-[#991B1B] tracking-wide uppercase">Account Recovery</span>
+          </div>
+          <h2 class="text-[28px] font-semibold tracking-tight text-[#1A1A1A] leading-tight">Forgot your password?</h2>
+          <p class="text-[13px] text-[#9E9891] mt-1.5">Enter your email and we'll send reset instructions</p>
+        </div>
 
-    <div class="mt-6">
-      <%= render "devise/shared/links" %>
+        <%= render "devise/shared/error_messages", resource: resource %>
+
+        <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post, class: "auth-form-fields" }) do |f| %>
+          <!-- Email -->
+          <div>
+            <%= f.label :email, class: "auth-field-label" %>
+            <div class="auth-input-wrap">
+              <i class="fa-regular fa-envelope auth-input-icon"></i>
+              <%= f.email_field :email, autofocus: true, autocomplete: "email", placeholder: "you@example.com", class: "auth-input auth-input-with-icon" %>
+            </div>
+          </div>
+
+          <!-- Submit -->
+          <div class="pt-2">
+            <%= f.submit "Send reset instructions", class: "auth-submit-btn" %>
+          </div>
+        <% end %>
+
+        <!-- Divider -->
+        <div class="flex items-center gap-3 mt-7 mb-5">
+          <div class="flex-1 h-px bg-[#E8E4DD]"></div>
+          <span class="text-[10px] font-medium text-[#B5B0A8] tracking-widest uppercase">or</span>
+          <div class="flex-1 h-px bg-[#E8E4DD]"></div>
+        </div>
+
+        <!-- Back to sign in -->
+        <p class="text-center text-[13px] text-[#6B6560]">
+          Remember your password?
+          <%= link_to "Sign in", new_session_path(resource_name), class: "font-semibold text-[#1A1A1A] hover:underline ml-1" %>
+        </p>
+      </div>
+
+      <!-- Trust badges -->
+      <div class="flex items-center justify-center gap-5 mt-6">
+        <div class="auth-trust-badge">
+          <i class="fa-solid fa-shield-halved"></i>
+          <span>SSL Secured</span>
+        </div>
+        <div class="auth-trust-badge">
+          <i class="fa-solid fa-lock"></i>
+          <span>Encrypted</span>
+        </div>
+      </div>
+
+      <p class="text-center text-[10px] text-[#B5B0A8] mt-4">
+        Reset link will be sent to your registered email address.
+      </p>
     </div>
-  </div>
+  </section>
 </div>

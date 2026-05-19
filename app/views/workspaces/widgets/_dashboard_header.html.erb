@@ -1,0 +1,74 @@
+<%# Dashboard header bar — workspace name, battery pill, connection status, abort button %>
+<div class="absolute top-0 left-0 w-full flex justify-between items-center px-7 py-4 z-20
+            bg-gradient-to-b from-[#050810] to-transparent pointer-events-auto">
+
+  <div class="flex items-center gap-3">
+    <h1 class="text-lg font-bold tracking-[0.2em] text-[#E5E5E5] uppercase">
+      <%= workspace.name %>
+      <span class="text-[#6366F1] opacity-60">/// ORBITAL</span>
+    </h1>
+
+    <%# Animated battery pill %>
+    <div id="battery-header-pill" class="battery-pill">
+      <svg width="26" height="13" viewBox="0 0 26 13">
+        <rect x="0.5" y="0.5" width="22" height="12" rx="2.5"
+              stroke="rgba(16,185,129,0.65)" stroke-width="1" fill="none"/>
+        <rect id="batt-fill-header" x="2" y="2" width="16" height="9" rx="1.5" fill="#10B981"/>
+        <rect x="23" y="3.5" width="2.5" height="6" rx="1" fill="rgba(16,185,129,0.4)"/>
+      </svg>
+      <span class="text-xs font-bold text-[#10B981]" id="batt-pct-header">78</span>
+      <span class="text-[10px] text-[#666]">%</span>
+      <span class="live-dot bg-[#10B981]"></span>
+    </div>
+
+    <%# Connection status badge %>
+    <% if workspace.awaiting_first_data? %>
+      <div class="px-3 py-1 text-[0.6rem] font-bold text-[#f43f5e]
+                  border border-[#f43f5e]/40 rounded-sm bg-[#f43f5e]/08 flex items-center gap-2">
+        <span class="live-dot bg-[#f43f5e]"></span>DISCONNECTED
+      </div>
+    <% elsif active_session %>
+      <div class="px-3 py-1 text-[0.6rem] font-bold text-[#10B981]
+                  border border-[#10B981]/40 rounded-sm bg-[#10B981]/08 flex items-center gap-2">
+        <span class="live-dot bg-[#10B981]"></span><%= active_session.name %> (LIVE)
+      </div>
+    <% else %>
+      <div class="px-3 py-1 text-[0.6rem] font-bold text-[#555]
+                  border border-[#333] rounded-sm flex items-center gap-2">
+        <span class="w-1 h-1 rounded-full bg-[#555]"></span>NO UPLINK
+      </div>
+    <% end %>
+  </div>
+
+  <div class="flex items-center gap-3">
+    <%= link_to workspace_sessions_path(workspace),
+                class: "px-3 py-1.5 text-[0.6rem] font-bold tracking-widest text-[#B5B0A8]
+                        border border-[#2A2B30] hover:border-[#6366F1] hover:text-[#6366F1]
+                        transition-all bg-[#0e0f16]/80 backdrop-blur-sm rounded-sm cursor-pointer" do %>
+      [ SESSIONS ]
+    <% end %>
+
+    <%= link_to workspace_telemetry_records_path(workspace),
+                class: "px-3 py-1.5 text-[0.6rem] font-bold tracking-widest text-[#B5B0A8]
+                        border border-[#2A2B30] hover:border-[#6366F1] hover:text-[#6366F1]
+                        transition-all bg-[#0e0f16]/80 backdrop-blur-sm rounded-sm cursor-pointer" do %>
+      [ STORED DATA ]
+    <% end %>
+
+    <%= link_to workspace_payload_schema_path(workspace),
+                class: "px-3 py-1.5 text-[0.6rem] font-bold tracking-widest text-[#B5B0A8]
+                        border border-[#2A2B30] hover:border-[#6366F1] hover:text-[#6366F1]
+                        transition-all bg-[#0e0f16]/80 backdrop-blur-sm rounded-sm cursor-pointer" do %>
+      [ SCHEMA ]
+    <% end %>
+
+    <div class="text-[0.55rem] text-[#444] tracking-widest">SYS UTC</div>
+    <button onclick="window.close()"
+            class="px-4 py-1.5 text-[0.6rem] font-bold tracking-widest text-[#B5B0A8]
+                   border border-[#2A2B30] hover:border-[#6366F1] hover:text-[#6366F1]
+                   transition-all bg-[#0e0f16]/80 backdrop-blur-sm rounded-sm cursor-pointer">
+      [ ABORT ]
+    </button>
+  </div>
+
+</div>

@@ -1,4 +1,4 @@
-# MiniSat-Alpha — Project Instructions
+# Project Instructions
 
 ## Stack
 - Ruby on Rails 8.1.3
@@ -8,6 +8,13 @@
 - PostgreSQL
 - ActionCable for WebSockets
 - Devise for authentication
+
+Dashboard Platform — Multi-Tenant IoT Project Management & Control System
+
+## Purpose
+
+This is a SaaS platform that enables teams to build, manage, and control their own IoT projects (like MiniSat-Alpha). Users create Workspaces to represent their projects, define custom telemetry
+schemas, onboard IoT devices, ingest real-time sensor data, and visualize/control their projects through customizable dashboards.
 
 ## Architecture
 - Multi-tenant: every resource scoped to current_user
@@ -84,12 +91,8 @@
   end
 
 ## Styling Rules
-- Tailwind only — no custom CSS files, no inline styles
-- Sidebar: bg-gray-900 text-white
-- Cards: bg-white rounded-xl shadow-sm border border-gray-100
-- Primary button: bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg px-4 py-2
-- Danger button: bg-red-50 text-red-600 hover:bg-red-100
-- Inputs: border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500
+- Follow the project theme.
+- Use Tailwind only; reuse existing custom classes and design new classes with reusability in mind — no inline styles.
 
 ## Models Overview
 - User (Devise) → has_many :workspaces

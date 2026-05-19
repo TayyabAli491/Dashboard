@@ -1,0 +1,24 @@
+<%# Live dashboard widget wrapper — dark theme %>
+<% accent_class = "accent-#{(widget['config'] || {})['color'] || 'primary'}" %>
+<div class="grid-stack-item live-widget"
+     gs-x="<%= widget['grid']['x'] %>"
+     gs-y="<%= widget['grid']['y'] %>"
+     gs-w="<%= widget['grid']['w'] %>"
+     gs-h="<%= widget['grid']['h'] %>"
+     gs-id="<%= widget['id'] %>"
+     gs-no-resize="true"
+     gs-no-move="true"
+     data-widget-id="<%= widget['id'] %>"
+     data-widget-type="<%= widget['type'] %>">
+  <div class="grid-stack-item-content">
+    <div class="live-widget-card <%= accent_class %>">
+      <div class="live-widget-header">
+        <span><%= widget['label'] %></span>
+        <%= yield :header_meta if block_given? && content_for?(:header_meta) %>
+      </div>
+      <div class="live-widget-body">
+        <%= yield %>
+      </div>
+    </div>
+  </div>
+</div>

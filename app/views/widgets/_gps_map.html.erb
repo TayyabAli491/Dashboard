@@ -1,0 +1,9 @@
+<%= render "widgets/widget_wrapper", widget: widget do %>
+  <% lat_field = widget['config']['fields'][0] || 'latitude' %>
+  <% lng_field = widget['config']['fields'][1] || 'longitude' %>
+  <div class="gps-map-body"
+       data-controller="gps-map"
+       data-gps-map-lat-field-value="<%= lat_field %>"
+       data-gps-map-lng-field-value="<%= lng_field %>"
+       data-gps-map-color-value="<%= widget['config']['color'] %>"></div>
+<% end %>

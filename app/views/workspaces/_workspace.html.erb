@@ -1,0 +1,48 @@
+<div class="card">
+  <% accent_class = ["teal", "blue", "amber"][workspace.id.to_i % 3] %>
+  <div class="card-accent <%= accent_class %>"></div>
+  
+  <div class="card-top">
+    <div class="card-icon">
+      <i class="fa-solid fa-satellite-dish fa-lg"></i>
+    </div>
+    
+    <% if workspace.payload_schema_defined? %>
+      <span class="badge badge-ok"><span class="badge-dot"></span>Schema OK</span>
+    <% else %>
+      <span class="badge badge-warn"><span class="badge-dot"></span>No Schema</span>
+    <% end %>
+  </div>
+  
+  <div class="card-title"><%= workspace.name %></div>
+  
+  <div class="card-desc">
+    <%= workspace.description.presence || "No description provided. Configure a payload schema to start ingesting telemetry." %>
+  </div>
+  
+  <div class="card-meta">
+    <div>
+      <div class="card-meta-label">Records</div>
+      <div class="card-meta-val"><%= number_with_delimiter(workspace.telemetry_record_count || 0) %></div>
+    </div>
+    <div>
+      <div class="card-meta-label">Created</div>
+      <div class="card-meta-val small"><%= workspace.created_at.strftime("%b %-d, %Y") %></div>
+    </div>
+  </div>
+  
+  <div class="card-actions">
+    <%= link_to workspace_path(workspace), class: "btn-primary" do %>
+      Open Dashboard
+      <i class="fa-solid fa-arrow-right"></i>
+    <% end %>
+    
+    <%= link_to edit_workspace_path(workspace), data: { turbo_frame: "remote_modal" }, class: "btn-icon", title: "Edit Workspace" do %>
+      <i class="fa-solid fa-pen"></i>
+    <% end %>
+    
+    <%= button_to workspace_path(workspace), method: :delete, data: { turbo_confirm: "Are you sure you want to delete this workspace?" }, class: "btn-icon del", title: "Delete Workspace" do %>
+      <i class="fa-solid fa-trash"></i>
+    <% end %>
+  </div>
+</div>

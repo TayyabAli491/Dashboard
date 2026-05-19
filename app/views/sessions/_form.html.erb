@@ -1,0 +1,28 @@
+<%= form_with model: session, url: (session.new_record? ? workspace_sessions_path(workspace) : session_path(session)), class: "flex flex-col gap-6" do |f| %>
+  <div class="flex flex-col gap-1.5">
+    <%= f.label :name, class: "text-[11px] font-bold text-[#6B6560] uppercase tracking-wider" %>
+    <%= f.text_field :name, 
+        placeholder: "e.g., Flight Test Beta 01", 
+        class: "bg-[#F7F5F1] border border-[#E8E4DD] rounded-lg px-4 py-3 text-[14px] text-[#1A1A1A] focus:outline-none focus:border-[#C8C3BB] focus:ring-1 focus:ring-[#C8C3BB] transition-all placeholder:text-[#B5B0A8]" %>
+    <% if session.errors[:name].any? %>
+      <div class="text-[11px] text-[#A32D2D] font-medium mt-1"><%= session.errors.full_messages_for(:name).first %></div>
+    <% end %>
+  </div>
+
+  <div class="flex flex-col gap-1.5">
+    <%= f.label :description, class: "text-[11px] font-bold text-[#6B6560] uppercase tracking-wider" %>
+    <%= f.text_area :description, 
+        rows: 3, 
+        placeholder: "Session context, notes, or mission objectives...", 
+        class: "bg-[#F7F5F1] border border-[#E8E4DD] rounded-lg px-4 py-3 text-[14px] text-[#1A1A1A] focus:outline-none focus:border-[#C8C3BB] focus:ring-1 focus:ring-[#C8C3BB] transition-all placeholder:text-[#B5B0A8] resize-none" %>
+  </div>
+
+  <div class="flex items-center justify-end gap-3 mt-6 pt-6 border-t border-[#E8E4DD]">
+    <button type="button" 
+            class="btn-secondary min-w-[100px] justify-center" 
+            onclick="document.getElementById('remote_modal').innerHTML =''">
+      Cancel
+    </button>
+    <%= f.submit (session.new_record? ? "Create Session" : "Update Session"), class: "btn-primary min-w-[130px] cursor-pointer" %>
+  </div>
+<% end %>

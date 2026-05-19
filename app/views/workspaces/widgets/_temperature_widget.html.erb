@@ -1,0 +1,45 @@
+<%# BMP280 Temperature Widget %>
+<div class="sensor-card" style="--accent: rgba(245,158,11,0.6);">
+  <div class="sc-header">
+    <div class="sc-header-left">
+      <div class="sc-icon" style="background:rgba(245,158,11,0.12);color:#F59E0B;">🌡️</div>
+      <div>
+        <div class="sc-title">BMP280</div>
+        <div class="sc-subtitle">Temperature &middot; °C</div>
+      </div>
+    </div>
+    <span class="sc-badge" style="color:#F59E0B;" id="temp-badge">NOMINAL</span>
+  </div>
+
+  <div class="sc-value-row">
+    <div class="sc-big" style="color:#F59E0B;"><span id="temp-val">24.7</span></div>
+    <span class="sc-unit">°C</span>
+  </div>
+
+  <div class="sc-scale-wrap">
+    <div class="sc-scale-bar" style="background: linear-gradient(90deg, #06B6D4, #84cc16, #F59E0B, #f97316, #f43f5e);">
+      <div class="sc-scale-marker" id="temp-marker" style="left:43%;"></div>
+    </div>
+    <div class="sc-scale-labels"><span>−20°</span><span>0°</span><span>40°</span><span>65°</span><span>85°</span></div>
+  </div>
+
+  <div class="sc-chart-wrap">
+    <div class="sc-chart-labels">
+      <span>40°C</span>
+      <span style="margin-top:auto;">10°C</span>
+    </div>
+    <div class="sc-line-chart">
+      <svg id="temp-chart" preserveAspectRatio="none">
+        <defs>
+          <linearGradient id="tempGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%"   stop-color="#F59E0B" stop-opacity="0.25"/>
+            <stop offset="100%" stop-color="#F59E0B" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+        <path id="temp-area" fill="url(#tempGrad)"/>
+        <path id="temp-line" fill="none" stroke="#F59E0B" stroke-width="1.5" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <div class="sc-chart-time">seconds</div>
+  </div>
+</div>

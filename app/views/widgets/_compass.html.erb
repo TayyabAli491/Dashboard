@@ -1,0 +1,8 @@
+<%= render "widgets/widget_wrapper", widget: widget do %>
+  <% heading_field = widget['config']['fields'].first || 'heading' %>
+  <div class="compass-body"
+       data-controller="compass-3d"
+       data-compass-3d-field-value="<%= heading_field %>">
+    <div class="compass-heading" data-compass-3d-target="heading">HDG: --°</div>
+  </div>
+<% end %>

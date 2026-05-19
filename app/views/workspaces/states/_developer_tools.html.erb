@@ -1,0 +1,35 @@
+<details class="dev-tools">
+  <summary>
+    <i class="fa-solid fa-screwdriver-wrench"></i>
+    <span>Developer tools</span>
+    <span class="dev-tools-hint">For verifying server setup — not your hardware</span>
+  </summary>
+
+  <div class="dev-tools-body">
+
+    <div class="dev-tools-warning">
+      <i class="fa-solid fa-triangle-exclamation"></i>
+      <div>
+        <strong>What this does <em>not</em> tell you.</strong>
+        A successful test packet only confirms that ArckOne's server, your API key, and your schema all line up. It does <strong>not</strong> mean your actual hardware is sending data — that has to be verified by seeing real packets arrive in the listening indicator above.
+      </div>
+    </div>
+
+    <div class="flex flex-col items-start gap-2"
+         data-controller="test-packet"
+         data-test-packet-url-value="<%= send_test_telemetry_workspace_path(@workspace) %>">
+      <button type="button"
+              class="btn-secondary text-xs flex items-center gap-2"
+              data-test-packet-target="button"
+              data-action="click->test-packet#send">
+        <i class="fa-solid fa-flask-vial"></i>
+        <span data-test-packet-target="label">Send a synthetic test packet</span>
+      </button>
+      <div data-test-packet-target="result" class="hidden text-xs"></div>
+      <p class="text-[11px] text-[#9E9891] leading-relaxed">
+        Sends one packet of dummy data, server-side. Useful while you're iterating on your schema or before your real hardware is ready.
+      </p>
+    </div>
+
+  </div>
+</details>

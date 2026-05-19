@@ -1,8 +1,16 @@
-<div class="min-h-screen bg-gray-50 p-6">
-  <div class="mx-auto max-w-lg">
-    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-      <h1 class="text-2xl font-bold text-gray-900 mb-6">New Workspace</h1>
+<%= turbo_frame_tag "remote_modal" do %>
+  <div class="fixed inset-0 z-50 flex items-center justify-center p-4" style="background-color: rgba(26, 26, 26, 0.4); backdrop-filter: blur(2px);">
+    <div class="card relative overflow-hidden" style="width: 100%; max-width: 650px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);">
+      <div class="card-accent teal" style="height: 6px;"></div>
+      
+      <button onclick="this.closest('turbo-frame').innerHTML=''" class="absolute right-4 top-4 w-8 h-8 flex items-center border border-[#E8E4DD] justify-center rounded-lg bg-[#F7F5F1] text-[#6B6560] hover:bg-white hover:text-[#1A1A1A] hover:border-[#C8C3BB] transition-colors cursor-pointer" title="Close">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="card-title pr-8">New Workspace</div>
+      <div class="card-desc mb-2">Configure a new workspace to start interpreting telemetry.</div>
+      
       <%= render "form", workspace: @workspace %>
     </div>
   </div>
-</div>
+<% end %>

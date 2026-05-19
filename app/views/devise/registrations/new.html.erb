@@ -1,37 +1,100 @@
-<div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-  <div class="max-w-md w-full bg-white rounded-lg shadow-md p-8">
-    <div class="mb-8">
-      <h2 class="text-center text-3xl font-bold text-gray-900">Sign up</h2>
-    </div>
+<div class="auth-layout">
+  <%= render "devise/shared/auth_artwork" %>
 
-    <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { class: "space-y-6" }) do |f| %>
-      <%= render "devise/shared/error_messages", resource: resource %>
+  <section class="auth-form-panel">
+    <div class="auth-form-bg-pattern"></div>
 
-      <div>
-        <%= f.label :email, class: "block text-sm font-medium text-gray-700 mb-2" %>
-        <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" %>
+    <div class="auth-form-container relative z-10">
+      <!-- Logo -->
+      <div class="flex flex-col items-center mb-8">
+        <div class="auth-form-logo">
+          <i class="fa-solid fa-satellite-dish text-[18px]"></i>
+        </div>
+        <div class="text-[16px] font-semibold text-[#1A1A1A] tracking-tight mt-3">ArckOne</div>
+        <div class="text-[10px] text-[#B5B0A8] tracking-[0.16em] mt-0.5">IOT PLATFORM</div>
       </div>
 
-      <div>
-        <%= f.label :password, class: "block text-sm font-medium text-gray-700 mb-2" %>
-        <% if @minimum_password_length %>
-          <p class="text-xs text-gray-500 mb-1">(<%= @minimum_password_length %> characters minimum)</p>
+      <div class="auth-form-card">
+        <!-- Header -->
+        <div class="mb-8 text-center">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#FAEEDA] border border-[#FAC775] mb-4">
+            <i class="fa-solid fa-rocket text-[9px] text-[#854F0B]"></i>
+            <span class="text-[10px] font-medium text-[#854F0B] tracking-wide uppercase">Get Started</span>
+          </div>
+          <h2 class="text-[28px] font-semibold tracking-tight text-[#1A1A1A] leading-tight">Create your account</h2>
+          <p class="text-[13px] text-[#9E9891] mt-1.5">Set up your workspace in under a minute</p>
+        </div>
+
+        <%= render "devise/shared/error_messages", resource: resource %>
+
+        <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { class: "auth-form-fields" }) do |f| %>
+          <!-- Email -->
+          <div>
+            <%= f.label :email, class: "auth-field-label" %>
+            <div class="auth-input-wrap">
+              <i class="fa-regular fa-envelope auth-input-icon"></i>
+              <%= f.email_field :email, autofocus: true, autocomplete: "email", placeholder: "you@example.com", class: "auth-input auth-input-with-icon" %>
+            </div>
+          </div>
+
+          <!-- Password -->
+          <div>
+            <div class="flex items-center justify-between mb-1.5">
+              <%= f.label :password, class: "auth-field-label mb-0" %>
+              <% if @minimum_password_length %>
+                <span class="text-[10px] text-[#B5B0A8] font-medium">Min <%= @minimum_password_length %> characters</span>
+              <% end %>
+            </div>
+            <div class="auth-input-wrap">
+              <i class="fa-solid fa-lock auth-input-icon"></i>
+              <%= f.password_field :password, autocomplete: "new-password", placeholder: "Create a strong password", class: "auth-input auth-input-with-icon" %>
+            </div>
+          </div>
+
+          <!-- Confirm Password -->
+          <div>
+            <%= f.label :password_confirmation, "Confirm password", class: "auth-field-label" %>
+            <div class="auth-input-wrap">
+              <i class="fa-solid fa-shield-halved auth-input-icon"></i>
+              <%= f.password_field :password_confirmation, autocomplete: "new-password", placeholder: "Repeat your password", class: "auth-input auth-input-with-icon" %>
+            </div>
+          </div>
+
+          <!-- Submit -->
+          <div class="pt-2">
+            <%= f.submit "Create account", class: "auth-submit-btn" %>
+          </div>
         <% end %>
-        <%= f.password_field :password, autocomplete: "new-password", class: "appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" %>
+
+        <!-- Divider -->
+        <div class="flex items-center gap-3 mt-7 mb-5">
+          <div class="flex-1 h-px bg-[#E8E4DD]"></div>
+          <span class="text-[10px] font-medium text-[#B5B0A8] tracking-widest uppercase">or</span>
+          <div class="flex-1 h-px bg-[#E8E4DD]"></div>
+        </div>
+
+        <!-- Login link -->
+        <p class="text-center text-[13px] text-[#6B6560]">
+          Already have an account?
+          <%= link_to "Sign in", new_session_path(resource_name), class: "font-semibold text-[#1A1A1A] hover:underline ml-1" %>
+        </p>
       </div>
 
-      <div>
-        <%= f.label :password_confirmation, class: "block text-sm font-medium text-gray-700 mb-2" %>
-        <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" %>
+      <!-- Trust badges -->
+      <div class="flex items-center justify-center gap-5 mt-6">
+        <div class="auth-trust-badge">
+          <i class="fa-solid fa-shield-halved"></i>
+          <span>SSL Secured</span>
+        </div>
+        <div class="auth-trust-badge">
+          <i class="fa-solid fa-lock"></i>
+          <span>Encrypted</span>
+        </div>
       </div>
 
-      <div>
-        <%= f.submit "Sign up", class: "w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 cursor-pointer" %>
-      </div>
-    <% end %>
-
-    <div class="mt-6">
-      <%= render "devise/shared/links" %>
+      <p class="text-center text-[10px] text-[#B5B0A8] mt-4">
+        By creating an account, you agree to our Terms of Service and Privacy Policy.
+      </p>
     </div>
-  </div>
+  </section>
 </div>

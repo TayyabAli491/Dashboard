@@ -1,0 +1,137 @@
+<div class="page-wrap">
+  <%= render "shared/nav" %>
+
+  <main class="main-content">
+    <div class="topbar">
+      <div>
+        <div class="mb-5">
+          <%= link_to workspace_path(@workspace), class: "inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-[#6B6560] bg-[#E8E4DD]/50 hover:bg-[#E8E4DD] hover:text-[#1A1A1A] px-2.5 py-1.5 rounded-lg transition-colors border border-transparent hover:border-[#C8C3BB]" do %>
+            <i class="fa-solid fa-arrow-left text-[9px]"></i> Back to <%= @workspace.name %>
+          <% end %>
+        </div>
+        <div class="page-eyebrow">Telemetry Data</div>
+        <h1 class="page-title">Stored <em>Packets</em></h1>
+        <% if @session %>
+          <div class="mt-2 text-[12px] text-[#9E9891]">
+            Filtered by session: <span class="font-semibold text-[#1A1A1A]"><%= @session.name %></span>
+          </div>
+        <% end %>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <%= link_to workspace_sessions_path(@workspace), class: "btn-secondary" do %>
+          <i class="fa-solid fa-list-check"></i> Sessions
+        <% end %>
+        <%= link_to workspace_payload_schema_path(@workspace), class: "btn-secondary" do %>
+          <i class="fa-solid fa-diagram-project"></i> Schema
+        <% end %>
+      </div>
+    </div>
+
+    <div class="card p-0 overflow-hidden shadow-sm">
+      <div class="card-accent blue"></div>
+      <div class="p-6">
+        <div class="flex items-center justify-between mb-6">
+          <div class="text-[12px] font-semibold text-[#6B6560] uppercase tracking-widest">History</div>
+          <div class="text-[12px] text-[#6B6560] font-medium">
+            Total: <span class="text-[#1A1A1A] font-bold"><%= number_with_delimiter(@total_records) %></span>
+          </div>
+        </div>
+
+        <div class="overflow-hidden rounded-xl border border-[#E8E4DD] bg-white shadow-sm">
+          <table class="min-w-full text-left border-collapse">
+            <thead>
+              <tr class="bg-[#F7F5F1]/80 backdrop-blur-sm">
+                <th class="px-6 py-4 text-[10px] font-bold text-[#6B6560] uppercase tracking-widest border-b border-[#E8E4DD] w-[220px]">Recorded At</th>
+                <th class="px-6 py-4 text-[10px] font-bold text-[#6B6560] uppercase tracking-widest border-b border-[#E8E4DD]">Payload</th>
+                <th class="px-6 py-4 text-[10px] font-bold text-[#6B6560] uppercase tracking-widest border-b border-[#E8E4DD] w-[130px] text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-[#E8E4DD]">
+              <% @telemetry_records.each do |record| %>
+                <tr class="hover:bg-[#F7F5F1]/30 transition-all duration-200">
+                  <td class="px-6 py-5 align-top">
+                    <div class="flex flex-col">
+                      <span class="text-[13px] font-mono font-semibold text-[#1A1A1A]"><%= record.recorded_at.strftime("%b %d, %Y %H:%M:%S") %><span class="text-blue-500">.<%= record.recorded_at.strftime("%L") %></span></span>
+                      <span class="text-[10px] text-[#9E9891] font-medium mt-1">
+                        <% if record.session %>
+                          Session: <span class="font-semibold"><%= record.session.name %></span>
+                        <% else %>
+                          Unassigned session
+                        <% end %>
+                      </span>
+                    </div>
+                  </td>
+                  <td class="px-6 py-5">
+                    <% if @field_keys.any? %>
+                      <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-y-3 gap-x-6">
+                        <% @field_keys.each do |key| %>
+                          <div class="flex flex-col gap-1">
+                            <span class="text-[9px] font-bold text-[#B5B0A8] uppercase tracking-widest"><%= key %></span>
+                            <span class="text-[13px] font-bold text-[#1A1A1A]"><%= record.value_for_field(key) %></span>
+                          </div>
+                        <% end %>
+                      </div>
+                    <% else %>
+                      <div class="flex items-center gap-2 text-[#9E9891] italic text-[12px]">
+                        <i class="fa-solid fa-circle-info text-[10px]"></i>
+                        No payload mapping defined
+                      </div>
+                    <% end %>
+                  </td>
+                  <td class="px-6 py-5 text-right align-top">
+                    <%= link_to telemetry_record_path(record), class: "btn-secondary !px-3 !py-2 shadow-sm" do %>
+                      <i class="fa-solid fa-eye mr-2 text-[11px]"></i> View
+                    <% end %>
+                  </td>
+                </tr>
+              <% end %>
+              <% if @telemetry_records.empty? %>
+                <tr>
+                  <td colspan="3" class="px-6 py-12 text-center">
+                    <div class="flex flex-col items-center gap-3">
+                      <div class="w-12 h-12 rounded-full bg-[#F7F5F1] flex items-center justify-center text-[#B5B0A8]">
+                        <i class="fa-solid fa-inbox text-[20px]"></i>
+                      </div>
+                      <p class="text-[13px] font-medium text-[#9E9891]">No stored telemetry packets found.</p>
+                    </div>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+
+        <% if @total_pages > 1 %>
+          <div class="mt-8 flex items-center justify-between pt-6 border-t border-[#E8E4DD]">
+            <div class="text-[12px] text-[#6B6560] font-medium">
+              Showing page <span class="text-[#1A1A1A] font-bold"><%= @page %></span> of <span class="text-[#1A1A1A] font-bold"><%= @total_pages %></span>
+            </div>
+            <div class="flex gap-2">
+              <% if @page > 1 %>
+                <%= link_to url_for(request.query_parameters.merge(page: @page - 1)), class: "btn-secondary !py-2 !px-4 shadow-sm" do %>
+                  <i class="fa-solid fa-chevron-left mr-2"></i> Previous
+                <% end %>
+              <% else %>
+                <button class="btn-secondary !py-2 !px-4 opacity-50 cursor-not-allowed" disabled>
+                  <i class="fa-solid fa-chevron-left mr-2"></i> Previous
+                </button>
+              <% end %>
+
+              <% if @page < @total_pages %>
+                <%= link_to url_for(request.query_parameters.merge(page: @page + 1)), class: "btn-secondary !py-2 !px-4 shadow-sm" do %>
+                  Next <i class="fa-solid fa-chevron-right ml-2"></i>
+                <% end %>
+              <% else %>
+                <button class="btn-secondary !py-2 !px-4 opacity-50 cursor-not-allowed" disabled>
+                  Next <i class="fa-solid fa-chevron-right ml-2"></i>
+                </button>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </main>
+</div>
+

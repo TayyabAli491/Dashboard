@@ -1,0 +1,99 @@
+<% content_for :head do %>
+  <%= stylesheet_link_tag "setup_theme", "data-turbo-track": "reload" %>
+<% end %>
+
+<div class="page-wrap">
+  <%= render "shared/nav" %>
+
+  <main class="main-content" data-controller="tabs">
+    <div class="mb-10">
+      <%= link_to workspace_path(@workspace), class: "btn-secondary" do %>
+        <i class="fa-solid fa-arrow-left fa-xs mr-2"></i> Live Dashboard
+      <% end %>
+    </div>
+
+    <div class="max-w-4xl mx-auto pb-20">
+      
+      <div class="mb-10">
+        <div class="page-eyebrow">Workspace Configuration</div>
+        <h1 class="page-title"><%= @workspace.name %> <em>Setup</em></h1>
+      </div>
+
+      <%# Horizontal Tabs %>
+      <div class="flex gap-2 border-b border-[#E8E4DD] mb-8">
+        <button data-action="click->tabs#select" data-tabs-target="tab" 
+                class="px-5 py-2 text-sm font-medium transition-all -mb-px border-b-2 aria-[selected=true]:border-[#1A1A1A] aria-[selected=true]:text-[#1A1A1A] aria-[selected=false]:border-transparent aria-[selected=false]:text-[#B5B0A8] hover:text-[#6B6560]" 
+                aria-selected="true">
+          Connection Details
+        </button>
+        <button data-action="click->tabs#select" data-tabs-target="tab" 
+                class="px-5 py-2 text-sm font-medium transition-all -mb-px border-b-2 aria-[selected=true]:border-[#1A1A1A] aria-[selected=true]:text-[#1A1A1A] aria-[selected=false]:border-transparent aria-[selected=false]:text-[#B5B0A8] hover:text-[#6B6560]" 
+                aria-selected="false">
+          Payload Schema
+        </button>
+      </div>
+
+      <%# Connection Section %>
+      <section data-tabs-target="panel" class="setup-card animate-fade-in block">
+        <h3 class="setup-card-header">
+          <i class="fa-solid fa-plug text-[#1A1A1A] mr-3"></i>
+          Network Integration
+        </h3>
+        <p class="text-[12px] text-[#9E9891] mb-6 max-w-2xl">
+          Your credentials and ready-to-paste integration code. Pick how your device sends data, copy the snippet, and you're live.
+        </p>
+
+        <%= render "workspaces/states/connection_panel", show_regenerate: true %>
+      </section>
+
+      <%# Schema Section %>
+      <section data-tabs-target="panel" class="setup-card animate-fade-in hidden">
+        <div class="flex items-center justify-between border-b border-[#E8E4DD] pb-5 mb-6">
+          <h3 class="text-[15px] font-semibold text-[#1A1A1A] flex items-center">
+            <i class="fa-solid fa-code text-[#1A1A1A] mr-3"></i> 
+            Telemetry Schema
+          </h3>
+          <%= link_to edit_workspace_payload_schema_path(@workspace), class: "btn-primary" do %>
+            <i class="fa-regular fa-pen-to-square mr-2 text-[10px]"></i> Edit Schema
+          <% end %>
+        </div>
+
+        <% if @workspace.payload_schema_defined? %>
+          <div class="overflow-hidden rounded-lg border border-[#E8E4DD]">
+            <table class="w-full text-sm text-left">
+              <thead class="setup-table-header">
+                <tr>
+                  <th class="px-5 py-3 font-semibold">Key</th>
+                  <th class="px-5 py-3 font-semibold">Type</th>
+                  <th class="px-5 py-3 font-semibold">Unit</th>
+                  <th class="px-5 py-3 font-semibold">Alias</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-[#E8E4DD]">
+                <% @workspace.payload_schema.fields.each do |field| %>
+                  <tr class="setup-table-row">
+                    <td class="px-5 py-4 font-mono text-[#1A1A1A]"><%= field["key"] %></td>
+                    <td class="px-5 py-4">
+                      <span class="bg-[#F7F5F1] px-2 py-0.5 rounded text-[10px] font-medium text-[#6B6560] border border-[#E8E4DD]">
+                        <%= field["type"].upcase %>
+                      </span>
+                    </td>
+                    <td class="px-5 py-4 text-[#9E9891]"><%= field["unit"].presence || "—" %></td>
+                    <td class="px-5 py-4 font-medium text-[#1A1A1A]"><%= field["alias"] %></td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+        <% else %>
+          <div class="py-16 text-center border-2 border-dashed border-[#E8E4DD] rounded-xl bg-white/50">
+            <i class="fa-solid fa-triangle-exclamation text-2xl mb-4 text-[#B5B0A8]"></i>
+            <p class="text-sm font-semibold text-[#1A1A1A]">No Schema Defined</p>
+            <p class="text-xs text-[#9E9891] mt-1">Please configure your telemetry schema to start processing data.</p>
+          </div>
+        <% end %>
+      </section>
+
+    </div>
+  </main>
+</div>
