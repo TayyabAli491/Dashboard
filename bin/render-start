@@ -1,10 +1,15 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-if [ ! -s app/assets/builds/tailwind.css ]; then
-  echo "render-start: tailwind.css missing from image, rebuilding..."
-  ./bin/rails tailwindcss:build
-fi
+echo "render-start: pwd=$(pwd) user=$(whoami)"
+echo "render-start: listing app/assets/builds/ before build"
+ls -la app/assets/builds/ || true
+
+echo "render-start: forcing tailwindcss:build"
+./bin/rails tailwindcss:build
+
+echo "render-start: listing app/assets/builds/ after build"
+ls -la app/assets/builds/
 
 ./bin/rails db:prepare
 exec bundle exec puma -C config/puma.rb
